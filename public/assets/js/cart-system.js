@@ -36,6 +36,47 @@ let currentUser = null;
 let googleAccessToken = null;
 let portalOrdersUnsubscribe = null;
 
+const SHOP_OWNER_EMAIL = 'gohilriteshs@gmail.com';
+
+function isShopOwner(user = currentUser) {
+  const email = user?.email?.toLowerCase?.();
+  if (email && email === SHOP_OWNER_EMAIL.toLowerCase()) return true;
+  return sessionStorage.getItem('admin_authenticated') === 'true';
+}
+
+function syncAdminNavVisibility() {
+  document.querySelectorAll('#nav-admin-link, #mobile-admin-btn').forEach((el) => el.remove());
+  if (!isShopOwner()) return;
+
+  document.querySelectorAll('header nav').forEach((nav) => {
+    if (nav.closest('main')) return;
+    if (nav.querySelector('#nav-admin-link, a[href="/admin"]')) return;
+    const adminLink = document.createElement('a');
+    adminLink.id = 'nav-admin-link';
+    adminLink.className = 'text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500 text-silver';
+    adminLink.href = '/admin';
+    adminLink.textContent = 'Admin';
+    nav.appendChild(adminLink);
+  });
+
+  const mobileNavList = document.getElementById('mobile-nav-list');
+  if (mobileNavList && !document.getElementById('mobile-admin-btn')) {
+    const adminMobLink = document.createElement('a');
+    adminMobLink.id = 'mobile-admin-btn';
+    adminMobLink.href = '/admin';
+    adminMobLink.className = 'mt-4 flex items-center justify-between gap-3 px-4 py-3 bg-accent text-primary-deeper font-bold text-sm tracking-widest border border-accent';
+    adminMobLink.innerHTML = '<span>Admin Console</span><iconify-icon icon="lucide:sliders" class="text-lg"></iconify-icon>';
+    adminMobLink.addEventListener('click', () => {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      if (drawer) {
+        drawer.classList.add('hidden-drawer');
+        drawer.classList.remove('active-drawer');
+      }
+    });
+    mobileNavList.appendChild(adminMobLink);
+  }
+}
+
 function getShopDetails() {
   try {
     const saved = localStorage.getItem('jalaram_store_details');
@@ -726,6 +767,10 @@ async function initFirebase() {
       if (isCheckoutPage) {
         renderCheckoutPage();
       }
+      if (path === '/account' || document.getElementById('account-portal-root')) {
+        renderCustomerPortalContent();
+      }
+      syncAdminNavVisibility();
     });
 
     const fallbackSess = localStorage.getItem('fallback_customer_session');
@@ -1646,11 +1691,18 @@ function openContactModal() {
 }
 
 async function submitContactQuery(form) {
-  const name = document.getElementById('cnt-name').value;
-  const email = document.getElementById('cnt-email').value;
-  const phone = document.getElementById('cnt-phone').value;
+  const name = document.getElementById('cnt-name').value.trim();
+  const email = document.getElementById('cnt-email').value.trim();
+  const phone = document.getElementById('cnt-phone').value.trim();
   const category = document.getElementById('cnt-category').value;
-  const message = document.getElementById('cnt-message').value;
+  const message = document.getElementById('cnt-message').value.trim();
+
+  const cntPhoneDigits = phone.replace(/[^\d]/g, '');
+  if (cntPhoneDigits.length < 10 || cntPhoneDigits.length > 12) {
+    document.getElementById('cnt-phone').focus();
+    showToast('Please enter a valid 10-digit phone number.');
+    return;
+  }
 
   const ticketId = 'JLR-QTK-' + Math.floor(100000 + Math.random() * 900000);
 
@@ -1702,19 +1754,16 @@ function setupContactPage() {
 
 window.openAboutModal = openAboutModal;
 window.openContactModal = openContactModal;
+window.openCustomerPortalModal = openCustomerPortalModal;
 
 function openCustomerPortalModal() {
-  let modal = document.getElementById('customer-portal-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'customer-portal-modal';
-    modal.className = 'fixed inset-0 z-[110] flex items-end sm:items-center justify-center hidden';
-    modal.style.cssText = 'font-family: Inter, sans-serif;';
-    document.body.appendChild(modal);
+  window.location.href = '/account';
+}
 
-    if (!document.getElementById('portal-modal-styles')) {
-      const style = document.createElement('style');
-      style.id = 'portal-modal-styles';
+function ensurePortalStyles() {
+  if (document.getElementById('portal-modal-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'portal-modal-styles';
       style.textContent = `
         /* === Backdrop === */
         #customer-portal-modal {
@@ -1955,30 +2004,27 @@ function openCustomerPortalModal() {
           border-left:4px solid #1A3A5C;
         }
       `;
-      document.head.appendChild(style);
-    }
-  }
+  document.head.appendChild(style);
+}
 
-  modal.classList.remove('hidden');
-  modal.style.display = 'flex';
-  renderCustomerPortalContent();
+function renderAccountPageContent() {
+  return renderCustomerPortalContent();
 }
 
 async function renderCustomerPortalContent() {
-  const modal = document.getElementById('customer-portal-modal');
-  if (!modal) return;
-  
+  const target = document.getElementById('account-portal-root');
+  if (!target) return;
+
+  ensurePortalStyles();
+
   const googleSvg = `<svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22-.08-.22-.11-.49z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>`;
 
   if (!currentUser) {
-    modal.innerHTML = `
+    target.innerHTML = `
       <div class="jc-card">
 
         <!-- Brand header -->
         <div class="jc-brand-hd">
-          <button id="close-portal-modal" class="jc-close" aria-label="Close">
-            <iconify-icon icon="lucide:x"></iconify-icon>
-          </button>
           <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1;">
             <img src="/assets/images/logo.png" style="height:40px;width:auto;object-fit:contain;flex-shrink:0;" onerror="this.style.display='none'">
             <div>
@@ -2139,22 +2185,24 @@ async function renderCustomerPortalContent() {
     document.getElementById('portal-google-btn').addEventListener('click', handleGoogle);
     const gSignup = document.getElementById('portal-google-btn-signup');
     if (gSignup) gSignup.addEventListener('click', handleGoogle);
-
-    document.getElementById('close-portal-modal').addEventListener('click', () => {
-      modal.style.display = 'none';
-      modal.classList.add('hidden');
-    });
   } else {
     const initials = (currentUser.displayName || currentUser.email || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
     const displayName = currentUser.displayName || currentUser.email.split('@')[0];
-    modal.innerHTML = `
-      <div class="jc-card" style="max-width:500px;width:100%;">
+    const ownerBanner = isShopOwner() ? `
+          <div class="account-owner-banner">
+            <div>
+              <p style="font-size:12px;font-weight:700;color:#1A3A5C;margin:0 0 2px;">Shop Owner Access</p>
+              <p style="font-size:11px;color:#64748B;margin:0;">Manage products, orders and store settings.</p>
+            </div>
+            <a href="/admin">Open Admin Console</a>
+          </div>
+        ` : '';
+
+    target.innerHTML = `
+      <div class="jc-card" style="width:100%;">
 
         <!-- Profile header -->
         <div class="jc-profile-hd">
-          <button id="close-portal-modal" class="jc-close" aria-label="Close">
-            <iconify-icon icon="lucide:x"></iconify-icon>
-          </button>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1;">
             <div style="display:flex;align-items:center;gap:12px;">
               <div class="jc-avatar">${initials}</div>
@@ -2181,24 +2229,14 @@ async function renderCustomerPortalContent() {
               Loading your orders…
             </div>
           </div>
-          <div style="margin-top:18px;padding-top:16px;border-top:1px solid #F1F5F9;text-align:center;">
-            <a href="/admin" style="font-size:12px;color:#64748B;text-decoration:none;" onmouseover="this.style.color='#1A3A5C'" onmouseout="this.style.color='#64748B'">Admin access →</a>
-          </div>
+          ${ownerBanner}
         </div>
       </div>
     `;
     
     document.getElementById('cust-portal-signout').addEventListener('click', async () => {
       await logoutCustomer();
-    });
-    
-    document.getElementById('close-portal-modal').addEventListener('click', () => {
-      modal.style.display = 'none';
-      modal.classList.add('hidden');
-      if (portalOrdersUnsubscribe) {
-        portalOrdersUnsubscribe();
-        portalOrdersUnsubscribe = null;
-      }
+      renderCustomerPortalContent();
     });
     
     const ordersListEl = document.getElementById('portal-orders-list');
@@ -2388,94 +2426,139 @@ function updateAuthUis() {
 
   // Refresh customer header portal indicators dynamically
   setupHeaderCustomerPortal();
+  syncAdminNavVisibility();
+
+  if (document.getElementById('account-portal-root')) {
+    renderCustomerPortalContent();
+  }
+}
+
+function bindHeaderProfileDelegation() {
+  if (window.__jcProfileClickBound) return;
+  window.__jcProfileClickBound = true;
+  document.addEventListener('click', (e) => {
+    const profile = e.target.closest('#header-profile-btn');
+    if (!profile) return;
+    if (profile.tagName === 'A') return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = '/account';
+  }, true);
 }
 
 function setupHeaderCustomerPortal() {
-  // Wishlist Link has been removed per user intent
-  
-  // 1. Desktop Nav Links
-  document.querySelectorAll('nav').forEach(nav => {
-    if (!nav.closest('header') && !nav.classList.contains('lg:flex') && !nav.classList.contains('hidden')) return;
-    if (nav.querySelector('#nav-customer-account-link')) return;
-    
-    const accountLink = document.createElement('a');
-    accountLink.id = 'nav-customer-account-link';
-    accountLink.className = 'text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500 text-silver cursor-pointer';
-    accountLink.textContent = 'My Account';
-    accountLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      openCustomerPortalModal();
-    });
-    
-    const adminLink = nav.querySelector('#nav-admin-link') || nav.querySelector('a[href="/admin"]');
-    if (adminLink) {
-      nav.insertBefore(accountLink, adminLink);
-    } else {
-      nav.appendChild(accountLink);
-    }
-  });
+  document.querySelectorAll('#nav-customer-account-link').forEach((el) => el.remove());
+  document.querySelectorAll('#mobile-customer-account-link').forEach((el) => el.remove());
+  bindHeaderProfileDelegation();
 
-  // 2. Desktop Right Icons Profile
   const rightIcons = document.getElementById('header-actions')
     || document.querySelector('header .flex.items-center.gap-5')
     || document.querySelector('header .flex.items-center.gap-4');
-  if (rightIcons && !document.getElementById('header-profile-btn')) {
-    const profileBtn = document.createElement('button');
+  if (!rightIcons) return;
+
+  let profileBtn = document.getElementById('header-profile-btn');
+  if (!profileBtn) {
+    profileBtn = document.createElement('a');
     profileBtn.id = 'header-profile-btn';
-    profileBtn.className = 'relative text-silver hover:text-accent transition-colors duration-500 cursor-pointer border-none bg-transparent flex items-center justify-center p-1';
+    profileBtn.href = '/account';
+    profileBtn.className = 'relative text-silver hover:text-accent transition-colors duration-500 cursor-pointer flex items-center justify-center p-1';
+    profileBtn.setAttribute('aria-label', 'My Account');
+    profileBtn.title = 'My Account';
     profileBtn.innerHTML = `
       <iconify-icon icon="lucide:user" class="text-xl"></iconify-icon>
       <span id="header-profile-indicator" class="absolute top-0 right-0 w-2.5 h-2.5 bg-zinc-500 rounded-full border border-primary-dark"></span>
     `;
-    profileBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openCustomerPortalModal();
-    });
-    
-    const mobileBtn = rightIcons.querySelector('button.lg\\:hidden, button:has(iconify-icon[icon*="menu"])');
-    if (mobileBtn) {
-      rightIcons.insertBefore(profileBtn, mobileBtn);
+
+    const cartLink = rightIcons.querySelector('#nav-cart-link');
+    if (cartLink) {
+      rightIcons.insertBefore(profileBtn, cartLink);
     } else {
-      rightIcons.appendChild(profileBtn);
+      const mobileBtn = rightIcons.querySelector('#mobile-menu-btn, button.lg\\:hidden');
+      if (mobileBtn) {
+        rightIcons.insertBefore(profileBtn, mobileBtn);
+      } else {
+        rightIcons.appendChild(profileBtn);
+      }
     }
+  } else if (!rightIcons.contains(profileBtn)) {
+    const cartLink = rightIcons.querySelector('#nav-cart-link');
+    if (cartLink) rightIcons.insertBefore(profileBtn, cartLink);
+    else rightIcons.appendChild(profileBtn);
   }
 
-  // 3. Update Indicator class of Profile Btn
   const indicator = document.getElementById('header-profile-indicator');
   if (indicator) {
-    if (currentUser) {
-      indicator.className = 'absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border border-primary-dark';
-    } else {
-      indicator.className = 'absolute top-0 right-0 w-2.5 h-2.5 bg-zinc-500 rounded-full border border-primary-dark';
-    }
+    indicator.className = currentUser
+      ? 'absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border border-primary-dark'
+      : 'absolute top-0 right-0 w-2.5 h-2.5 bg-zinc-500 rounded-full border border-primary-dark';
   }
+}
 
-  // 4. Mobile Drawer menu tracking link
-  const mobileNavList = document.getElementById('mobile-nav-list');
-  if (mobileNavList && !document.getElementById('mobile-customer-account-link')) {
-    const mobLink = document.createElement('a');
-    mobLink.id = 'mobile-customer-account-link';
-    mobLink.className = 'py-2 text-silver hover:text-accent border-b border-white/5 pb-3 cursor-pointer';
-    mobLink.textContent = 'My Account & Tracking';
-    mobLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      const drawer = document.getElementById('mobile-nav-drawer');
-      if (drawer) {
-        drawer.classList.add('hidden-drawer');
-        drawer.classList.remove('active-drawer');
-      }
-      openCustomerPortalModal();
+function applyHeaderNavStyles() {
+  const navClass = 'text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500';
+  ['nav-home-link', 'nav-shop-link', 'nav-services-link', 'nav-about-link', 'nav-contact-link'].forEach((id) => {
+    document.querySelectorAll(`header #${id}`).forEach((el) => {
+      navClass.split(' ').forEach((cls) => el.classList.add(cls));
     });
-    
-    const adminMob = mobileNavList.querySelector('a[href="/admin"]') || mobileNavList.querySelector('a[href*="admin"]');
-    if (adminMob) {
-      mobileNavList.insertBefore(mobLink, adminMob);
-    } else {
-      mobileNavList.appendChild(mobLink);
-    }
-  }
+  });
+}
 
-  // Mobile Drawer wishlist link has been removed per user intent
+function highlightActiveNav() {
+  const path = window.location.pathname;
+  const navLinks = [
+    { id: 'nav-home-link', match: path === '/' },
+    { id: 'nav-shop-link', match: path === '/shop' },
+    { id: 'nav-services-link', match: path === '/services' },
+    { id: 'nav-about-link', match: path === '/about' },
+    { id: 'nav-contact-link', match: path === '/contact' },
+    { id: 'nav-cart-link', match: path === '/cart' },
+  ];
+  navLinks.forEach(({ id, match }) => {
+    document.querySelectorAll(`header #${id}`).forEach((el) => {
+      if (match) {
+        el.classList.add('text-white', 'border-b', 'border-accent', 'pb-1');
+        el.classList.remove('text-silver');
+      } else {
+        el.classList.add('text-silver');
+        el.classList.remove('text-white', 'border-b', 'border-accent', 'pb-1');
+      }
+    });
+  });
+
+  document.querySelectorAll('#header-profile-btn').forEach((el) => {
+    if (path === '/account') {
+      el.classList.add('text-accent');
+      el.classList.remove('text-silver');
+    } else {
+      el.classList.remove('text-accent');
+      if (!el.classList.contains('text-silver')) el.classList.add('text-silver');
+    }
+  });
+}
+
+function refreshHeaderChrome() {
+  applyHeaderNavStyles();
+  highlightActiveNav();
+  setupHeaderCustomerPortal();
+  if (typeof window.__jcSetupHeaderSearch === 'function') window.__jcSetupHeaderSearch();
+}
+window.refreshHeaderChrome = refreshHeaderChrome;
+
+function scheduleHeaderPortalRetry() {
+  const retry = () => refreshHeaderChrome();
+  setTimeout(retry, 0);
+  setTimeout(retry, 150);
+  setTimeout(retry, 600);
+  setTimeout(retry, 1500);
+  if (!window.__jcHeaderPortalObserver && document.body) {
+    window.__jcHeaderPortalObserver = new MutationObserver(() => {
+      const actions = document.getElementById('header-actions');
+      if (actions && !document.getElementById('header-profile-btn')) {
+        refreshHeaderChrome();
+      }
+    });
+    window.__jcHeaderPortalObserver.observe(document.body, { childList: true, subtree: true });
+  }
 }
 
 async function sendGmail(subject, bodyHtml, to = null, cc = null) {
@@ -2558,7 +2641,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "HP Pavilion 15 — Intel i5 12th Gen, 16GB RAM",
         brand: "HP",
         details: "Silver | 512GB SSD",
-        price: 52990,
+        price: 53000,
         imageIcon: "lucide:laptop",
         quantity: 1
       },
@@ -2567,7 +2650,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Logitech G502 X Plus — Wireless Gaming Mouse",
         brand: "Logitech",
         details: "RGB | 25K Sensor",
-        price: 11495,
+        price: 11500,
         imageIcon: "lucide:gamepad-2",
         quantity: 1
       }
@@ -2575,9 +2658,39 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('cart_items', JSON.stringify(cart));
   }
 
-  // Helper to format rupees nicely (e.g. ₹52,990)
+  // Round to clean retail prices (₹11,500 not ₹11,495)
+  function normalizeRetailPrice(n) {
+    const num = Number(n) || 0;
+    if (num <= 0) return 0;
+    if (num < 5000) return Math.round(num / 500) * 500;
+    return Math.round(num / 1000) * 1000;
+  }
+
+  function normalizeCatalogPrices(catalog) {
+    if (!Array.isArray(catalog)) return catalog;
+    catalog.forEach((p) => {
+      if (p.price != null) p.price = normalizeRetailPrice(p.price);
+      if (p.originalPrice != null) p.originalPrice = normalizeRetailPrice(p.originalPrice);
+    });
+    return catalog;
+  }
+
+  const PRODUCTS_CATALOG_PRICE_V = 2;
+  function migrateCatalogPrices() {
+    if (localStorage.getItem('products_catalog_price_v') === String(PRODUCTS_CATALOG_PRICE_V)) return;
+    try {
+      const cat = JSON.parse(localStorage.getItem('products_catalog'));
+      if (Array.isArray(cat) && cat.length) {
+        normalizeCatalogPrices(cat);
+        localStorage.setItem('products_catalog', JSON.stringify(cat));
+      }
+    } catch (e) {}
+    localStorage.setItem('products_catalog_price_v', String(PRODUCTS_CATALOG_PRICE_V));
+  }
+
+  // Helper to format rupees nicely (e.g. ₹53,000)
   function formatRupee(num) {
-    return '₹' + Number(num || 0).toLocaleString('en-IN');
+    return '₹' + normalizeRetailPrice(num).toLocaleString('en-IN');
   }
   window.formatRupee = formatRupee;
 
@@ -2891,7 +3004,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Let standard page links navigate normally
       const standardNavIds = ['nav-home-logo', 'nav-home-link', 'nav-shop-link', 'nav-services-link', 'nav-about-link', 'nav-contact-link', 'footer-about', 'footer-contact', 'categories-view-all', 'products-view-all', 'offer-laptops-link', 'offer-gaming-link', 'offer-repair-link'];
-      if (standardNavIds.includes(id) || href.endsWith('/shop') || href.endsWith('/services') || href.endsWith('/about') || href.endsWith('/contact') || href.endsWith('/cart') || href.endsWith('/product') || href.endsWith('/checkout') || href.endsWith('/admin')) {
+      if (standardNavIds.includes(id) || href.endsWith('/shop') || href.endsWith('/services') || href.endsWith('/about') || href.endsWith('/contact') || href.endsWith('/cart') || href.endsWith('/account') || href.endsWith('/product') || href.endsWith('/checkout') || (href.endsWith('/admin') && isShopOwner())) {
         return;
       }
 
@@ -3224,22 +3337,50 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('sd-ready');
   }
 
-  function highlightActiveNav() {
-    const path = window.location.pathname;
-    const navLinks = [
-      { id: 'nav-home-link', match: path === '/' },
-      { id: 'nav-shop-link', match: path === '/shop' },
-      { id: 'nav-services-link', match: path === '/services' },
-      { id: 'nav-about-link', match: path === '/about' },
-      { id: 'nav-contact-link', match: path === '/contact' },
-      { id: 'nav-cart-link', match: path === '/cart' },
-    ];
-    navLinks.forEach(({ id, match }) => {
-      document.querySelectorAll(`#${id}`).forEach((el) => {
-        if (match) {
-          el.classList.add('text-white', 'border-b', 'border-accent', 'pb-1');
-          el.classList.remove('text-silver');
+  function setupHeaderSearch() {
+    document.querySelectorAll('header input.search-input, header input[placeholder*="Search products"]').forEach((input) => {
+      if (input.dataset.jcSearchWired) return;
+      input.dataset.jcSearchWired = 'true';
+      input.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const q = input.value.trim();
+        window.location.href = q ? `/shop?search=${encodeURIComponent(q)}` : '/shop';
+      });
+    });
+  }
+  window.__jcSetupHeaderSearch = setupHeaderSearch;
+
+  function setupNewsletterForm() {
+    document.querySelectorAll('input[type="email"][placeholder*="Enter your email"]').forEach((input) => {
+      if (input.dataset.jcNewsWired) return;
+      const wrap = input.parentElement;
+      const btn = wrap ? wrap.querySelector('button') : null;
+      if (!btn) return;
+      input.dataset.jcNewsWired = 'true';
+
+      const subscribe = () => {
+        const email = input.value.trim();
+        const valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+        if (!valid) {
+          showToast('Please enter a valid email address.');
+          input.focus();
+          return;
         }
+        try {
+          const list = JSON.parse(localStorage.getItem('newsletter_subscribers')) || [];
+          if (!list.includes(email.toLowerCase())) {
+            list.push(email.toLowerCase());
+            localStorage.setItem('newsletter_subscribers', JSON.stringify(list));
+          }
+        } catch (e) {}
+        input.value = '';
+        showToast('Subscribed! Exclusive deals will reach your inbox.');
+      };
+
+      btn.addEventListener('click', (e) => { e.preventDefault(); subscribe(); });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); subscribe(); }
       });
     });
   }
@@ -3248,8 +3389,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (pageSpecificsInitialized) return;
     pageSpecificsInitialized = true;
 
+    migrateCatalogPrices();
     fixAllNavUrls();
+    applyHeaderNavStyles();
     highlightActiveNav();
+    setupHeaderSearch();
+    setupNewsletterForm();
 
     if (document.getElementById('services-hero')) {
       try {
@@ -3276,20 +3421,7 @@ document.addEventListener('DOMContentLoaded', function() {
       link.setAttribute('href', '/cart');
     });
 
-    // Inject "Admin" link in header navigation bar ONLY IF admin is authenticated!
-    if (sessionStorage.getItem('admin_authenticated') === 'true') {
-      document.querySelectorAll('nav').forEach(nav => {
-        if (nav.querySelector('a[href="/admin"]') || nav.querySelector('a[href*="admin.html"]')) return;
-        
-        const adminLink = document.createElement('a');
-        adminLink.id = 'nav-admin-link';
-        adminLink.className = 'text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500 text-silver';
-        adminLink.href = '/admin';
-        adminLink.textContent = 'Admin';
-        
-        nav.appendChild(adminLink);
-      });
-    }
+    syncAdminNavVisibility();
 
     // Apply custom dynamic shop/vendor details to matching UI nodes
     applyShopDetailsToUi();
@@ -3299,6 +3431,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupMobileMenu();
     scheduleMobileMenuRetry();
     setupHeaderCustomerPortal();
+    scheduleHeaderPortalRetry();
     setupShopMobileFilters();
     fixCurrencyDisplay();
 
@@ -3330,6 +3463,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Trigger client-side featured product rendering automatically if featured-products-grid exists
     if (document.getElementById('featured-products-grid')) {
       renderHomepageFeaturedProducts();
+    }
+
+    if (path === '/account' || document.getElementById('account-portal-root')) {
+      renderAccountPageContent();
     }
   }
 
@@ -3604,23 +3741,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    // Dynamically insert mobile Admin Console button if authenticated
-    if (sessionStorage.getItem('admin_authenticated') === 'true') {
-      const mobList = drawer.querySelector('#mobile-nav-list');
-      if (mobList) {
-        const adminMobLink = document.createElement('a');
-        adminMobLink.href = '/admin';
-        adminMobLink.id = 'mobile-admin-btn';
-        adminMobLink.className = 'mt-4 flex items-center justify-between gap-3 px-4 py-3 bg-accent text-primary-deeper font-bold rounded-none hover:bg-white transition-all text-sm tracking-widest border border-accent';
-        adminMobLink.style.cssText = 'background-color: rgb(212 175 55); color: rgb(11 25 44);';
-        adminMobLink.innerHTML = `
-          <span>ADMIN CONSOLE</span>
-          <iconify-icon icon="lucide:sliders" class="text-lg"></iconify-icon>
-        `;
-        adminMobLink.addEventListener('click', closeMobileNavDrawer);
-        mobList.appendChild(adminMobLink);
-      }
-    }
+    syncAdminNavVisibility();
 
     drawer.querySelector('#mobile-book-service')?.addEventListener('click', closeMobileNavDrawer);
 
@@ -4480,6 +4601,24 @@ document.addEventListener('DOMContentLoaded', function() {
           return;
         }
 
+        // Format validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal)) {
+          if (checkoutEmailInput) checkoutEmailInput.focus();
+          showToast("Please enter a valid Email Address.");
+          return;
+        }
+        const phoneDigits = phoneVal.replace(/[^\d]/g, '');
+        if (phoneDigits.length < 10 || phoneDigits.length > 12) {
+          if (checkoutPhoneInput) checkoutPhoneInput.focus();
+          showToast("Please enter a valid 10-digit Phone Number.");
+          return;
+        }
+        if (!/^\d{6}$/.test(pincodeVal)) {
+          if (checkoutPincodeInput) checkoutPincodeInput.focus();
+          showToast("Please enter a valid 6-digit Pincode.");
+          return;
+        }
+
         // Optional notice if not linked
         if (!googleAccessToken) {
           console.log("Proceeding with order submission. Google Account can be linked for automated Gmail invoices.");
@@ -4778,12 +4917,12 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'hp-pavilion-15',
             name: 'HP Pavilion 15 — Intel i5 12th Gen, 16GB RAM',
             brand: 'HP ELITEBOOK',
-            price: 52990,
+            price: 53000,
             quantity: 1,
             imageIcon: 'lucide:laptop'
           }
         ],
-        subtotal: 52990,
+        subtotal: 53000,
         discount: 0,
         gst: 9538,
         total: 62528,
@@ -5563,13 +5702,26 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      const name = modal.querySelector('#booking-name').value;
-      const phone = modal.querySelector('#booking-phone').value;
-      const email = modal.querySelector('#booking-email').value;
+      const name = modal.querySelector('#booking-name').value.trim();
+      const phone = modal.querySelector('#booking-phone').value.trim();
+      const email = modal.querySelector('#booking-email').value.trim();
       const service = modal.querySelector('#booking-service').value;
       const dateVal = modal.querySelector('#booking-date').value;
       const slot = modal.querySelector('#booking-time').value;
-      const desc = modal.querySelector('#booking-desc').value;
+      const desc = modal.querySelector('#booking-desc').value.trim();
+
+      // Format validation
+      const bkPhoneDigits = phone.replace(/[^\d]/g, '');
+      if (bkPhoneDigits.length < 10 || bkPhoneDigits.length > 12) {
+        modal.querySelector('#booking-phone').focus();
+        showToast('Please enter a valid 10-digit phone number.');
+        return;
+      }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        modal.querySelector('#booking-email').focus();
+        showToast('Please enter a valid email address.');
+        return;
+      }
 
       // Optional notice if not linked
       if (!googleAccessToken) {
@@ -5696,8 +5848,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "HP Pavilion 15 — Intel i5 12th Gen, 16GB RAM, 512GB SSD",
         brand: "HP",
         category: "Laptops",
-        price: 52990,
-        originalPrice: 59990,
+        price: 53000,
+        originalPrice: 60000,
         rating: 4.2,
         ratingCount: 48,
         badge: "New",
@@ -5709,7 +5861,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Dell OptiPlex 7010 Tower — i7, 32GB, 1TB SSD, Win 11 Pro",
         brand: "Dell",
         category: "Desktop Computers",
-        price: 78500,
+        price: 79000,
         originalPrice: 89000,
         rating: 4.7,
         ratingCount: 72,
@@ -5722,8 +5874,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Logitech G502 X Plus — Wireless Gaming Mouse, RGB, 25K Sensor",
         brand: "Logitech",
         category: "Accessories",
-        price: 11495,
-        originalPrice: 14995,
+        price: 11500,
+        originalPrice: 15000,
         rating: 4.8,
         ratingCount: 136,
         badge: "-25%",
@@ -5735,8 +5887,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "HP Smart Tank 580 — All-in-One Wireless, Auto Duplex, High Yield",
         brand: "HP",
         category: "Printers",
-        price: 16999,
-        originalPrice: 19500,
+        price: 17000,
+        originalPrice: 20000,
         rating: 4.4,
         ratingCount: 29,
         badge: "Hot",
@@ -5747,7 +5899,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const isClearedCheck = localStorage.getItem('products_catalog_cleared') === 'true';
     if (!catalog || catalog.length === 0) {
-      catalog = homeFallbacks;
+      catalog = normalizeCatalogPrices([...homeFallbacks]);
       if (!isClearedCheck) {
         localStorage.setItem('products_catalog', JSON.stringify(catalog));
         localStorage.setItem('products_catalog_initialized', 'true');
@@ -5807,7 +5959,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div>
               <div class="flex items-baseline gap-2 mb-4">
-                <span class="product-price font-serif text-lg font-bold text-primary">${formatRupee(p.price)}</span>
+                <span class="product-price font-sans text-lg font-bold text-primary">${formatRupee(p.price)}</span>
                 ${p.originalPrice ? `<span class="text-warm-gray text-xs line-through">${formatRupee(p.originalPrice)}</span>` : ''}
               </div>
               <button class="w-full py-3 bg-primary text-white text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-primary-dark transition-all duration-500 btn-gold-slide flex items-center justify-center gap-2">
@@ -5855,8 +6007,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "HP Pavilion 15 — Intel i5 12th Gen, 16GB RAM",
         brand: "HP",
         category: "Laptops",
-        price: 52990,
-        originalPrice: 59990,
+        price: 53000,
+        originalPrice: 60000,
         rating: 4.2,
         ratingCount: 48,
         badge: "New",
@@ -5879,7 +6031,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Asus ROG Strix G16 — Gaming Laptop, RTX 4060",
         brand: "Asus",
         category: "Laptops",
-        price: 142990,
+        price: 143000,
         originalPrice: 165000,
         rating: 4.8,
         ratingCount: 94,
@@ -5903,7 +6055,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Dell Inspiron 14 — i5 13th Gen, Touch screen",
         brand: "Dell",
         category: "Laptops",
-        price: 62500,
+        price: 63000,
         originalPrice: 71000,
         rating: 4.5,
         ratingCount: 37,
@@ -5927,7 +6079,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Lenovo ThinkCentre M70s Tiny Desktop — Core i7",
         brand: "Lenovo",
         category: "Desktop PCs",
-        price: 71500,
+        price: 72000,
         originalPrice: 82000,
         rating: 4.7,
         ratingCount: 72,
@@ -5951,8 +6103,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "HP Smart Tank 580 — All-in-One Wireless Printer",
         brand: "HP",
         category: "Printers",
-        price: 16999,
-        originalPrice: 19500,
+        price: 17000,
+        originalPrice: 20000,
         rating: 4.1,
         ratingCount: 29,
         badge: "Hot",
@@ -5975,8 +6127,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Logitech G502 X Plus — Wireless Gaming Mouse",
         brand: "Logitech",
         category: "Accessories",
-        price: 11495,
-        originalPrice: 14995,
+        price: 11500,
+        originalPrice: 15000,
         rating: 4.9,
         ratingCount: 136,
         badge: "Bestseller",
@@ -5999,8 +6151,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Razer BlackWidow V4 Mechanical Keyboard",
         brand: "Razer",
         category: "Accessories",
-        price: 14500,
-        originalPrice: 17999,
+        price: 15000,
+        originalPrice: 18000,
         rating: 4.7,
         ratingCount: 84,
         badge: "Featured",
@@ -6023,7 +6175,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Samsung T7 Shield 2TB Portable SSD",
         brand: "Samsung",
         category: "Accessories",
-        price: 13999,
+        price: 14000,
         originalPrice: 16000,
         rating: 4.8,
         ratingCount: 112,
@@ -6048,7 +6200,7 @@ document.addEventListener('DOMContentLoaded', function() {
         brand: "Logitech",
         category: "Accessories",
         price: 8500,
-        originalPrice: 9999,
+        originalPrice: 10000,
         rating: 4.4,
         ratingCount: 56,
         badge: "",
@@ -6071,8 +6223,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "TP-Link Archer AX73 Wi-Fi 6 Router",
         brand: "TP-Link",
         category: "Networking",
-        price: 9999,
-        originalPrice: 12500,
+        price: 10000,
+        originalPrice: 13000,
         rating: 4.5,
         ratingCount: 68,
         badge: "",
@@ -6095,8 +6247,8 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "CP PLUS 4 Channel HD Camera CCTV Kit",
         brand: "CP PLUS",
         category: "CCTV Systems",
-        price: 11999,
-        originalPrice: 14500,
+        price: 12000,
+        originalPrice: 15000,
         rating: 4.3,
         ratingCount: 42,
         badge: "",
@@ -6119,7 +6271,7 @@ document.addEventListener('DOMContentLoaded', function() {
         name: "Hikvision 8 Channel CCTV Security Kit",
         brand: "Hikvision",
         category: "CCTV Systems",
-        price: 24999,
+        price: 25000,
         originalPrice: 29000,
         rating: 4.6,
         ratingCount: 51,
@@ -6143,7 +6295,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const isInitializedCheck = localStorage.getItem('products_catalog_initialized') === 'true';
     const isClearedCheck = localStorage.getItem('products_catalog_cleared') === 'true';
     if ((!shopProducts || shopProducts.length === 0) && !isClearedCheck) {
-      shopProducts = [...fallbackCatalog];
+      shopProducts = normalizeCatalogPrices([...fallbackCatalog]);
       localStorage.setItem('products_catalog', JSON.stringify(shopProducts));
       localStorage.setItem('products_catalog_initialized', 'true');
     } else {
@@ -6152,6 +6304,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       // Dynamic startup migration checker for preexisting product entries
       let migrated = false;
+      normalizeCatalogPrices(shopProducts);
       shopProducts.forEach(p => {
         if (!p.images || !Array.isArray(p.images) || p.images.length < 4) {
           p.images = [
@@ -6515,7 +6668,7 @@ document.addEventListener('DOMContentLoaded', function() {
               
               <div>
                 <div class="flex items-baseline gap-2 mb-4">
-                  <span class="product-price font-serif text-lg font-bold text-primary">${formatRupee(p.price)}</span>
+                  <span class="product-price font-sans text-lg font-bold text-primary">${formatRupee(p.price)}</span>
                   ${p.originalPrice ? `<span class="text-warm-gray text-xs line-through">${formatRupee(p.originalPrice)}</span>` : ''}
                 </div>
                 

@@ -19,6 +19,7 @@
       { "source": "/services", "destination": "/services.html" },
       { "source": "/about", "destination": "/about.html" },
       { "source": "/contact", "destination": "/contact.html" },
+      { "source": "/account", "destination": "/account.html" },
       { "source": "/admin", "destination": "/admin.html" }
     ],
     "headers": [

@@ -7,26 +7,29 @@
   <script src="/assets/js/tailwind.js"></script>
   <script src="/assets/js/iconify-icon.min.js" defer></script>
   <link href="/assets/css/fonts-base.css" rel="stylesheet">
-  <link href="/assets/css/admin-fixes.css" rel="stylesheet">
+  <link href="/assets/css/admin-fixes.css?v=2" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== JALARAM ADMIN — Minimal Clean Theme ===== */
+    /* ===== JALARAM ADMIN — Site Theme (Navy + Gold) ===== */
     :root {
-      --bg:           #F8FAFC;
+      --bg:           #F9F8F6;
       --surface:      #FFFFFF;
-      --border:       #E2E8F0;
-      --accent:       #4F46E5;
-      --accent-hover: #4338CA;
-      --accent-light: #EEF2FF;
-      --text:         #1E293B;
+      --border:       #E8E8E8;
+      --accent:       #1A3A5C;
+      --accent-hover: #0F2640;
+      --accent-light: rgba(26, 58, 92, 0.07);
+      --gold:         #D4AF37;
+      --navy-deep:    #091A2E;
+      --navy-dark:    #0F2640;
+      --text:         #1A1A1A;
       --text-2:       #64748B;
       --text-3:       #94A3B8;
       --success:      #10B981;
       --warning:      #F59E0B;
       --danger:       #EF4444;
-      --radius:       8px;
+      --radius:       10px;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -83,40 +86,49 @@
     }
     .glass-input:focus, input:focus, select:focus, textarea:focus {
       border-color: var(--accent) !important;
-      box-shadow: 0 0 0 3px rgba(79,70,229,0.12) !important;
+      box-shadow: 0 0 0 3px rgba(26,58,92,0.12) !important;
       outline: none !important;
     }
     ::placeholder { color: var(--text-3) !important; }
 
-    /* ===== SIDEBAR ===== */
+    /* ===== SIDEBAR — dark navy like the storefront header ===== */
     aside {
-      background: var(--surface) !important;
-      border-right: 1px solid var(--border) !important;
+      background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy-deep) 100%) !important;
+      border-right: 1px solid rgba(192,192,192,0.12) !important;
       border-bottom: none !important;
     }
-    aside h1  { color: var(--text) !important; font-size: 15px !important; font-weight: 700 !important; }
-    aside span { color: var(--text-2) !important; font-size: 11px !important; }
+    aside h1  { color: #fff !important; font-size: 15px !important; font-weight: 700 !important; }
+    aside span { color: rgba(192,192,192,0.7) !important; font-size: 11px !important; }
+    #admin-sidebar > div:first-child {
+      border-bottom-color: rgba(192,192,192,0.12) !important;
+    }
+    #admin-sidebar > div:first-child div div:first-child { color: #fff !important; }
+    #admin-sidebar > div:first-child div div:last-child  { color: var(--gold) !important; letter-spacing: 0.08em; text-transform: uppercase; }
+    #admin-sidebar > div:last-child {
+      border-top-color: rgba(192,192,192,0.12) !important;
+    }
+    #admin-sidebar > div:last-child span:first-child { color: rgba(192,192,192,0.75) !important; }
 
     #sidebar-nav button {
-      color: var(--text-2) !important;
+      color: rgba(192,192,192,0.85) !important;
       border-left: 3px solid transparent !important;
-      border-radius: 6px !important;
+      border-radius: 8px !important;
       font-size: 13px !important;
       font-weight: 500 !important;
       transition: all 0.15s ease;
-      letter-spacing: 0 !important;
+      letter-spacing: 0.02em !important;
       text-transform: none !important;
     }
     #sidebar-nav button:hover {
-      background-color: var(--bg) !important;
-      color: var(--accent) !important;
+      background-color: rgba(255,255,255,0.06) !important;
+      color: #fff !important;
     }
     #sidebar-nav button.text-amber-500,
     #sidebar-nav button[id^="navbtn-"].text-amber-500,
     #sidebar-nav button[id^="navbtn-"].border-amber-500 {
-      color: var(--accent) !important;
-      background-color: var(--accent-light) !important;
-      border-left-color: var(--accent) !important;
+      color: var(--gold) !important;
+      background-color: rgba(212,175,55,0.12) !important;
+      border-left-color: var(--gold) !important;
       font-weight: 600 !important;
     }
 
@@ -149,17 +161,19 @@
 
     /* ===== ACCENT OVERRIDES ===== */
     .bg-blue-600\/10, .bg-indigo-600\/10, .bg-amber-600\/5 { background: transparent !important; }
+    .border-indigo-500 { border-color: var(--gold) !important; }
 
     /* ===== DB/SYNC BUTTONS ===== */
     #db-sync-btn {
-      background-color: var(--accent) !important;
-      color: #fff !important; border: none !important;
-      font-size: 12px !important; font-weight: 600 !important;
+      background-color: var(--gold) !important;
+      color: var(--navy-deep) !important; border: none !important;
+      font-size: 12px !important; font-weight: 700 !important;
+      letter-spacing: 0.04em;
     }
-    #db-sync-btn:hover { background-color: var(--accent-hover) !important; }
+    #db-sync-btn:hover { background-color: #c9a430 !important; }
     #btn-sync-refresh {
       background-color: var(--accent-light) !important;
-      border: 1px solid rgba(79,70,229,0.25) !important;
+      border: 1px solid rgba(26,58,92,0.25) !important;
       color: var(--accent) !important;
       font-size: 12px !important; font-weight: 500 !important;
     }
@@ -223,8 +237,10 @@
     }
     .btn-delete-red:hover { background: #FEE2E2 !important; }
 
-    /* ===== AUTH PORTAL ===== */
-    #auth-portal { background: var(--bg) !important; background-image: none !important; }
+    /* ===== AUTH PORTAL — navy gradient like the storefront ===== */
+    #auth-portal {
+      background: linear-gradient(135deg, var(--navy-deep) 0%, #1A3A5C 55%, var(--navy-dark) 100%) !important;
+    }
 
     /* ===== PRINT ===== */
     @media print {
@@ -244,8 +260,8 @@
   </div>
 
   <!-- AUTH PORTAL -->
-  <div id="auth-portal" class="min-h-screen flex items-center justify-center px-4" style="background:#F8FAFC;">
-    <div class="w-full max-w-sm bg-white border border-gray-200 shadow-sm p-8" style="border-radius:12px;">
+  <div id="auth-portal" class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-sm bg-white p-8" style="border-radius:14px;border-top:4px solid #D4AF37;box-shadow:0 24px 64px rgba(0,0,0,0.35);">
 
       <!-- Logo & title -->
       <div class="text-center mb-7">
@@ -255,7 +271,7 @@
       </div>
 
       <!-- Quick Google login -->
-      <button id="quick-login" type="button" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;background:#4F46E5;color:#fff;font-size:14px;font-weight:600;border:none;border-radius:8px;cursor:pointer;margin-bottom:16px;transition:background 0.2s;" onmouseover="this.style.background='#4338CA'" onmouseout="this.style.background='#4F46E5'">
+      <button id="quick-login" type="button" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;background:#1A3A5C;color:#fff;font-size:14px;font-weight:600;border:none;border-radius:8px;cursor:pointer;margin-bottom:16px;transition:background 0.2s;" onmouseover="this.style.background='#0F2640'" onmouseout="this.style.background='#1A3A5C'">
         <iconify-icon icon="lucide:log-in" style="font-size:16px;"></iconify-icon>
         Sign in with Google
       </button>
@@ -270,16 +286,16 @@
         <div>
           <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:5px;">Email / Username</label>
           <input type="text" id="username" required placeholder="you@example.com"
-            style="width:100%;padding:10px 12px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;color:#1E293B;background:#fff;outline:none;transition:border 0.2s;"
-            onfocus="this.style.borderColor='#4F46E5'" onblur="this.style.borderColor='#E2E8F0'">
+            style="width:100%;padding:10px 12px;border:1px solid #E8E8E8;border-radius:8px;font-size:14px;color:#1A1A1A;background:#fff;outline:none;transition:border 0.2s;"
+            onfocus="this.style.borderColor='#D4AF37'" onblur="this.style.borderColor='#E8E8E8'">
         </div>
         <div>
           <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:5px;">Password</label>
           <input type="password" id="password" required placeholder="Enter your password"
-            style="width:100%;padding:10px 12px;border:1px solid #E2E8F0;border-radius:8px;font-size:14px;color:#1E293B;background:#fff;outline:none;transition:border 0.2s;"
-            onfocus="this.style.borderColor='#4F46E5'" onblur="this.style.borderColor='#E2E8F0'">
+            style="width:100%;padding:10px 12px;border:1px solid #E8E8E8;border-radius:8px;font-size:14px;color:#1A1A1A;background:#fff;outline:none;transition:border 0.2s;"
+            onfocus="this.style.borderColor='#D4AF37'" onblur="this.style.borderColor='#E8E8E8'">
         </div>
-        <button type="submit" style="width:100%;padding:11px 16px;background:#1E293B;color:#fff;font-size:14px;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#0F172A'" onmouseout="this.style.background='#1E293B'">
+        <button type="submit" style="width:100%;padding:11px 16px;background:#D4AF37;color:#091A2E;font-size:14px;font-weight:700;border:none;border-radius:8px;cursor:pointer;letter-spacing:0.04em;transition:background 0.2s;" onmouseover="this.style.background='#c9a430'" onmouseout="this.style.background='#D4AF37'">
           Sign In
         </button>
       </form>
@@ -317,7 +333,7 @@
           <span style="font-size:11px;color:#64748B;font-weight:500;">Cloud Database</span>
           <span id="sync-indicator" class="text-red-500" style="font-size:11px;font-weight:600;">Offline</span>
         </div>
-        <button id="db-sync-btn" style="width:100%;padding:8px;background:#4F46E5;color:#fff;font-size:12px;font-weight:600;border:none;border-radius:7px;cursor:pointer;">
+        <button id="db-sync-btn" style="width:100%;padding:8px;background:#D4AF37;color:#091A2E;font-size:12px;font-weight:700;border:none;border-radius:7px;cursor:pointer;">
           Sync with Google
         </button>
       </div>
@@ -336,11 +352,11 @@
         </div>
         <div style="display:flex;align-items:center;gap:16px;">
           <span id="header-clock" style="font-size:12px;color:#94A3B8;" class="hidden sm:inline"></span>
-          <button id="btn-sync-refresh" onclick="window.syncDashboardWithCloud()" style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:#EEF2FF;border:1px solid rgba(79,70,229,0.2);border-radius:7px;color:#4F46E5;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#4F46E5';this.style.color='#fff'" onmouseout="this.style.background='#EEF2FF';this.style.color='#4F46E5'">
+          <button id="btn-sync-refresh" onclick="window.syncDashboardWithCloud()" style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(26,58,92,0.07);border:1px solid rgba(26,58,92,0.25);border-radius:7px;color:#1A3A5C;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#1A3A5C';this.style.color='#fff'" onmouseout="this.style.background='rgba(26,58,92,0.07)';this.style.color='#1A3A5C'">
             <iconify-icon icon="lucide:refresh-cw" id="sync-icon" style="font-size:13px;transition:transform 0.7s;"></iconify-icon>
             <span>Sync</span>
           </button>
-          <a href="/" style="font-size:13px;color:#4F46E5;font-weight:500;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">View Store</a>
+          <a href="/" style="font-size:13px;color:#1A3A5C;font-weight:600;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">View Store</a>
           <button id="header-logout" class="hidden lg:flex" style="align-items:center;gap:6px;font-size:13px;color:#EF4444;font-weight:500;background:none;border:none;cursor:pointer;">
             <iconify-icon icon="lucide:log-out"></iconify-icon> Log Out
           </button>
@@ -486,8 +502,8 @@
         orderId: "JC948123",
         date: "01 June 2026",
         customer: { name: "Rajesh Sharma", email: "rajesh.sharma@gmail.com", phone: "+91 98201 12345", address: "Flat 403, Sunset Heights, Bandra West, Mumbai - 400050" },
-        items: [ { id: "hp-pavilion-15", name: "HP Pavilion 15 � Core i5 12th Gen", price: 52990, quantity: 1 } ],
-        subtotal: 52990,
+        items: [ { id: "hp-pavilion-15", name: "HP Pavilion 15 � Core i5 12th Gen", price: 53000, quantity: 1 } ],
+        subtotal: 53000,
         gst: 9538,
         total: 62528,
         status: "Processing"
@@ -496,7 +512,7 @@
         orderId: "JC812495",
         date: "02 June 2026",
         customer: { name: "Priya Patel", email: "priya.patel@yahoo.com", phone: "+91 91670 54321", address: "12, Gokul Niwas, Lamington Road, Mumbai - 400007" },
-        items: [ { id: "tp-link-archer-ax73", name: "TP-Link Archer AX73 Router", price: 9999, quantity: 2 } ],
+        items: [ { id: "tp-link-archer-ax73", name: "TP-Link Archer AX73 Router", price: 10000, quantity: 2 } ],
         subtotal: 19998,
         gst: 3600,
         total: 23598,
@@ -569,8 +585,8 @@
           name: "HP Pavilion 15 Core i5", 
           brand: "HP", 
           category: "Laptops", 
-          price: 52990, 
-          originalPrice: 59990, 
+          price: 53000, 
+          originalPrice: 60000, 
           stock: 15, 
           details: "8GB | 512GB SSD | Silver", 
           badge: "New", 
@@ -594,7 +610,7 @@
           name: "Asus ROG Strix G16", 
           brand: "Asus", 
           category: "Laptops", 
-          price: 142990, 
+          price: 143000, 
           originalPrice: 165000, 
           stock: 4, 
           details: "RTX 4060 | 16GB RAM", 
@@ -619,8 +635,8 @@
           name: "HP Smart Tank 580 Wireless Printer", 
           brand: "HP", 
           category: "Printers", 
-          price: 16999, 
-          originalPrice: 19500, 
+          price: 17000, 
+          originalPrice: 20000, 
           stock: 12, 
           details: "All-in-One Ink Tank", 
           badge: "Hot", 
@@ -644,8 +660,8 @@
           name: "CP PLUS 4 Channel Dome Camera CCTV Kit", 
           brand: "CP PLUS", 
           category: "CCTV Systems", 
-          price: 11999, 
-          originalPrice: 14500, 
+          price: 12000, 
+          originalPrice: 15000, 
           stock: 8, 
           details: "1TB HDD included", 
           badge: "", 
@@ -669,8 +685,8 @@
           name: "TP-Link Archer AX73 Router", 
           brand: "TP-Link", 
           category: "Networking", 
-          price: 9999, 
-          originalPrice: 12500, 
+          price: 10000, 
+          originalPrice: 13000, 
           stock: 18, 
           details: "Dual-Band Wi-Fi 6", 
           badge: "", 
@@ -694,8 +710,8 @@
           name: "Logitech G502 X Mouse", 
           brand: "Logitech", 
           category: "Accessories", 
-          price: 11495, 
-          originalPrice: 14995, 
+          price: 11500, 
+          originalPrice: 15000, 
           stock: 0, 
           details: "Wireless Hero Sensor", 
           badge: "Bestseller", 

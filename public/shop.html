@@ -141,6 +141,9 @@
       element.removeAttribute('data-pending');
       element.setAttribute('data-rendered', 'true');
       element.setAttribute('data-version', String(definition.version));
+      if (element.querySelector('header') && typeof window.refreshHeaderChrome === 'function') {
+        window.refreshHeaderChrome();
+      }
       console.log('[SDComponent] Rendered:', componentId, instanceId);
 
       // Render any nested sd-component children that were just injected
@@ -366,11 +369,11 @@
         </a>
 
         <nav class="hidden lg:flex items-center gap-8">
-          <a id="nav-home-link" href="/">Home</a>
-          <a id="nav-shop-link" href="/shop">Shop</a>
-          <a id="nav-services-link" href="/services">Services</a>
-          <a id="nav-about-link" href="/about">About</a>
-          <a id="nav-contact-link" href="/contact">Contact</a>
+          <a id="nav-home-link" href="/" class="text-silver text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500">Home</a>
+          <a id="nav-shop-link" href="/shop" class="text-white text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500 border-b border-accent pb-1">Shop</a>
+          <a id="nav-services-link" href="/services" class="text-silver text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500">Services</a>
+          <a id="nav-about-link" href="/about" class="text-silver text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500">About</a>
+          <a id="nav-contact-link" href="/contact" class="text-silver text-sm tracking-widest uppercase font-medium hover:text-accent transition-colors duration-500">Contact</a>
           
           
         </nav>
@@ -380,7 +383,7 @@
             <iconify-icon icon="lucide:search" class="text-silver text-lg mr-2"><template shadowrootmode="open"><style data-style="data-style">:host{display:inline-block;vertical-align:0}span,svg{display:block}</style><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m21 21l-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></g></svg></template></iconify-icon>
             <input type="text" placeholder="Search products..." class="search-input bg-transparent text-white text-sm w-40 focus:w-56 transition-all duration-500 outline-none">
           </div>
-          <a id="nav-cart-link" href="/cart">
+          <a id="nav-cart-link" href="/cart" class="relative text-silver hover:text-accent transition-colors duration-500">
             <iconify-icon icon="lucide:shopping-bag" class="text-xl"><template shadowrootmode="open"><style data-style="data-style">:host{display:inline-block;vertical-align:0}span,svg{display:block}</style><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794"></path><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"></path></g></svg></template></iconify-icon>
             <span class="absolute -top-2 -right-2 bg-accent text-primary-deeper text-xs font-bold w-5 h-5 flex items-center justify-center" style="font-size: 10px;">0</span>
           </a>

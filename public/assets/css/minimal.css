@@ -27,6 +27,43 @@ header { height: auto !important; }
 header .h-20 { height: 4rem !important; }
 header img.h-14 { height: 2.5rem !important; }
 
+/* Consistent header nav on shop / product / sd-component pages */
+header > div nav a,
+header nav.hidden a,
+header nav[class*="lg:flex"] a {
+  color: #C0C0C0;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: color 0.35s ease;
+}
+
+header > div nav a:hover,
+header nav.hidden a:hover,
+header nav[class*="lg:flex"] a:hover {
+  color: #D4AF37;
+}
+
+header > div nav a.text-white,
+header nav a.border-accent {
+  color: #fff !important;
+}
+
+header #header-actions a,
+header #header-actions button:not(#mobile-menu-btn) {
+  color: #C0C0C0;
+}
+
+header #header-actions a:hover,
+header #header-actions button:not(#mobile-menu-btn):hover {
+  color: #D4AF37;
+}
+
+header #nav-cart-link {
+  position: relative;
+}
+
 /* Simpler hero */
 .hero-gradient { min-height: 420px !important; }
 .hero-gradient h1 {

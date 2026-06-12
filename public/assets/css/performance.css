@@ -133,6 +133,123 @@ img.jc-loaded {
   aspect-ratio: auto;
 }
 
+/* ── Product price readability ── */
+.product-price,
+.product-card .font-serif.text-primary,
+.product-card .font-serif.text-lg,
+.product-card .font-serif.text-xl {
+  font-family: Inter, system-ui, sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+.product-card .text-warm-gray.line-through {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Ecommerce layout polish ── */
+
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Consistent page container on every breakpoint */
+.max-w-7xl {
+  width: 100%;
+}
+
+/* Shop page: sidebar + grid behave like a real storefront */
+@media (max-width: 1023px) {
+  main .flex.flex-col.lg\:flex-row {
+    gap: 1.5rem !important;
+  }
+
+  main aside {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  main aside {
+    position: sticky;
+    top: calc(var(--jc-header-h) + 1rem);
+    align-self: flex-start;
+    max-height: calc(100vh - var(--jc-header-h) - 2rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+/* Product cards: equal heights, clean hover lift */
+#products-grid > div,
+#featured-products-grid > div {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card > .p-5,
+.product-card > [class*="p-"] {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card button {
+  margin-top: auto;
+}
+
+@media (hover: hover) {
+  .product-card:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Category cards: 2-up on small phones instead of 1 long column */
+@media (max-width: 639px) {
+  .grid.grid-cols-2.md\:grid-cols-3.lg\:grid-cols-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Touch targets: minimum 44px tap area on mobile */
+@media (max-width: 767px) {
+  header button,
+  header a,
+  .product-card button {
+    min-height: 2.75rem;
+  }
+
+  /* Full-width primary CTAs on phones */
+  .product-card button.mt-4,
+  section a.bg-accent.px-10 {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Tables (orders, admin) scroll instead of breaking layout */
+table {
+  width: 100%;
+}
+
+.overflow-x-auto table {
+  min-width: 600px;
+}
+
 /* Connection-aware: respect data saver */
 @media (prefers-reduced-data: reduce) {
   .hero-bg-layer:not(.active) {

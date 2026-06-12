@@ -29,6 +29,7 @@ const pageMapping: Record<string, string> = {
   '/services': 'services.html',
   '/about': 'about.html',
   '/contact': 'contact.html',
+  '/account': 'account.html',
   '/admin': 'admin.html',
 };
 
@@ -42,6 +43,7 @@ const htmlToCleanRoute: Record<string, string> = {
   'services.html': '/services',
   'about.html': '/about',
   'contact.html': '/contact',
+  'account.html': '/account',
   'admin.html': '/admin',
 };
 
@@ -162,8 +164,12 @@ function processHtml(content: string): string {
   replaced = replaced.replace(/Flat \?/g, 'Flat &#8377;');
   replaced = replaced.replace(/worth \?/gi, 'worth &#8377;');
 
+  // Bump CSS cache versions on every served page so stale styles never linger
+  replaced = replaced.replace(/performance\.css\?v=\d+/g, 'performance.css?v=2');
+  replaced = replaced.replace(/mobile\.css\?v=\d+/g, 'mobile.css?v=10');
+
   const minimalCss = `<link rel="stylesheet" href="/assets/css/minimal.css" id="jc-minimal">`;
-  const mobileCss = `<link rel="stylesheet" href="/assets/css/mobile.css?v=9" id="jc-mobile">`;
+  const mobileCss = `<link rel="stylesheet" href="/assets/css/mobile.css?v=10" id="jc-mobile">`;
   if (!replaced.includes('minimal.css')) {
     replaced = replaced.replace(/<\/head>/i, `${minimalCss}</head>`);
   }
@@ -274,6 +280,17 @@ app.use(express.static(PUBLIC_DIR, {
   },
 }));
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Jalaram Computers server listening on http://localhost:${PORT}`);
+});
+
+server.on('error', (err: NodeJS.ErrnoException) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\nPort ${PORT} is already in use.`);
+    console.error('Another dev server is likely already running — open http://localhost:3000');
+    console.error('To restart, stop the other process first (PowerShell):');
+    console.error(`  Get-NetTCPConnection -LocalPort ${PORT} -State Listen | Select OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }\n`);
+    process.exit(1);
+  }
+  throw err;
 });

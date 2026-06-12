@@ -90,7 +90,13 @@ select,
   }
 
   #header-profile-btn {
-    display: none !important;
+    min-width: var(--jc-touch-min);
+    min-height: var(--jc-touch-min);
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0.25rem;
   }
 
   #mobile-menu-btn {

@@ -19,9 +19,9 @@
 }
 
 #cloud-auth-banner.banner-connect {
-  background: #EEF2FF;
-  color: #3730A3;
-  border-bottom-color: #C7D2FE;
+  background: rgba(26, 58, 92, 0.07);
+  color: #1A3A5C;
+  border-bottom-color: rgba(26, 58, 92, 0.2);
 }
 
 #cloud-auth-banner.banner-connected {
@@ -36,7 +36,7 @@
 
 #btn-connect-google {
   padding: 6px 14px;
-  background: #4F46E5;
+  background: #1A3A5C;
   color: #fff;
   font-size: 12px;
   font-weight: 600;
@@ -48,7 +48,7 @@
 }
 
 #btn-connect-google:hover {
-  background: #4338CA;
+  background: #0F2640;
 }
 
 /* Mobile menu button hidden on desktop */
@@ -109,20 +109,20 @@
   line-height: 1.5;
 }
 
-/* Sidebar nav — override JS-rendered dark classes */
+/* Sidebar nav — navy/gold site theme over JS-rendered classes */
 #admin-workspace #sidebar-nav button {
   width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 9px 12px;
-  border-radius: 7px !important;
+  border-radius: 8px !important;
   font-size: 13px !important;
   font-weight: 500 !important;
-  color: #64748B !important;
+  color: rgba(192, 192, 192, 0.85) !important;
   background: transparent !important;
   border-left: 3px solid transparent !important;
-  letter-spacing: 0 !important;
+  letter-spacing: 0.02em !important;
   text-transform: none !important;
   transition: all 0.15s ease;
   cursor: pointer;
@@ -130,15 +130,15 @@
 }
 
 #admin-workspace #sidebar-nav button:hover {
-  background: #F8FAFC !important;
-  color: #4F46E5 !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #fff !important;
 }
 
 #admin-workspace #sidebar-nav button.text-amber-500,
 #admin-workspace #sidebar-nav button[id^="navbtn-"].text-amber-500,
 #admin-workspace #sidebar-nav button[id^="navbtn-"].border-amber-500 {
-  color: #4F46E5 !important;
-  background: #EEF2FF !important;
-  border-left-color: #4F46E5 !important;
+  color: #D4AF37 !important;
+  background: rgba(212, 175, 55, 0.12) !important;
+  border-left-color: #D4AF37 !important;
   font-weight: 600 !important;
 }
