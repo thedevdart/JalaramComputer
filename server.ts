@@ -31,6 +31,7 @@ const pageMapping: Record<string, string> = {
   '/contact': 'contact.html',
   '/account': 'account.html',
   '/admin': 'admin.html',
+  '/book-service': 'book-service.html',
 };
 
 const htmlToCleanRoute: Record<string, string> = {

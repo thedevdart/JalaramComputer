@@ -20,7 +20,8 @@
       { "source": "/about", "destination": "/about.html" },
       { "source": "/contact", "destination": "/contact.html" },
       { "source": "/account", "destination": "/account.html" },
-      { "source": "/admin", "destination": "/admin.html" }
+      { "source": "/admin", "destination": "/admin.html" },
+      { "source": "/book-service", "destination": "/book-service.html" }
     ],
     "headers": [
       {

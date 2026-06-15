@@ -2995,7 +2995,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isBookingClick) {
       e.preventDefault();
       e.stopPropagation();
-      openBookingModal(selectedServiceName);
+      const svcParam = selectedServiceName ? '?service=' + encodeURIComponent(selectedServiceName) : '';
+      window.location.href = '/book-service' + svcParam;
       return;
     }
 

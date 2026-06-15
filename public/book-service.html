@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Book a Service — Jalaram Computers</title>
+  <script src="/assets/js/tailwind.js"></script>
+  <script src="/assets/js/iconify-icon.min.js" defer></script>
+  <link href="/assets/css/fonts-base.css" rel="stylesheet">
+  <link href="/assets/css/fonts-fast.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1A3A5C',
+            'primary-dark': '#0F2640',
+            'primary-deeper': '#091A2E',
+            accent: '#D4AF37',
+            silver: '#C0C0C0',
+            'silver-light': '#E8E8E8',
+            alabaster: '#F9F8F6',
+            charcoal: '#1A1A1A',
+            'warm-gray': '#6B7280',
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    .field-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #E8E8E8;
+      background: #faf8f5;
+      font-size: 0.875rem;
+      color: #0F2640;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .field-input:focus { border-color: #D4AF37; }
+    .field-input::placeholder { color: #9CA3AF; }
+    select.field-input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230f2640' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 2.5rem;
+    }
+    label.field-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #0F2640;
+      margin-bottom: 0.375rem;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .anim { animation: fadeInUp 0.5s ease forwards; }
+  </style>
+  <link rel="stylesheet" href="/assets/css/performance.css?v=1" id="jc-perf">
+  <script src="/assets/js/performance.js?v=1" defer id="jc-perf-js"></script>
+  <link rel="stylesheet" href="/assets/css/mobile.css?v=10" id="jc-mobile">
+</head>
+<body class="bg-alabaster text-charcoal font-sans min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-primary-dark sticky top-0 z-50" style="border-bottom: 1px solid rgba(192,192,192,0.1);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a id="nav-home-logo" href="/" class="flex items-center gap-3">
+          <img src="/assets/images/logo.png" alt="Jalaram Computers" class="h-10 w-auto">
+        </a>
+        <nav class="hidden lg:flex items-center gap-8 text-sm uppercase tracking-widest font-medium">
+          <a id="nav-home-link"     href="/"        class="text-silver hover:text-accent transition-colors">Home</a>
+          <a id="nav-shop-link"     href="/shop"     class="text-silver hover:text-accent transition-colors">Shop</a>
+          <a id="nav-services-link" href="/services" class="text-white border-b border-accent pb-1">Services</a>
+          <a id="nav-about-link"    href="/about"    class="text-silver hover:text-accent transition-colors">About</a>
+          <a id="nav-contact-link"  href="/contact"  class="text-silver hover:text-accent transition-colors">Contact</a>
+        </nav>
+        <div id="header-actions" class="flex items-center gap-4">
+          <a id="nav-cart-link" href="/cart" class="relative text-silver hover:text-accent transition-colors">
+            <iconify-icon icon="lucide:shopping-bag" class="text-xl"></iconify-icon>
+            <span class="absolute -top-2 -right-2 bg-accent text-primary-dark text-xs font-bold w-5 h-5 flex items-center justify-center" style="font-size:10px;">0</span>
+          </a>
+          <button type="button" id="mobile-menu-btn" class="lg:hidden text-silver hover:text-accent" aria-label="Open menu" aria-expanded="false">
+            <iconify-icon icon="lucide:menu" class="text-2xl"></iconify-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE HERO BANNER -->
+  <div class="bg-primary-dark py-10 px-6">
+    <div class="max-w-5xl mx-auto">
+      <nav class="flex mb-3 text-xs tracking-widest uppercase text-silver/50">
+        <a href="/" class="hover:text-accent transition-colors">Home</a>
+        <span class="mx-3 text-silver/20">/</span>
+        <a href="/services" class="hover:text-accent transition-colors">Services</a>
+        <span class="mx-3 text-silver/20">/</span>
+        <span class="text-accent">Book a Service</span>
+      </nav>
+      <h1 class="font-serif text-3xl md:text-4xl text-white font-semibold">Book a <span class="italic text-accent">Service</span></h1>
+      <p class="text-silver/60 mt-2 text-sm max-w-md">Schedule a certified technician visit — same-day response for urgent issues.</p>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 py-10 px-4 lg:px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid lg:grid-cols-3 gap-8">
+
+        <!-- LEFT: FORM -->
+        <div class="lg:col-span-2 anim">
+          <!-- Success State (hidden by default) -->
+          <div id="booking-success-section" class="hidden bg-white border border-silver-light p-8 text-center space-y-6">
+            <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
+              <iconify-icon icon="lucide:circle-check" class="text-green-600 text-4xl"></iconify-icon>
+            </div>
+            <div>
+              <span class="text-accent text-[10px] tracking-[0.3em] uppercase font-bold">Booking Confirmed</span>
+              <h2 class="font-serif text-2xl font-bold text-primary mt-1">Appointment Scheduled!</h2>
+              <p class="text-warm-gray text-sm mt-2 max-w-sm mx-auto leading-relaxed">
+                Your request is registered. A technician will contact you to confirm final details.
+              </p>
+            </div>
+            <div class="bg-alabaster border border-silver-light p-5 text-left space-y-3 max-w-sm mx-auto w-full">
+              <div class="flex justify-between text-xs">
+                <span class="text-warm-gray uppercase tracking-wider">Booking ID</span>
+                <span id="success-booking-id" class="font-bold text-primary"></span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-warm-gray uppercase tracking-wider">Service</span>
+                <span id="success-booking-service" class="font-medium text-primary"></span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-warm-gray uppercase tracking-wider">Date</span>
+                <span id="success-booking-schedule" class="font-medium text-primary"></span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-warm-gray uppercase tracking-wider">Time Slot</span>
+                <span id="success-booking-time" class="font-medium text-primary"></span>
+              </div>
+              <div id="success-booking-discount-row" class="hidden flex justify-between text-xs text-green-600 font-bold">
+                <span class="uppercase tracking-wider">Promo Applied</span>
+                <span>FIXNOW (−₹500)</span>
+              </div>
+            </div>
+            <a href="/services" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-xs tracking-widest uppercase font-bold hover:bg-primary-dark transition-colors">
+              <iconify-icon icon="lucide:arrow-left" class="text-sm"></iconify-icon>
+              Back to Services
+            </a>
+          </div>
+
+          <!-- Booking Form -->
+          <form id="booking-form" class="bg-white border border-silver-light p-6 space-y-5">
+            <h2 class="font-serif text-xl font-semibold text-primary border-b border-silver-light pb-4 mb-2">
+              Your <span class="italic">Details</span>
+            </h2>
+
+            <!-- Google Auth Strip -->
+            <div id="booking-google-auth-section" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 bg-blue-50/40 border border-blue-100" style="background:#eff6ff40; border-color:#dbeafe;">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-white border border-blue-100 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-800">Gmail Invoice Service</p>
+                  <p id="booking-google-status" class="text-[10px] text-slate-500 mt-0.5">Sign in with Google for instant Gmail alerts!</p>
+                </div>
+              </div>
+              <button type="button" id="booking-google-signin-btn"
+                class="px-4 py-1.5 bg-blue-600 text-white text-[10px] tracking-wider font-semibold uppercase whitespace-nowrap hover:bg-blue-700 transition-colors"
+                style="border-radius:3px;">
+                Sign In
+              </button>
+            </div>
+
+            <!-- Name + Phone -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="field-label">Full Name *</label>
+                <input type="text" id="booking-name" required placeholder="e.g. Rajesh Kumar" class="field-input">
+              </div>
+              <div>
+                <label class="field-label">Phone Number *</label>
+                <input type="tel" id="booking-phone" required placeholder="+91 98928 48643" class="field-input">
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="field-label">Email Address *</label>
+              <input type="email" id="booking-email" required placeholder="you@example.com" class="field-input">
+            </div>
+
+            <!-- Service + Date -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="field-label">Service Type *</label>
+                <select id="booking-service" required class="field-input">
+                  <option value="Computer Repair">Computer Repair (₹999)</option>
+                  <option value="Laptop Repair">Laptop Repair (₹1,499)</option>
+                  <option value="Networking Setup">Networking Setup (Quote)</option>
+                  <option value="CCTV Installation">CCTV Installation (Quote)</option>
+                  <option value="Printer Service">Printer Service (₹799)</option>
+                  <option value="General Troubleshooting">General Diagnostics (₹499)</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label">Preferred Date *</label>
+                <input type="date" id="booking-date" required class="field-input">
+              </div>
+            </div>
+
+            <!-- Time + Promo -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="field-label">Time Slot *</label>
+                <select id="booking-time" required class="field-input">
+                  <option value="Morning (09:00 AM - 12:00 PM)">Morning (09:00 AM – 12:00 PM)</option>
+                  <option value="Afternoon (12:00 PM - 04:00 PM)">Afternoon (12:00 PM – 04:00 PM)</option>
+                  <option value="Evening (04:00 PM - 07:00 PM)">Evening (04:00 PM – 07:00 PM)</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label">Promo Code</label>
+                <div class="flex">
+                  <input type="text" id="booking-promo" placeholder="FIXNOW"
+                    class="field-input flex-1 border-r-0 uppercase tracking-wider" style="flex:1;">
+                  <button type="button" id="apply-booking-promo"
+                    class="px-4 bg-primary text-white text-[10px] tracking-wider uppercase font-bold hover:bg-accent hover:text-primary-dark transition-colors whitespace-nowrap"
+                    style="border:1px solid #0F2640; border-left:none; cursor:pointer;">
+                    Apply
+                  </button>
+                </div>
+                <p id="booking-promo-applied" class="hidden text-xs text-green-600 font-bold mt-1 flex items-center gap-1">
+                  ✓ FIXNOW applied — ₹500 off!
+                </p>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <label class="field-label">Describe Your Issue *</label>
+              <textarea id="booking-desc" required rows="3" placeholder="Describe your issue in brief..."
+                class="field-input resize-none" style="resize:none;"></textarea>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="booking-submit-btn"
+              class="w-full py-3.5 bg-primary text-white text-xs tracking-[0.2em] uppercase font-bold hover:bg-primary-dark transition-colors flex items-center justify-center gap-2">
+              <iconify-icon icon="lucide:calendar-check" class="text-base"></iconify-icon>
+              Confirm Appointment
+            </button>
+          </form>
+        </div>
+
+        <!-- RIGHT: INFO SIDEBAR -->
+        <div class="space-y-5 anim" style="animation-delay:0.1s">
+
+          <!-- Why book -->
+          <div class="bg-white border border-silver-light p-5">
+            <h3 class="font-serif text-base font-semibold text-primary mb-4 border-b border-silver-light pb-3">Why Book With Us?</h3>
+            <ul class="space-y-3 text-sm">
+              <li class="flex items-start gap-3">
+                <iconify-icon icon="lucide:shield-check" class="text-accent text-base mt-0.5 flex-shrink-0"></iconify-icon>
+                <span class="text-warm-gray">Certified technicians with 28+ years of experience</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <iconify-icon icon="lucide:clock" class="text-accent text-base mt-0.5 flex-shrink-0"></iconify-icon>
+                <span class="text-warm-gray">Same-day response for urgent on-site issues</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <iconify-icon icon="lucide:indian-rupee" class="text-accent text-base mt-0.5 flex-shrink-0"></iconify-icon>
+                <span class="text-warm-gray">Transparent pricing — no hidden charges</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <iconify-icon icon="lucide:map-pin" class="text-accent text-base mt-0.5 flex-shrink-0"></iconify-icon>
+                <span class="text-warm-gray">On-site visits across Mumbai &amp; Navi Mumbai</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Service pricing quick ref -->
+          <div class="bg-white border border-silver-light p-5">
+            <h3 class="font-serif text-base font-semibold text-primary mb-4 border-b border-silver-light pb-3">Service Pricing</h3>
+            <ul class="space-y-2 text-xs">
+              <li class="flex justify-between py-1.5 border-b border-silver-light/60">
+                <span class="text-charcoal font-medium">Computer Repair</span>
+                <span class="text-accent font-bold">₹999</span>
+              </li>
+              <li class="flex justify-between py-1.5 border-b border-silver-light/60">
+                <span class="text-charcoal font-medium">Laptop Repair</span>
+                <span class="text-accent font-bold">₹1,499</span>
+              </li>
+              <li class="flex justify-between py-1.5 border-b border-silver-light/60">
+                <span class="text-charcoal font-medium">Printer Service</span>
+                <span class="text-accent font-bold">₹799</span>
+              </li>
+              <li class="flex justify-between py-1.5 border-b border-silver-light/60">
+                <span class="text-charcoal font-medium">General Diagnostics</span>
+                <span class="text-accent font-bold">₹499</span>
+              </li>
+              <li class="flex justify-between py-1.5 border-b border-silver-light/60">
+                <span class="text-charcoal font-medium">Networking Setup</span>
+                <span class="text-warm-gray font-medium">On Quote</span>
+              </li>
+              <li class="flex justify-between py-1.5">
+                <span class="text-charcoal font-medium">CCTV Installation</span>
+                <span class="text-warm-gray font-medium">On Quote</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact / WhatsApp -->
+          <div class="bg-primary-dark text-white p-5">
+            <h3 class="font-serif text-base font-semibold mb-3">Need Instant Help?</h3>
+            <p class="text-silver/60 text-xs mb-4 leading-relaxed">Call or WhatsApp us directly — we respond within minutes.</p>
+            <a href="tel:+919892848643"
+               class="flex items-center gap-2 text-sm font-semibold text-accent mb-3">
+              <iconify-icon icon="lucide:phone" class="text-base"></iconify-icon>
+              +91 98928 48643
+            </a>
+            <a href="https://wa.me/919892848643" target="_blank" rel="noopener"
+               class="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white text-xs tracking-widest uppercase font-semibold hover:bg-green-700 transition-colors">
+              <iconify-icon icon="mdi:whatsapp" class="text-base"></iconify-icon>
+              Chat on WhatsApp
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-charcoal text-silver/50 py-8 px-6 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+      <p>&copy; Jalaram Computers &amp; IT Solutions</p>
+      <div class="flex gap-6 text-xs">
+        <a href="/"        class="hover:text-accent transition-colors">Home</a>
+        <a href="/shop"    class="hover:text-accent transition-colors">Shop</a>
+        <a href="/services" class="text-accent">Services</a>
+        <a href="/about"   class="hover:text-accent transition-colors">About</a>
+        <a href="/contact" class="hover:text-accent transition-colors">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Float -->
+  <a href="https://wa.me/919892848643" target="_blank"
+     class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-green-600 flex items-center justify-center text-white hover:bg-green-700 transition-colors shadow-lg">
+    <iconify-icon icon="mdi:whatsapp" class="text-2xl"></iconify-icon>
+  </a>
+
+  <script src="/assets/js/mobile-nav.js?v=2"></script>
+  <script type="module" src="/assets/js/cart-system.js"></script>
+
+  <script>
+    // Pre-select service from URL param (?service=laptop)
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const svc = (params.get('service') || '').toLowerCase();
+      const sel = document.getElementById('booking-service');
+      if (sel && svc) {
+        if (svc.includes('computer'))  sel.value = 'Computer Repair';
+        else if (svc.includes('laptop'))   sel.value = 'Laptop Repair';
+        else if (svc.includes('network'))  sel.value = 'Networking Setup';
+        else if (svc.includes('cctv') || svc.includes('camera')) sel.value = 'CCTV Installation';
+        else if (svc.includes('printer')) sel.value = 'Printer Service';
+        else if (svc.includes('remote') || svc.includes('support')) sel.value = 'General Troubleshooting';
+      }
+
+      // Set tomorrow as min/default date
+      const dateInput = document.getElementById('booking-date');
+      if (dateInput) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const y = tomorrow.getFullYear();
+        const m = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const d = String(tomorrow.getDate()).padStart(2, '0');
+        dateInput.min = `${y}-${m}-${d}`;
+        dateInput.value = `${y}-${m}-${d}`;
+      }
+    })();
+
+    // Promo code
+    let promoApplied = false;
+    document.getElementById('apply-booking-promo').addEventListener('click', function () {
+      const code = document.getElementById('booking-promo').value.trim().toUpperCase();
+      const msg  = document.getElementById('booking-promo-applied');
+      if (code === 'FIXNOW' || code === 'SAVE500') {
+        promoApplied = true;
+        msg.classList.remove('hidden');
+      } else {
+        if (window.showToast) window.showToast('Invalid promo code. Try "FIXNOW" for ₹500 off!');
+      }
+    });
+
+    // Form submit
+    document.getElementById('booking-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const name    = document.getElementById('booking-name').value.trim();
+      const phone   = document.getElementById('booking-phone').value.trim();
+      const email   = document.getElementById('booking-email').value.trim();
+      const service = document.getElementById('booking-service').value;
+      const dateVal = document.getElementById('booking-date').value;
+      const slot    = document.getElementById('booking-time').value;
+      const desc    = document.getElementById('booking-desc').value.trim();
+
+      // Validation
+      const digits = phone.replace(/[^\d]/g, '');
+      if (digits.length < 10 || digits.length > 12) {
+        document.getElementById('booking-phone').focus();
+        if (window.showToast) window.showToast('Please enter a valid 10-digit phone number.');
+        return;
+      }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        document.getElementById('booking-email').focus();
+        if (window.showToast) window.showToast('Please enter a valid email address.');
+        return;
+      }
+
+      const bookingId = 'BK-' + Math.floor(100000 + Math.random() * 900000);
+      const formattedDate = new Date(dateVal).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      // Save to Firestore via cart-system exposed helper if available
+      try {
+        if (window.submitBookingToFirestore) {
+          await window.submitBookingToFirestore({ bookingId, name, phone, email, service, date: formattedDate, slot, desc, promoApplied });
+        }
+      } catch (err) {
+        console.warn('Firestore booking save failed, continuing:', err);
+      }
+
+      // Show success
+      document.getElementById('booking-form').classList.add('hidden');
+      const success = document.getElementById('booking-success-section');
+      success.classList.remove('hidden');
+      document.getElementById('success-booking-id').textContent      = bookingId;
+      document.getElementById('success-booking-service').textContent  = service;
+      document.getElementById('success-booking-schedule').textContent = formattedDate;
+      document.getElementById('success-booking-time').textContent     = slot.split('(')[0].trim();
+      if (promoApplied) {
+        document.getElementById('success-booking-discount-row').classList.remove('hidden');
+      }
+
+      // Scroll to top of form area
+      success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</body>
+</html>
