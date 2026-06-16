@@ -5,7 +5,7 @@
 <link rel="preload" as="image" href="/assets/images/hero/instant_support.webp" fetchpriority="high" media="(min-width: 768px)">
 <link rel="preload" as="image" href="/assets/images/hero/instant_support_mobile.webp" fetchpriority="high" media="(max-width: 767px)">
 <link rel="preload" href="/data/hero-services.json" as="fetch" crossorigin>
-<title>JALARAM COMPUTERS — Your One-Stop IT Solution</title>
+<title>JALARAM COMPUTERS â€” Your One-Stop IT Solution</title>
 <script src="/assets/js/tailwind.js"></script>
 <script src="/assets/js/iconify-icon.min.js" defer></script>
 <link href="/assets/css/fonts-base.css" rel="stylesheet">
@@ -403,14 +403,6 @@ tailwind.config = {
     (function () {
       var splash = document.getElementById('jc-splash');
       if (!splash) return;
-      var KEY = 'jc_splash_shown';
-      var shown = false;
-      try { shown = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
-      if (shown) {
-        splash.parentNode.removeChild(splash);
-        return;
-      }
-      try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
       document.documentElement.style.overflow = 'hidden';
       var close = function () {
         splash.classList.add('jc-splash-exit');
@@ -489,7 +481,7 @@ tailwind.config = {
     </div>
   </header>
 
-  <!-- HERO SECTION — full-bleed background service carousel -->
+  <!-- HERO SECTION â€” full-bleed background service carousel -->
   <section id="services-hero" class="relative overflow-hidden">
     <div id="hero-bg-layers" class="absolute inset-0 z-0" aria-hidden="true">
       <div class="hero-bg-layer active" data-align="left" style="background-image:url('/assets/images/hero/instant_support.webp')" aria-hidden="true"></div>
@@ -501,11 +493,11 @@ tailwind.config = {
     </div>
     <div id="hero-bg-overlay" class="absolute inset-0 z-[1] hero-overlay-left"></div>
 
-    <div id="hero-inner" class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 min-h-[70svh] lg:min-h-[85vh] lg:max-h-[760px] py-10 lg:py-20 flex flex-col justify-end">
+    <div id="hero-inner" class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 min-h-[100svh] lg:min-h-[85vh] lg:max-h-[760px] py-10 lg:py-20 flex flex-col justify-end">
       <div id="hero-content-wrap" class="hero-content-left flex-1 flex items-end pb-2 lg:pb-0">
         <div id="hero-heading-panel" class="hero-align-left">
           <h1 id="hero-title" class="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">Instant Support</h1>
-          <p id="hero-subtitle" class="text-sm sm:text-base md:text-lg leading-relaxed mt-3 md:mt-4">Remote &amp; on-site IT help — same-day response for urgent issues</p>
+          <p id="hero-subtitle" class="text-sm sm:text-base md:text-lg leading-relaxed mt-3 md:mt-4">Remote &amp; on-site IT help â€” same-day response for urgent issues</p>
           <a id="hero-cta" href="/services" class="inline-flex items-center gap-2 mt-6 px-8 py-3 bg-accent text-primary-deeper text-xs tracking-[0.2em] uppercase font-semibold hover:bg-accent/90 transition-all duration-500 btn-gold-slide">Get Support <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block"><path d="M5 12h14m-7-7l7 7l-7 7"/></svg></a>
         </div>
       </div>
@@ -635,7 +627,7 @@ tailwind.config = {
       </div>
 
       <!-- Products Grid -->
-      <div id="featured-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="featured-products-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <!-- Product 1 -->
         <div class="product-card group bg-alabaster transition-all duration-500 cursor-pointer" style="border: 1px solid #E8E8E8;" data-id="hp-pavilion-15">
           <div class="relative overflow-hidden bg-silver-light aspect-[4/3] flex items-center justify-center">
@@ -1387,4 +1379,5 @@ tailwind.config = {
   })();
 </script>
 
+<script src="/assets/js/reveal.js" defer></script>
 </body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -229,7 +229,7 @@
             });
           });
         } else {
-          // All nested definitions already loaded � render immediately
+          // All nested definitions already loaded ï¿½ render immediately
           nestedElements.forEach(function(nested) {
             if (!nested.getAttribute('data-rendered')) {
               renderComponent(nested, depth + 1);
@@ -353,14 +353,14 @@
         if (DRAFT_ID) {
           loadComponentsForDraft();
         } else {
-          // No draft ID � try batch loading the missing IDs directly
+          // No draft ID ï¿½ try batch loading the missing IDs directly
           loadComponentsByIds(unloaded).then(function() {
             initializeComponents();
             showPage();
           });
         }
       } else if (refs.length > 0) {
-        // All components already registered (e.g. from preload) � render immediately
+        // All components already registered (e.g. from preload) ï¿½ render immediately
         initializeComponents();
         showPage();
       } else {
@@ -422,7 +422,7 @@
       </div>
       <div class="flex items-center gap-4">
         <span class="hidden lg:inline">Free Technical Support</span>
-        <span class="text-accent">�</span>
+        <span class="text-accent">ï¿½</span>
         <span>Fast Delivery</span>
       </div>
     </div>
@@ -501,7 +501,7 @@
                   <p class="text-[10px] tracking-[0.2em] uppercase font-bold text-accent mb-1">HP</p>
                   <h3 class="text-lg font-medium text-primary hover:text-accent transition-colors">
                     <a href="/product" id="cart-item-1-link">
-                      HP Pavilion 15 � Intel i5 12th Gen, 16GB RAM
+                      HP Pavilion 15 ï¿½ Intel i5 12th Gen, 16GB RAM
                     </a>
                   </h3>
                   <p class="text-xs text-warm-gray mt-1">Silver | 512GB SSD</p>
@@ -540,7 +540,7 @@
                   <p class="text-[10px] tracking-[0.2em] uppercase font-bold text-accent mb-1">Logitech</p>
                   <h3 class="text-lg font-medium text-primary hover:text-accent transition-colors">
                     <a href="/product" id="cart-item-2-link">
-                      Logitech G502 X Plus � Wireless Gaming Mouse
+                      Logitech G502 X Plus ï¿½ Wireless Gaming Mouse
                     </a>
                   </h3>
                   <p class="text-xs text-warm-gray mt-1">RGB | 25K Sensor</p>
@@ -714,7 +714,7 @@
           <div class="flex items-start gap-3">
             <iconify-icon icon="lucide:clock" class="text-accent text-lg mt-0.5 flex-shrink-0"><template shadowrootmode="open"><style data-style="data-style">:host{display:inline-block;vertical-align:0}span,svg{display:block}</style><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></g></svg></template></iconify-icon>
             <div>
-              <p class="text-silver/50 text-sm">Mon�Sat: 10 AM � 9 PM</p>
+              <p class="text-silver/50 text-sm">Monï¿½Sat: 10 AM ï¿½ 9 PM</p>
               <p class="text-silver/50 text-sm">Sunday: Closed</p>
             </div>
           </div>
@@ -729,7 +729,7 @@
 
     <!-- Bottom Bar -->
     <div class="flex flex-col md:flex-row items-center justify-between pt-8 gap-4">
-      <p class="text-silver/30 text-xs tracking-[0.1em]">� 2025 Jalaram Computers. All rights reserved.</p>
+      <p class="text-silver/30 text-xs tracking-[0.1em]">ï¿½ 2025 Jalaram Computers. All rights reserved.</p>
       <div class="flex items-center gap-6">
         <a class="text-silver/30 text-xs tracking-[0.1em] hover:text-accent transition-colors duration-500" href="/contact">Privacy Policy</a>
         <a class="text-silver/30 text-xs tracking-[0.1em] hover:text-accent transition-colors duration-500" href="/contact">Terms of Service</a>
@@ -746,4 +746,5 @@
 
 </div>
 
+<script src="/assets/js/reveal.js" defer></script>
 </body></html>

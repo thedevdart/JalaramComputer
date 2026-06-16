@@ -171,11 +171,23 @@ function processHtml(content: string): string {
 
   const minimalCss = `<link rel="stylesheet" href="/assets/css/minimal.css" id="jc-minimal">`;
   const mobileCss = `<link rel="stylesheet" href="/assets/css/mobile.css?v=10" id="jc-mobile">`;
+  const glassCss = `<link rel="stylesheet" href="/assets/css/glass.css?v=9" id="jc-glass">`;
   if (!replaced.includes('minimal.css')) {
     replaced = replaced.replace(/<\/head>/i, `${minimalCss}</head>`);
   }
   if (!replaced.includes('mobile.css')) {
     replaced = replaced.replace(/<\/head>/i, `${mobileCss}</head>`);
+  }
+  // glass.css must load AFTER minimal/mobile so its overrides win
+  if (!replaced.includes('glass.css')) {
+    replaced = replaced.replace(/<\/head>/i, `${glassCss}</head>`);
+  }
+  const revealJs = `<script src="/assets/js/reveal.js?v=4" defer id="jc-reveal"></script>`;
+  // Replace any existing unversioned reveal.js tag, or inject if absent
+  if (replaced.includes('reveal.js') && !replaced.includes('reveal.js?v=4')) {
+    replaced = replaced.replace(/<script[^>]+reveal\.js[^>]*><\/script>/i, revealJs);
+  } else if (!replaced.includes('reveal.js')) {
+    replaced = replaced.replace(/<\/body>/i, `${revealJs}</body>`);
   }
 
   const mobileNavScript = `<script src="/assets/js/mobile-nav.js?v=2" id="jc-mobile-nav"></script>`;
