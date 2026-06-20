@@ -164,7 +164,7 @@ Build a full server system over 1–3 months — maximum control and security.
 
 ## Our recommendation
 
-**Option A — Fix and launch on Firebase** is the right balance for Jalaram Computers:
+**Option A — Fix and launch on Firebase** is the right balance for   Computers:
 
 1. You already invested in a **custom site and admin** — Option A protects that investment.  
 2. **Firebase + Mumbai region** performs well for Indian customers.  

@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block bodyclass %}ja-login{% endblock %}
+
+{% block header %}
+<header class="ja-topbar ja-topbar--login">
+  <div class="ja-topbar__inner ja-topbar__inner--center">
+    <a href="/" class="ja-brand ja-brand--login">
+      <span class="ja-brand__mark">JC</span>
+      <span class="ja-brand__text">{{ site_header|default:'Jalaram Computers' }}</span>
+    </a>
+  </div>
+</header>
+{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="ja-login-card">
+  <h1 class="ja-login-card__title">{% translate 'Admin sign in' %}</h1>
+  <p class="ja-login-card__sub">{% translate 'Sign in to manage your store' %}</p>
+
+  {% if form.errors and not form.non_field_errors %}
+  <p class="errornote">
+    {% blocktranslate count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
+  </p>
+  {% endif %}
+
+  {% if form.non_field_errors %}
+  {% for error in form.non_field_errors %}
+  <p class="errornote">{{ error }}</p>
+  {% endfor %}
+  {% endif %}
+
+  <form action="{{ app_path }}" method="post" id="login-form" class="ja-form">{% csrf_token %}
+    <div class="form-row">
+      {{ form.username.errors }}
+      <label for="id_username" class="required">{% translate 'Email / Username' %}</label>
+      {{ form.username }}
+    </div>
+    <div class="form-row">
+      {{ form.password.errors }}
+      <label for="id_password" class="required">{% translate 'Password' %}</label>
+      {{ form.password }}
+      <input type="hidden" name="next" value="{{ next }}">
+    </div>
+    <div class="submit-row">
+      <input type="submit" value="{% translate 'Sign In' %}" class="default">
+    </div>
+  </form>
+
+  <p class="ja-login-card__foot">{% translate 'Admin access only — Jalaram Computers' %}</p>
+</div>
+{% endblock %}

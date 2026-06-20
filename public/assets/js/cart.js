@@ -28,6 +28,8 @@ export function addToCart(product, qty = 1) {
       price: Number(product.price) || 0,
       imageIcon: product.imageIcon || 'lucide:box',
       imageUrl: product.imageUrl || '',
+      promoCode: product.promoCode || '',
+      promoDiscount: Number(product.promoDiscount) || 0,
       quantity: qty,
     });
   }

@@ -1,0 +1,111 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrastyle %}
+<style>
+  @media print {
+    #header, #nav-sidebar, .breadcrumbs, .submit-row, .no-print { display: none !important; }
+    body { background: #fff; }
+  }
+  .inv { max-width: 800px; margin: 0 auto; font-family: Inter, sans-serif; color: #0f172a; }
+  .inv-head { display: flex; justify-content: space-between; gap: 2rem; border-bottom: 3px solid #1a3a5c; padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .inv-head h1 { font-family: 'Playfair Display', serif; color: #1a3a5c; margin: 0 0 0.25rem; font-size: 1.5rem; }
+  .inv-meta { font-size: 0.8rem; color: #64748b; line-height: 1.6; }
+  .inv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .inv-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; font-size: 0.8rem; line-height: 1.6; }
+  .inv-box h3 { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: #1a3a5c; margin: 0 0 0.5rem; }
+  table.inv-items { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 1rem; }
+  table.inv-items th, table.inv-items td { border: 1px solid #e2e8f0; padding: 0.5rem 0.65rem; text-align: left; }
+  table.inv-items th { background: #1a3a5c; color: #fff; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .inv-totals { margin-left: auto; max-width: 280px; font-size: 0.85rem; }
+  .inv-totals div { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid #e2e8f0; }
+  .inv-totals .grand { font-weight: 700; font-size: 1.1rem; color: #1a3a5c; border-bottom: none; padding-top: 0.5rem; }
+  .inv-foot { margin-top: 2rem; font-size: 0.7rem; color: #64748b; line-height: 1.6; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs no-print">
+  <a href="{% url 'jalaram_admin:index' %}">Home</a> ›
+  <a href="{% url 'jalaram_admin:shop_order_changelist' %}">Orders</a> ›
+  Invoice {{ order.order_id }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="inv">
+  <div class="no-print" style="margin-bottom:1rem;">
+    <button type="button" onclick="window.print()" class="button default">Print / Save PDF</button>
+    <a href="{% url 'jalaram_admin:shop_order_change' order.pk %}" class="button">Back to order</a>
+  </div>
+
+  <div class="inv-head">
+    <div>
+      <h1>{{ shop.name }}</h1>
+      <div class="inv-meta">
+        {{ shop.addr1 }}<br>{{ shop.addr2 }}<br>
+        GSTIN: {{ shop.gst }}<br>
+        {{ shop.email }} · {{ shop.phone }}
+      </div>
+    </div>
+    <div class="inv-meta" style="text-align:right;">
+      <strong style="color:#1a3a5c;font-size:1rem;">TAX INVOICE</strong><br>
+      Order: <strong>{{ order.order_id }}</strong><br>
+      Date: {{ order.date }}<br>
+      Status: {{ order.status }}<br>
+      Payment: {{ order.payment_method|default:"—" }}
+    </div>
+  </div>
+
+  <div class="inv-grid">
+    <div class="inv-box">
+      <h3>Bill To</h3>
+      {% with c=order.customer %}
+      <strong>{{ c.name|default:"—" }}</strong><br>
+      {{ c.email|default:"" }}<br>
+      {{ c.phone|default:"" }}
+      {% endwith %}
+    </div>
+    <div class="inv-box">
+      <h3>Ship To</h3>
+      {% with s=order.shipping_details %}
+      {{ s.address|default:"" }}<br>
+      {{ s.city|default:"" }}{% if s.state %}, {{ s.state }}{% endif %}
+      {% if s.pincode %} — {{ s.pincode }}{% endif %}<br>
+      {{ s.method|default:"" }}
+      {% if s.gst %}<br>GST: {{ s.gst }}{% endif %}
+      {% endwith %}
+    </div>
+  </div>
+
+  <table class="inv-items">
+    <thead>
+      <tr><th>Item</th><th>Qty</th><th>Rate</th><th>Amount</th></tr>
+    </thead>
+    <tbody>
+      {% for item in line_items %}
+      <tr>
+        <td>{{ item.name }}{% if item.brand %} <small>({{ item.brand }})</small>{% endif %}</td>
+        <td>{{ item.qty }}</td>
+        <td>₹{{ item.price|floatformat:0 }}</td>
+        <td>₹{{ item.line_total|floatformat:0 }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No line items</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="inv-totals">
+    <div><span>Subtotal</span><span>₹{{ order.subtotal|floatformat:0 }}</span></div>
+    {% if order.discount %}<div><span>Discount</span><span>−₹{{ order.discount|floatformat:0 }}</span></div>{% endif %}
+    <div><span>GST (18%)</span><span>₹{{ order.gst|floatformat:0 }}</span></div>
+    <div class="grand"><span>Total</span><span>₹{{ order.total|floatformat:0 }}</span></div>
+  </div>
+
+  <div class="inv-foot">
+    This is a computer-generated tax invoice. For support contact <strong>{{ shop.email }}</strong>.
+    Thank you for your business.
+  </div>
+</div>
+{% endblock %}

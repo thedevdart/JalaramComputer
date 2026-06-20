@@ -1,0 +1,81 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+<style>
+  @media print {
+    #header, #nav-sidebar, .breadcrumbs, .no-print { display: none !important; }
+    body { background: #fff; }
+  }
+  .inv { max-width: 800px; margin: 0 auto; font-family: Inter, sans-serif; color: #0f172a; }
+  .inv-head { display: flex; justify-content: space-between; gap: 2rem; border-bottom: 3px solid #1a3a5c; padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .inv-head h1 { font-family: 'Playfair Display', serif; color: #1a3a5c; margin: 0; font-size: 1.5rem; }
+  table.inv-items { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 1rem; }
+  table.inv-items th, table.inv-items td { border: 1px solid #e2e8f0; padding: 0.5rem 0.65rem; text-align: left; }
+  table.inv-items th { background: #1a3a5c; color: #fff; }
+  .inv-totals { margin-left: auto; max-width: 280px; font-size: 0.85rem; }
+  .inv-totals div { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid #e2e8f0; }
+  .inv-totals .grand { font-weight: 700; font-size: 1.1rem; color: #1a3a5c; }
+</style>
+{% if print_mode %}
+<script>window.addEventListener('load', function () { window.print(); });</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="no-print" style="margin-bottom:1rem;">
+  <button type="button" onclick="window.print()" class="button default">Print / Save PDF</button>
+  <a href="{% url 'jalaram_admin:jalaram_billing' %}" class="button">Edit billing</a>
+</div>
+
+<div class="inv">
+  <div class="inv-head">
+    <div>
+      <h1>{{ shop.name }}</h1>
+      <div style="font-size:0.8rem;color:#64748b;line-height:1.6;">
+        {{ shop.addr1 }}<br>{{ shop.addr2 }}<br>GSTIN: {{ shop.gst }}<br>{{ shop.email }} · {{ shop.phone }}
+      </div>
+    </div>
+    <div style="text-align:right;font-size:0.8rem;color:#64748b;">
+      <strong style="color:#1a3a5c;font-size:1rem;">TAX INVOICE</strong><br>
+      Date: {% now "j F Y" %}
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:1rem;font-size:0.8rem;">
+      <strong style="display:block;font-size:0.65rem;letter-spacing:.1em;text-transform:uppercase;color:#1a3a5c;margin-bottom:.5rem;">Bill To</strong>
+      <strong>{{ customer.name|default:"—" }}</strong><br>
+      {{ customer.phone|default:"" }}<br>
+      {{ customer.email|default:"" }}
+      {% if customer.gstin %}<br>GSTIN: {{ customer.gstin }}{% endif %}
+    </div>
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:1rem;font-size:0.8rem;">
+      <strong style="display:block;font-size:0.65rem;letter-spacing:.1em;text-transform:uppercase;color:#1a3a5c;margin-bottom:.5rem;">Address</strong>
+      {{ customer.address|default:"—" }}
+    </div>
+  </div>
+
+  <table class="inv-items">
+    <thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>GST %</th><th>Amount</th></tr></thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.desc }}</td>
+        <td>{{ item.qty }}</td>
+        <td>₹{{ item.price|floatformat:0 }}</td>
+        <td>{{ item.tax|floatformat:0 }}%</td>
+        <td>₹{{ item.line_total|floatformat:0 }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No items</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="inv-totals">
+    <div><span>Subtotal</span><span>₹{{ subtotal|floatformat:0 }}</span></div>
+    <div><span>GST</span><span>₹{{ gst|floatformat:0 }}</span></div>
+    <div class="grand"><span>Total</span><span>₹{{ total|floatformat:0 }}</span></div>
+  </div>
+</div>
+{% endblock %}

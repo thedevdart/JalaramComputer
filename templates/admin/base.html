@@ -1,0 +1,100 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en-in' }}">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  {% block stylesheet %}{% endblock %}
+  {% block dark-mode-vars %}{% endblock %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/jalaram-admin.css' %}?v=1">
+  {% block extrastyle %}{% endblock %}
+  {% block extrahead %}{% endblock %}
+  {% block responsive %}{% endblock %}
+  {% block blockbots %}{% endblock %}
+</head>
+<body class="ja {% block bodyclass %}{% endblock %}">
+<a href="#ja-main" class="ja-skip">{% translate 'Skip to main content' %}</a>
+
+{% if not is_popup %}
+{% block header %}
+<header class="ja-topbar">
+  <div class="ja-topbar__inner">
+    <a href="{% url 'admin:index' %}" class="ja-brand">
+      <span class="ja-brand__mark">JC</span>
+      <span class="ja-brand__text">{{ site_header|default:'Jalaram Computers' }}</span>
+    </a>
+    {% block usertools %}
+    {% if has_permission %}
+    <div class="ja-usertools">
+      <span class="ja-usertools__hello">{% translate 'Welcome,' %} <strong>{% firstof user.get_short_name user.get_username %}</strong></span>
+      {% block userlinks %}
+      {% if site_url %}<a href="{{ site_url }}" target="_blank" rel="noopener">{% translate 'View site' %}</a>{% endif %}
+      {% if user.has_usable_password %}<a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a>{% endif %}
+      <form method="post" action="{% url 'admin:logout' %}" class="ja-logout">
+        {% csrf_token %}
+        <button type="submit">{% translate 'Log out' %}</button>
+      </form>
+      {% endblock %}
+    </div>
+    {% endif %}
+    {% endblock %}
+  </div>
+</header>
+{% endblock %}
+
+<div class="ja-shell{% if not has_permission %} ja-shell--auth{% endif %}">
+  {% if has_permission %}
+  {% block nav-sidebar %}
+  {% include "admin/includes/ja_sidebar.html" %}
+  {% endblock %}
+  {% endif %}
+
+  <div class="ja-main-wrap">
+    {% block nav-breadcrumbs %}
+    {% block breadcrumbs %}{% endblock %}
+    {% endblock %}
+{% endif %}
+
+<main id="ja-main" class="ja-main{% if is_popup %} ja-main--popup{% endif %}">
+  {% if not is_popup %}
+  {% block messages %}
+  {% if messages %}
+  <ul class="ja-messages">
+    {% for message in messages %}
+    <li class="ja-message ja-message--{{ message.tags }}">{{ message|capfirst }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endblock messages %}
+
+  {% block pretitle %}{% endblock %}
+  {% block content_title %}{% if title %}<h1 class="ja-page-title">{{ title }}</h1>{% endif %}{% endblock %}
+  {% block content_subtitle %}{% if subtitle %}<p class="ja-page-sub">{{ subtitle }}</p>{% endif %}{% endblock %}
+
+  <div class="ja-page{% block coltype %}{% endblock %}">
+  {% endif %}
+
+    {% block content %}
+    {% block object-tools %}{% endblock %}
+    {{ content }}
+    {% endblock %}
+    {% block sidebar %}{% endblock %}
+
+  {% if not is_popup %}
+  </div>
+  {% endif %}
+</main>
+
+{% if not is_popup %}
+  </div>
+</div>
+{% endif %}
+
+{% block footer %}{% endblock %}
+</body>
+</html>

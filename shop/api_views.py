@@ -44,6 +44,7 @@ def _user_payload(user):
         'email': user.email,
         'displayName': user.get_full_name() or user.username,
         'emailVerified': True,
+        'isStaff': _is_staff_user(user),
     }
 
 

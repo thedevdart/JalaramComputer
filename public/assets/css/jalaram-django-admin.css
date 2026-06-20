@@ -1,0 +1,528 @@
+/* Jalaram Computers — Django admin theme (visual match to main-branch console).
+   Styles only — standard Django admin login + CRUD, no custom SPA. */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --jc-bg: #0f1419;
+  --jc-elevated: #161b22;
+  --jc-surface: #1c2333;
+  --jc-surface-hover: #252d3d;
+  --jc-border: #2d3748;
+  --jc-navy: #1a3a5c;
+  --jc-navy-dark: #0f2640;
+  --jc-navy-deep: #091a2e;
+  --jc-gold: #d4af37;
+  --jc-gold-hover: #c9a430;
+  --jc-text: #e8edf4;
+  --jc-text-2: #94a3b8;
+  --jc-text-3: #64748b;
+  --jc-success: #34d399;
+  --jc-danger: #f87171;
+  --jc-radius: 10px;
+  --jc-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+html, body {
+  font-family: 'Poppins', Inter, system-ui, sans-serif !important;
+}
+
+/* ── Login page ── */
+body.jc-admin-login {
+  background: linear-gradient(135deg, var(--jc-navy-deep) 0%, var(--jc-navy) 55%, var(--jc-navy-dark) 100%) !important;
+}
+
+body.jc-admin-login #container {
+  background: transparent !important;
+  border: none !important;
+  width: min(100%, 24rem);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+body.jc-admin-login #header {
+  background: transparent !important;
+  padding: 0 0 1.5rem !important;
+  border: none !important;
+}
+
+body.jc-admin-login #branding,
+body.jc-admin-login #header #branding h1 {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.jc-admin-login #branding h1 {
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+}
+
+body.jc-admin-login #branding h1 a,
+body.jc-admin-login #branding h1 {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+body.jc-admin-login .jc-admin-login__sub {
+  color: var(--jc-text-2);
+  font-size: 0.8125rem;
+  margin-top: 0.35rem;
+  text-align: center;
+}
+
+body.jc-admin-login #content {
+  padding: 0 !important;
+}
+
+body.jc-admin-login #content-main {
+  float: none !important;
+  width: 100% !important;
+}
+
+body.jc-admin-login .jc-auth-card {
+  background: var(--jc-surface);
+  border: 1px solid var(--jc-border);
+  border-radius: 14px;
+  padding: 2rem 1.75rem;
+  box-shadow: var(--jc-shadow);
+}
+
+body.jc-admin-login .jc-auth-card .form-row label {
+  color: var(--jc-text-2) !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+}
+
+body.jc-admin-login input[type="text"],
+body.jc-admin-login input[type="password"] {
+  width: 100% !important;
+  background: var(--jc-elevated) !important;
+  border: 1px solid var(--jc-border) !important;
+  color: var(--jc-text) !important;
+  border-radius: 8px !important;
+  padding: 0.65rem 0.75rem !important;
+  font-family: inherit !important;
+}
+
+body.jc-admin-login input:focus {
+  border-color: var(--jc-gold) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2) !important;
+  outline: none !important;
+}
+
+body.jc-admin-login .submit-row {
+  padding: 1.25rem 0 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  text-align: stretch !important;
+}
+
+body.jc-admin-login input[type="submit"] {
+  width: 100% !important;
+  background: var(--jc-gold) !important;
+  color: var(--jc-navy-deep) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.7rem 1rem !important;
+  font-weight: 700 !important;
+  font-size: 0.8125rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+}
+
+body.jc-admin-login input[type="submit"]:hover {
+  background: var(--jc-gold-hover) !important;
+}
+
+body.jc-admin-login .errornote {
+  background: rgba(248, 113, 113, 0.12) !important;
+  border: 1px solid rgba(248, 113, 113, 0.35) !important;
+  color: #fca5a5 !important;
+  border-radius: 8px !important;
+}
+
+body.jc-admin-login .jc-auth-footer {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--jc-text-3);
+}
+
+body.jc-admin-login #footer { display: none !important; }
+
+/* ── Authenticated admin shell ── */
+body:not(.jc-admin-login) {
+  background: var(--jc-bg) !important;
+  color: var(--jc-text) !important;
+}
+
+body:not(.jc-admin-login) #header {
+  background: linear-gradient(180deg, var(--jc-navy-dark) 0%, var(--jc-navy-deep) 100%) !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.14) !important;
+  color: var(--jc-text) !important;
+  box-shadow: 0 4px 24px rgba(9, 26, 46, 0.22);
+}
+
+body:not(.jc-admin-login) #header::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--jc-gold) 20%, var(--jc-gold) 80%, transparent);
+  opacity: 0.75;
+}
+
+body:not(.jc-admin-login) #branding h1,
+body:not(.jc-admin-login) #branding h1 a:link,
+body:not(.jc-admin-login) #branding h1 a:visited {
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+}
+
+body:not(.jc-admin-login) #user-tools {
+  color: var(--jc-text-2) !important;
+  font-size: 0.8125rem !important;
+}
+
+body:not(.jc-admin-login) #user-tools a:link,
+body:not(.jc-admin-login) #user-tools a:visited {
+  color: var(--jc-gold) !important;
+  border-bottom: none !important;
+}
+
+body:not(.jc-admin-login) div.breadcrumbs {
+  background: var(--jc-elevated) !important;
+  border-bottom: 1px solid var(--jc-border) !important;
+  color: var(--jc-text-2) !important;
+}
+
+body:not(.jc-admin-login) div.breadcrumbs a {
+  color: var(--jc-gold) !important;
+}
+
+body:not(.jc-admin-login) #content {
+  background: var(--jc-bg) !important;
+}
+
+body:not(.jc-admin-login) #content-main {
+  background: transparent !important;
+}
+
+body:not(.jc-admin-login) #nav-sidebar {
+  background: linear-gradient(180deg, var(--jc-navy-dark) 0%, var(--jc-navy-deep) 100%) !important;
+  border-right: 1px solid rgba(212, 175, 55, 0.12) !important;
+}
+
+body:not(.jc-admin-login) #nav-sidebar .module th,
+body:not(.jc-admin-login) #nav-sidebar .module caption {
+  background: transparent !important;
+  color: var(--jc-gold) !important;
+  font-size: 0.625rem !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.jc-admin-login) #nav-sidebar a {
+  color: rgba(192, 192, 192, 0.85) !important;
+}
+
+body:not(.jc-admin-login) #nav-sidebar a:hover,
+body:not(.jc-admin-login) #nav-sidebar .current-model a,
+body:not(.jc-admin-login) #nav-sidebar .current-app a {
+  color: var(--jc-gold) !important;
+}
+
+body:not(.jc-admin-login) .module,
+body:not(.jc-admin-login) .inline-group {
+  background: var(--jc-surface) !important;
+  border: 1px solid var(--jc-border) !important;
+  border-radius: var(--jc-radius) !important;
+  box-shadow: var(--jc-shadow) !important;
+  overflow: hidden;
+}
+
+body:not(.jc-admin-login) .module h2,
+body:not(.jc-admin-login) .module caption,
+body:not(.jc-admin-login) .inline-group h2 {
+  background: var(--jc-navy) !important;
+  color: #fff !important;
+  border-bottom: 1px solid var(--jc-border) !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.jc-admin-login) thead th,
+body:not(.jc-admin-login) #result_list thead th {
+  background: var(--jc-navy-dark) !important;
+  color: var(--jc-text) !important;
+  border-color: var(--jc-border) !important;
+}
+
+body:not(.jc-admin-login) tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+body:not(.jc-admin-login) tbody tr:hover {
+  background: var(--jc-surface-hover) !important;
+}
+
+body:not(.jc-admin-login) #result_list tbody td,
+body:not(.jc-admin-login) .module table td,
+body:not(.jc-admin-login) .module table th {
+  border-color: var(--jc-border) !important;
+  color: var(--jc-text) !important;
+}
+
+body:not(.jc-admin-login) a:link,
+body:not(.jc-admin-login) a:visited {
+  color: var(--jc-gold) !important;
+}
+
+body:not(.jc-admin-login) .button,
+body:not(.jc-admin-login) input[type="submit"],
+body:not(.jc-admin-login) input[type="button"],
+body:not(.jc-admin-login) .submit-row input,
+body:not(.jc-admin-login) button {
+  background: var(--jc-navy) !important;
+  color: #fff !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  border-radius: 8px !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+}
+
+body:not(.jc-admin-login) .button.default,
+body:not(.jc-admin-login) input[type="submit"].default,
+body:not(.jc-admin-login) .submit-row input.default {
+  background: var(--jc-gold) !important;
+  color: var(--jc-navy-deep) !important;
+  border-color: var(--jc-gold) !important;
+}
+
+body:not(.jc-admin-login) .button:hover,
+body:not(.jc-admin-login) input[type="submit"]:hover {
+  background: var(--jc-navy-dark) !important;
+}
+
+body:not(.jc-admin-login) .button.default:hover,
+body:not(.jc-admin-login) input[type="submit"].default:hover {
+  background: var(--jc-gold-hover) !important;
+}
+
+body:not(.jc-admin-login) .deletelink {
+  background: rgba(248, 113, 113, 0.15) !important;
+  color: #fca5a5 !important;
+}
+
+body:not(.jc-admin-login) input,
+body:not(.jc-admin-login) select,
+body:not(.jc-admin-login) textarea {
+  background: var(--jc-elevated) !important;
+  border: 1px solid var(--jc-border) !important;
+  color: var(--jc-text) !important;
+  border-radius: 8px !important;
+}
+
+body:not(.jc-admin-login) input:focus,
+body:not(.jc-admin-login) select:focus,
+body:not(.jc-admin-login) textarea:focus {
+  border-color: var(--jc-gold) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+}
+
+body:not(.jc-admin-login) .help,
+body:not(.jc-admin-login) .quiet,
+body:not(.jc-admin-login) p.help {
+  color: var(--jc-text-3) !important;
+}
+
+body:not(.jc-admin-login) .paginator {
+  color: var(--jc-text-2) !important;
+}
+
+body:not(.jc-admin-login) .paginator a:link,
+body:not(.jc-admin-login) .paginator a:visited {
+  background: var(--jc-surface) !important;
+  border: 1px solid var(--jc-border) !important;
+}
+
+body:not(.jc-admin-login) .object-tools a {
+  background: var(--jc-gold) !important;
+  color: var(--jc-navy-deep) !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  font-size: 0.6875rem !important;
+}
+
+body:not(.jc-admin-login) #changelist-filter {
+  background: var(--jc-surface) !important;
+  border: 1px solid var(--jc-border) !important;
+  border-radius: var(--jc-radius) !important;
+}
+
+body:not(.jc-admin-login) #changelist-filter h2 {
+  background: var(--jc-navy) !important;
+  color: #fff !important;
+}
+
+body:not(.jc-admin-login) #changelist-filter li.selected a {
+  color: var(--jc-gold) !important;
+}
+
+body:not(.jc-admin-login) .messagelist .success {
+  background: rgba(52, 211, 153, 0.12) !important;
+  color: var(--jc-success) !important;
+}
+
+body:not(.jc-admin-login) .messagelist .error {
+  background: rgba(248, 113, 113, 0.12) !important;
+  color: #fca5a5 !important;
+}
+
+/* Hide Django's light/dark toggle — we use a fixed Jalaram dark theme */
+body:not(.jc-admin-login) .theme-toggle {
+  display: none !important;
+}
+
+/* Force dark surfaces even when Django theme is set to light/auto */
+body:not(.jc-admin-login)[data-theme="light"] .module,
+body:not(.jc-admin-login)[data-theme="auto"] .module,
+body:not(.jc-admin-login)[data-theme="light"] #changelist,
+body:not(.jc-admin-login)[data-theme="auto"] #changelist,
+body:not(.jc-admin-login)[data-theme="light"] #content-related .module,
+body:not(.jc-admin-login)[data-theme="auto"] #content-related .module {
+  background: var(--jc-surface) !important;
+  color: var(--jc-text) !important;
+}
+
+body:not(.jc-admin-login)[data-theme="light"] .module table tr,
+body:not(.jc-admin-login)[data-theme="auto"] .module table tr,
+body:not(.jc-admin-login)[data-theme="light"] #result_list tbody tr,
+body:not(.jc-admin-login)[data-theme="auto"] #result_list tbody tr {
+  background: transparent !important;
+}
+
+body:not(.jc-admin-login)[data-theme="light"] .module table td,
+body:not(.jc-admin-login)[data-theme="auto"] .module table td,
+body:not(.jc-admin-login)[data-theme="light"] .module table th,
+body:not(.jc-admin-login)[data-theme="auto"] .module table th {
+  color: var(--jc-text) !important;
+  border-color: var(--jc-border) !important;
+}
+
+/* ── Dashboard index ── */
+body.jc-admin-dashboard #content {
+  max-width: 960px;
+}
+
+body.jc-admin-dashboard #content h1 {
+  color: var(--jc-text) !important;
+  font-weight: 700 !important;
+  font-size: 1.35rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.jc-admin-dash__lead {
+  margin: 0 0 1.25rem;
+  color: var(--jc-text-2);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.jc-admin-dash__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.jc-admin-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem;
+  background: var(--jc-surface);
+  border: 1px solid var(--jc-border);
+  border-radius: var(--jc-radius);
+  box-shadow: var(--jc-shadow);
+}
+
+.jc-admin-stat strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--jc-gold);
+}
+
+.jc-admin-stat span {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--jc-text-2);
+}
+
+.jc-admin-stat.is-warn {
+  border-color: rgba(251, 191, 36, 0.45);
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.jc-admin-stat.is-warn strong {
+  color: #fbbf24;
+}
+
+.jc-admin-stat.is-err {
+  border-color: rgba(248, 113, 113, 0.45);
+  background: rgba(248, 113, 113, 0.06);
+}
+
+.jc-admin-stat.is-err strong {
+  color: #f87171;
+}
+
+.jc-admin-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.jc-admin-links a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  background: var(--jc-surface);
+  border: 1px solid var(--jc-border);
+  border-radius: 8px;
+  color: var(--jc-gold) !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.jc-admin-links a:hover {
+  background: var(--jc-surface-hover);
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.jc-admin-links a.is-gold {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.4);
+  font-weight: 600;
+}
+
+body:not(.jc-admin-login) #footer:empty {
+  display: none;
+}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="jc-page-hero">
+  <div class="jc-page-hero__inner">
+    <nav class="jc-breadcrumb"><a href="/">Home</a><span>/</span><span>My Account</span></nav>
+    <h1>My Account</h1>
+    <p>Sign in to track orders, download invoices, and enjoy faster checkout.</p>
+  </div>
+</section>
+
+<main class="jc-account jc-container">
+  <div id="account-root">
+    <div class="jc-empty" style="min-height:30vh"><iconify-icon icon="lucide:loader-2" class="jc-spin"></iconify-icon><p>Loading your account…</p></div>
+  </div>
+</main>
+{% endblock %}
+
+{% block page_scripts %}
+<script type="module" src="/assets/js/account.js?v=1"></script>
+{% endblock %}

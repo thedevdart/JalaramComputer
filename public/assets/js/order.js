@@ -86,6 +86,10 @@ function render(o) {
 
   const print = document.getElementById('print-invoice');
   if (print) print.addEventListener('click', () => window.print());
+  if (sessionStorage.getItem('jc-print-invoice')) {
+    sessionStorage.removeItem('jc-print-invoice');
+    setTimeout(() => window.print(), 400);
+  }
   document.title = `Order ${o.orderId} Confirmed — Jalaram Computers`;
 }
 

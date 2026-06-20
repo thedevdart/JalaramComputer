@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="jc-page-hero">
+  <div class="jc-page-hero__inner">
+    <nav class="jc-breadcrumb"><a href="/">Home</a><span>/</span><span>Services</span></nav>
+    <h1>Our Services</h1>
+    <p>Professional IT repair, networking, CCTV installation, and support — Mumbai's trusted team since 1996.</p>
+  </div>
+</section>
+
+<main class="jc-services-page">
+  <div class="jc-container">
+    <div class="jc-services-page__grid">
+      <article class="jc-service-card">
+        <iconify-icon icon="lucide:monitor-cog"></iconify-icon>
+        <h3>Computer Repair</h3>
+        <p>Hardware &amp; software diagnostics, upgrades, and restoration.</p>
+      </article>
+      <article class="jc-service-card">
+        <iconify-icon icon="lucide:laptop"></iconify-icon>
+        <h3>Laptop Repair</h3>
+        <p>Screen replacement, battery, motherboard, and OS repairs.</p>
+      </article>
+      <article class="jc-service-card">
+        <iconify-icon icon="lucide:wifi"></iconify-icon>
+        <h3>Networking</h3>
+        <p>LAN, Wi-Fi setup, server configuration, and internet solutions.</p>
+      </article>
+      <article class="jc-service-card">
+        <iconify-icon icon="lucide:camera"></iconify-icon>
+        <h3>CCTV Installation</h3>
+        <p>HD cameras, DVR/NVR setup, remote monitoring solutions.</p>
+      </article>
+      <article class="jc-service-card">
+        <iconify-icon icon="lucide:monitor-smartphone"></iconify-icon>
+        <h3>Remote Support</h3>
+        <p>Instant remote desktop assistance for quick issue resolution.</p>
+      </article>
+      <article class="jc-service-card">
+        <iconify-icon icon="lucide:printer"></iconify-icon>
+        <h3>Printer Services</h3>
+        <p>Installation, cartridge refill, and printer troubleshooting.</p>
+      </article>
+    </div>
+
+    <div class="jc-services-page__cta">
+      <a href="/book-service" class="jc-btn jc-btn--accent">
+        <iconify-icon icon="lucide:calendar-plus"></iconify-icon>
+        Book a Service
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}

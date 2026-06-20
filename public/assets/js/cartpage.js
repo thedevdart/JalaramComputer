@@ -13,7 +13,8 @@ const totalEl = document.getElementById('cart-total');
 const proceedBtn = document.getElementById('proceed-checkout-btn');
 const promoStatus = document.getElementById('cart-promo-status');
 
-let discount = 0;
+const PROMO_KEY = 'jc-cart-promo-discount';
+let discount = Number(sessionStorage.getItem(PROMO_KEY)) || 0;
 
 function itemHTML(it) {
   const media = it.imageUrl
@@ -59,6 +60,8 @@ function render() {
   if (!cart.length) {
     grid.style.display = 'none';
     emptyEl.style.display = 'flex';
+    discount = 0;
+    sessionStorage.removeItem(PROMO_KEY);
     return;
   }
   grid.style.display = '';
@@ -91,15 +94,22 @@ document.getElementById('cart-promo-apply').addEventListener('click', () => {
   });
   if (d > 0) {
     discount = d;
+    sessionStorage.setItem(PROMO_KEY, String(d));
     promoStatus.textContent = `Code applied — you saved ${formatINR(d)}.`;
     promoStatus.classList.add('is-ok');
   } else {
     discount = 0;
+    sessionStorage.removeItem(PROMO_KEY);
     promoStatus.textContent = 'This code is not valid for the items in your cart.';
     promoStatus.classList.add('is-err');
   }
   renderTotals();
 });
+
+if (discount > 0) {
+  promoStatus.textContent = `Promo applied — you saved ${formatINR(discount)}.`;
+  promoStatus.classList.add('is-ok');
+}
 
 window.addEventListener('cart:change', render);
 render();

@@ -21,9 +21,14 @@
                autocomplete="off" aria-label="Search products">
       </form>
 
-      <a href="/cart" id="nav-cart-link" class="jc-cart" aria-label="Shopping cart">
+      <a href="/account" id="nav-account-link" class="jc-account-link" aria-label="My Account" title="My Account">
+        <iconify-icon icon="lucide:user"></iconify-icon>
+        <span id="header-profile-dot" class="jc-account-link__dot" hidden aria-hidden="true"></span>
+      </a>
+
+      <a href="/cart" id="nav-cart-link" class="jc-nav-cart" aria-label="Shopping cart">
         <iconify-icon icon="lucide:shopping-bag"></iconify-icon>
-        <span class="jc-cart__count" data-cart-count>0</span>
+        <span class="jc-nav-cart__count" data-cart-count>0</span>
       </a>
 
       <button type="button" id="mobile-menu-btn" class="jc-burger" aria-label="Open menu"
