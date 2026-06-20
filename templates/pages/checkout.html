@@ -1,0 +1,265 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Page: checkout | from public/checkout.html -->
+<div class="min-h-screen bg-alabaster font-sans text-charcoal flex flex-col">
+    
+    <sd-component componentid="8bf2a768-07f2-4180-9799-b1e7e380eba3" name="Header" props="{&quot;activeItem&quot;:&quot;shop&quot;, &quot;homeHref&quot;:&quot;/ &quot;shopHref&quot;:&quot;/shop &quot;cartHref&quot;:&quot;/cart" data-rendered="true" data-version="1">  <div class="bg-primary-deeper text-silver-light anim-slide-down" style="border-bottom: 1px solid rgba(192,192,192,0.1);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-10 text-xs tracking-widest uppercase">
+      <div class="flex items-center gap-6">
+        <span class="flex items-center gap-2">
+          <iconify-icon icon="lucide:phone" class="text-accent text-sm"></iconify-icon>
+          9892848643
+        </span>
+        <span class="hidden md:flex items-center gap-2">
+          <iconify-icon icon="lucide:mail" class="text-accent text-sm"></iconify-icon>
+          jalaramcomputers21@gmail.com
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="hidden lg:inline">Free Technical Support</span>
+        <span class="text-accent">—</span>
+        <span>Fast Delivery</span>
+      </div>
+    </div>
+  </div>
+
+  </sd-component>
+
+    <main class="flex-1 py-8 px-4 lg:px-6 max-w-5xl mx-auto w-full" style="view-transition-name: main-content">
+      
+      <!-- PROGRESS BAR -->
+      <div class="max-w-xl mx-auto mb-8 anim-fade-up">
+        <div class="flex items-center justify-between relative">
+          <!-- Line Background -->
+          <div class="absolute top-1/2 left-0 w-full h-px bg-silver-light -z-10 -translate-y-1/2"></div>
+          <!-- Progress Fill -->
+          <div class="absolute top-1/2 left-0 w-1/3 h-px bg-primary -z-10 -translate-y-1/2"></div>
+          
+          <!-- Steps -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-10 h-10 bg-primary flex items-center justify-center text-white border border-primary">
+              <iconify-icon icon="lucide:check" class="text-lg"></iconify-icon>
+            </div>
+            <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-primary">Cart</span>
+          </div>
+          
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-10 h-10 bg-white flex items-center justify-center text-primary border-2 border-primary">
+              <span class="font-serif italic">2</span>
+            </div>
+            <span class="text-[10px] tracking-[0.2em] uppercase font-bold text-primary">Shipping</span>
+          </div>
+          
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-10 h-10 bg-white flex items-center justify-center text-silver border border-silver-light">
+              <span class="font-serif italic">3</span>
+            </div>
+            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-silver">Payment</span>
+          </div>
+          
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-10 h-10 bg-white flex items-center justify-center text-silver border border-silver-light">
+              <span class="font-serif italic">4</span>
+            </div>
+            <span class="text-[10px] tracking-[0.2em] uppercase font-medium text-silver">Done</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-8">
+        <!-- LEFT COLUMN: SHIPPING & DELIVERY -->
+        <div class="lg:col-span-7 space-y-8 anim-fade-up" style="animation-delay: 0.2s">
+          
+          <!-- Shipping Address -->
+          <section>
+            <div class="flex items-baseline gap-4 mb-5"><h2 class="font-serif text-xl font-semibold tracking-tight">Shipping <span class="italic text-primary">Address</span></h2>
+              <div class="flex-1 h-px bg-silver-light"></div>
+            </div>
+            
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-5">
+              <div class="space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">Full Name</label>
+                <input type="text" id="checkout-name" placeholder="e.g. Rajesh Kumar" class="checkout-input font-medium">
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">Email Address</label>
+                <input type="email" id="checkout-email" placeholder="e.g. rajesh@example.com" class="checkout-input font-medium">
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">Phone Number</label>
+                <input type="tel" id="checkout-phone" placeholder="e.g. +91 9892848643" class="checkout-input font-medium">
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">Pincode</label>
+                <input type="text" id="checkout-pincode" placeholder="6-digit code" class="checkout-input font-medium">
+              </div>
+              <div class="md:col-span-2 space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">Full Address</label>
+                <input type="text" id="checkout-address" placeholder="Apt, Street, Area..." class="checkout-input font-medium">
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">City</label>
+                <input type="text" id="checkout-city" placeholder="e.g. Mumbai" class="checkout-input font-medium">
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">State</label>
+                <input type="text" id="checkout-state" placeholder="e.g. Maharashtra" class="checkout-input font-medium">
+              </div>
+              <div class="md:col-span-2 space-y-2">
+                <label class="text-[10px] tracking-[0.2em] uppercase font-bold text-charcoal/60">GST Number (Optional)</label>
+                <input type="text" id="checkout-gst" placeholder="e.g. 27AACJC2026P1Z3" class="checkout-input font-medium uppercase">
+              </div>
+            </form>
+          </section>
+
+          <!-- Delivery Methods -->
+          <section>
+            <div class="flex items-baseline gap-4 mb-5"><h2 class="font-serif text-xl font-semibold tracking-tight">Delivery <span class="italic text-primary">Method</span></h2>
+              <div class="flex-1 h-px bg-silver-light"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="relative">
+                <input type="radio" name="delivery" id="standard" class="hidden custom-radio" checked="">
+                <label for="standard" class="block p-4 border border-silver-light hover:border-accent transition-all cursor-pointer group">
+                  <div class="flex justify-between items-start mb-4">
+                    <div class="w-4 h-4 border border-silver-light radio-circle transition-colors"></div>
+                    <span class="text-primary font-bold">Free</span>
+                  </div>
+                  <h4 class="text-[11px] tracking-[0.2em] uppercase font-bold mb-1">Standard</h4>
+                  <p class="text-warm-gray text-xs">5—7 Business Days</p>
+                </label>
+              </div>
+              
+              <div class="relative">
+                <input type="radio" name="delivery" id="express" class="hidden custom-radio">
+                <label for="express" class="block p-4 border border-silver-light hover:border-accent transition-all cursor-pointer group">
+                  <div class="flex justify-between items-start mb-4">
+                    <div class="w-4 h-4 border border-silver-light radio-circle transition-colors"></div>
+                    <span class="text-primary font-bold">&#8377;299</span>
+                  </div>
+                  <h4 class="text-[11px] tracking-[0.2em] uppercase font-bold mb-1">Express</h4>
+                  <p class="text-warm-gray text-xs">2—3 Business Days</p>
+                </label>
+              </div>
+
+              <div class="relative">
+                <input type="radio" name="delivery" id="overnight" class="hidden custom-radio">
+                <label for="overnight" class="block p-4 border border-silver-light hover:border-accent transition-all cursor-pointer group">
+                  <div class="flex justify-between items-start mb-4">
+                    <div class="w-4 h-4 border border-silver-light radio-circle transition-colors"></div>
+                    <span class="text-primary font-bold">&#8377;750</span>
+                  </div>
+                  <h4 class="text-[11px] tracking-[0.2em] uppercase font-bold mb-1">Overnight</h4>
+                  <p class="text-warm-gray text-xs">Next Morning Delivery</p>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Coupon Code -->
+          <section>
+            <div class="flex items-baseline gap-4 mb-4"><h2 class="font-serif text-base font-semibold tracking-tight">Promo <span class="italic text-primary">Code</span></h2>
+            </div>
+            <div class="flex gap-4 max-w-md">
+              <input type="text" placeholder="Enter coupon code" class="checkout-input font-medium flex-1">
+              <button class="px-8 py-3 bg-charcoal text-white text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-primary transition-colors">
+                Apply
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT COLUMN: ORDER SUMMARY & PAYMENT -->
+        <div class="lg:col-span-5 space-y-4 anim-fade-up" style="animation-delay: 0.4s">
+          
+          <!-- Order Summary Card -->
+          <div class="bg-white border border-silver-light p-5"><h3 class="font-serif text-lg font-semibold mb-5 border-b border-silver-light pb-4">Order <span class="italic text-primary">Summary</span></h3>
+            
+            <!-- Items List -->
+            <div id="checkout-items-summary-container" class="space-y-4 mb-5">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-alabaster border border-silver-light flex items-center justify-center p-2">
+                  <iconify-icon icon="lucide:laptop" class="text-primary text-2xl"></iconify-icon>
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-xs tracking-[0.1em] font-semibold uppercase">HP Pavilion 15 (i5, 16GB)</h4>
+                  <p class="text-warm-gray text-[10px] uppercase mt-1">Quantity: 1</p>
+                </div>
+                <span class="text-sm font-bold">&#8377;52,990</span>
+              </div>
+              
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-alabaster border border-silver-light flex items-center justify-center p-2">
+                  <iconify-icon icon="lucide:mouse" class="text-primary text-2xl"></iconify-icon>
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-xs tracking-[0.1em] font-semibold uppercase">Logitech G502 X Plus</h4>
+                  <p class="text-warm-gray text-[10px] uppercase mt-1">Quantity: 1</p>
+                </div>
+                <span class="text-sm font-bold">&#8377;11,495</span>
+              </div>
+            </div>
+
+            <!-- Totals -->
+            <div class="space-y-3 pt-4 border-t border-silver-light">
+              <div class="flex justify-between text-xs tracking-[0.1em] uppercase text-warm-gray">
+                <span>Subtotal</span>
+                <span class="font-bold">&#8377;64,485</span>
+              </div>
+              <div class="flex justify-between text-xs tracking-[0.1em] uppercase text-warm-gray">
+                <span>Shipping</span>
+                <span class="font-bold">Free</span>
+              </div>
+              <div class="flex justify-between text-xs tracking-[0.1em] uppercase text-warm-gray">
+                <span>Tax (GST 18%)</span>
+                <span class="font-bold">&#8377;11,607</span>
+              </div>
+              <div class="flex justify-between items-baseline pt-4 border-t border-charcoal/10">
+                <span class="text-[11px] tracking-[0.2em] uppercase font-bold">Order Total</span>
+                <span class="font-serif text-2xl font-bold text-primary">&#8377;76,092</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Selection -->
+          <div class="bg-white border border-silver-light p-5"><h3 class="font-serif text-lg font-semibold mb-5 pb-4 border-b border-silver-light">Payment <span class="italic text-primary">Method</span></h3>
+            
+             <div class="space-y-4">
+              <label class="flex items-center gap-4 p-4 border border-accent bg-alabaster/40 hover:bg-white transition-all cursor-pointer group">
+                <input type="radio" name="payment" class="accent-primary w-4 h-4 shadow" checked="">
+                <div class="flex-1">
+                  <span class="text-xs tracking-[0.15em] uppercase font-bold block text-primary">Secure Indian Payment Gateway</span>
+                  <span class="text-[10px] text-warm-gray mt-1 block">Supports secure Google Pay, PhonePe, Cards (Visa/Mastercard/RuPay), Net Banking and live QR Codes.</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap justify-end">
+                  <iconify-icon icon="logos:visa" class="text-xl"></iconify-icon>
+                  <iconify-icon icon="logos:mastercard" class="text-xl"></iconify-icon>
+                  <iconify-icon icon="simple-icons:phonepe" class="text-sm text-amber-600"></iconify-icon>
+                </div>
+              </label>
+             </div>
+
+            <!-- Complete Action -->
+            <a id="cta-complete-payment" href="/order-confirmed" class="btn-gold-slide w-full mt-6 py-3 bg-accent text-primary-deeper text-[11px] tracking-[0.3em] uppercase font-bold flex items-center justify-center gap-3 hover:shadow-xl">
+              Complete Payment
+              <iconify-icon icon="lucide:shield-check" class="text-lg"></iconify-icon>
+            </a>
+            
+            <!-- Trust Indicators -->
+            <div class="mt-5 pt-4 border-t border-silver-light flex flex-col items-center gap-3">
+              <div class="flex items-center gap-3 text-warm-gray">
+                <iconify-icon icon="lucide:lock" class="text-sm"></iconify-icon>
+                <span class="text-[10px] tracking-[0.1em] uppercase">256-Bit SSL Secure Checkout</span>
+              </div>
+              <div class="flex gap-6 opacity-40 grayscale">
+                <iconify-icon icon="logos:norton" class="text-3xl"></iconify-icon>
+                <iconify-icon icon="logos:mcafee" class="text-3xl"></iconify-icon>
+                <iconify-icon icon="logos:pci" class="text-3xl"></iconify-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+{% endblock %}

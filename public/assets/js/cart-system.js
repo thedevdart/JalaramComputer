@@ -1,6 +1,19 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, getDocs, collection, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import {
+  db as backendDb,
+  initBackend,
+  onProductsSnapshot,
+  onAuthStateChanged,
+  fetchShopSettings,
+  fetchHeroSlides,
+  saveOrder,
+  fetchMyOrders,
+  saveContactQuery,
+  saveServiceBooking,
+  loginWithEmailApi,
+  registerWithEmailApi,
+  logoutApi,
+  notifyAuthChange,
+} from './jalaram-api.js';
 
 // Safe scoped fallback proxies for localStorage and sessionStorage to support sandboxed iframes
 let localStorage;
@@ -31,7 +44,7 @@ try {
   };
 }
 
-let firebaseApp, firebaseAuth, googleProvider, db;
+let db = null;
 let currentUser = null;
 let googleAccessToken = null;
 let portalOrdersUnsubscribe = null;
@@ -469,8 +482,9 @@ function initServicesHero() {
 
   const headingPanel = document.getElementById('hero-heading-panel');
 
-  const heroInner = document.getElementById('hero-inner') || hero.querySelector('.max-w-7xl');
-  let controls = document.getElementById('hero-controls');
+  const heroInner = document.getElementById('hero-inner') || hero.querySelector('.jc-hero__inner') || hero.querySelector('.max-w-7xl');
+  let controls = document.getElementById('hero-controls') || hero.querySelector('.jc-hero__controls');
+  if (controls && !controls.id) controls.id = 'hero-controls';
   if (!controls) {
     controls = document.createElement('div');
     controls.id = 'hero-controls';
@@ -557,20 +571,15 @@ function initServicesHero() {
 }
 
 async function loadHeroSlidesFromBackend() {
-  if (db) {
-    try {
-      const snap = await getDoc(doc(db, 'settings', 'hero_slides'));
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data?.slides?.length) {
-          const merged = mergeHeroSlidesWithDefaults(data);
-          localStorage.setItem(HERO_SLIDES_CACHE_KEY, JSON.stringify(merged));
-          return merged;
-        }
-      }
-    } catch (e) {
-      console.warn('Firestore hero slides fetch error:', e);
+  try {
+    const data = await fetchHeroSlides();
+    if (data?.slides?.length) {
+      const merged = mergeHeroSlidesWithDefaults(data);
+      localStorage.setItem(HERO_SLIDES_CACHE_KEY, JSON.stringify(merged));
+      return merged;
     }
+  } catch (e) {
+    console.warn('Hero slides API fetch error:', e);
   }
 
   try {
@@ -633,23 +642,16 @@ function safeConfirm(message, defaultVal = true) {
   }
 }
 
-async function initFirebase() {
+async function initBackendConnection() {
   try {
-    const configRes = await fetch('/firebase-applet-config.json');
-    const firebaseConfig = await configRes.json();
-    firebaseApp = initializeApp(firebaseConfig);
-    firebaseAuth = getAuth(firebaseApp);
-    googleProvider = new GoogleAuthProvider();
-    googleProvider.addScope('https://www.googleapis.com/auth/gmail.send');
-    db = getFirestore(firebaseApp);
+    await initBackend();
+    db = backendDb;
 
-    // Fetch and cache cloud-managed shop/vendor settings on database initialization
     let settingsFetched = false;
     try {
-      const snap = await getDoc(doc(db, 'settings', 'shop_details'));
+      const sData = await fetchShopSettings();
       settingsFetched = true;
-      if (snap.exists()) {
-        const sData = snap.data();
+      if (sData) {
         localStorage.setItem('jalaram_store_details', JSON.stringify(sData));
         if (sData.products_catalog_cleared) {
           localStorage.setItem('products_catalog_cleared', 'true');
@@ -678,17 +680,14 @@ async function initFirebase() {
       console.warn("Hero slides fetching error: ", heroErr);
     }
 
-    // Fetch and live synchronise the products catalog from Firestore to maintain absolute sync with Admin price updates
     try {
-      onSnapshot(collection(db, 'products'), (snap) => {
+      onProductsSnapshot((snap) => {
         let remoteProducts = [];
-        snap.forEach(d => {
+        snap.docs.forEach(d => {
           remoteProducts.push(d.data());
         });
 
         remoteProducts = normalizeProductsCatalog(remoteProducts);
-
-        // Ensure newly entered products always show first by sorting by creation timestamp
         remoteProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         
         const isDbCleared = localStorage.getItem('products_catalog_cleared') === 'true';
@@ -696,22 +695,20 @@ async function initFirebase() {
         if (remoteProducts.length > 0) {
           localStorage.setItem('products_catalog', JSON.stringify(remoteProducts));
           localStorage.removeItem('products_catalog_cleared');
-          console.info("✓ Core product catalog successfully live-synchronized from Firestore collection.");
+          console.info("✓ Core product catalog successfully live-synchronized from server.");
         } else if (remoteProducts.length === 0 && isDbCleared) {
           localStorage.setItem('products_catalog', JSON.stringify([]));
-          console.info("✓ Core product catalog successfully cleared from Firestore collection.");
+          console.info("✓ Core product catalog successfully cleared from server.");
         } else {
           if (settingsFetched) {
             localStorage.setItem('products_catalog', JSON.stringify([]));
             console.info("✓ Core product catalog is empty.");
           } else {
-            console.info("✓ Cloud database is vacant. Keeping offline local/fallback products in-memory for display but NEVER writing them back to cloud.");
+            console.info("✓ Database is vacant. Keeping offline local/fallback products in-memory for display.");
             const currentLocal = localStorage.getItem('products_catalog');
-            let localProductsList = [];
             if (currentLocal) {
               try {
-                localProductsList = JSON.parse(currentLocal);
-                remoteProducts = localProductsList;
+                remoteProducts = JSON.parse(currentLocal);
               } catch (pErr) {
                 console.warn(pErr);
               }
@@ -719,7 +716,6 @@ async function initFirebase() {
           }
         }
 
-        // If currently browsing a specific product detail, update the active selected_product price/properties in real-time
         const activeSelectedStr = localStorage.getItem('selected_product');
         if (activeSelectedStr) {
           try {
@@ -736,7 +732,6 @@ async function initFirebase() {
           }
         }
 
-        // Trigger live catalog visual re-drawing if currently on the catalog/shop view
         if (document.getElementById('products-grid')) {
           try {
             renderShopPage();
@@ -745,7 +740,6 @@ async function initFirebase() {
           }
         }
 
-        // Trigger live featured product visual re-drawing if currently on home page
         if (document.getElementById('featured-products-grid')) {
           try {
             renderHomepageFeaturedProducts();
@@ -753,24 +747,14 @@ async function initFirebase() {
             console.warn("Could not live-draw homepage featured products grid:", renderErr);
           }
         }
-      }, (e) => {
-        console.warn("Real-time products snapshot stream error:", e);
       });
     } catch (e) {
       console.warn("Real-time products registration error: ", e);
     }
 
-    // Restore cached session-token if exists (to prevent logging out on every refresh if active in session)
-    const storedToken = sessionStorage.getItem('google_access_token');
-    if (storedToken) {
-      googleAccessToken = storedToken;
-    }
-
-    onAuthStateChanged(firebaseAuth, async (user) => {
-      const oldUser = currentUser;
+    onAuthStateChanged(async (user) => {
       if (user) {
         currentUser = user;
-        // Clear sandbox fallback session if online Google Auth is active
         localStorage.removeItem('fallback_customer_session');
         updateAuthUis();
         autoFillUserFields();
@@ -787,7 +771,6 @@ async function initFirebase() {
         updateAuthUis();
       }
 
-      // If we are on the checkout page, re-render to update form/login wall as soon as auth is resolved
       const path = window.location.pathname;
       const isCheckoutPage = path === '/checkout' || path.includes('93544c81') || !!document.getElementById('cta-complete-payment') || !!document.getElementById('checkout-name');
       if (isCheckoutPage) {
@@ -805,7 +788,7 @@ async function initFirebase() {
       updateAuthUis();
     }
   } catch (err) {
-    console.warn('FirebaseAuth & Firestore init deferred:', err);
+    console.warn('Backend init deferred:', err);
     const fallbackSess = localStorage.getItem('fallback_customer_session');
     if (fallbackSess && !currentUser) {
       currentUser = JSON.parse(fallbackSess);
@@ -814,11 +797,11 @@ async function initFirebase() {
   }
 }
 
-// Defer Firebase until browser is idle (faster first paint)
+// Defer backend init until browser is idle (faster first paint)
 const scheduleIdleWork = window.requestIdleCallback
   ? (fn) => window.requestIdleCallback(fn, { timeout: 2500 })
   : (fn) => setTimeout(fn, 120);
-scheduleIdleWork(() => initFirebase());
+scheduleIdleWork(() => initBackendConnection());
 
 function openGoogleSandboxModal(onSuccess) {
   const existing = document.getElementById('google-sandbox-modal');
@@ -909,56 +892,22 @@ async function loginWithGoogle() {
     });
   }
 
-  try {
-    if (!firebaseAuth || !googleProvider) {
-      await initFirebase();
-    }
-    const result = await signInWithPopup(firebaseAuth, googleProvider);
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    googleAccessToken = credential?.accessToken || null;
-    if (googleAccessToken) {
-      sessionStorage.setItem('google_access_token', googleAccessToken);
-    }
-    currentUser = result.user;
-    updateAuthUis();
-    autoFillUserFields();
-    if (window.showToast) window.showToast(`Successfully linked Google account: ${currentUser.email}!`);
-    return true;
-  } catch (error) {
-    console.warn('Google sign-in popup failed:', error?.code, error?.message);
-
-    // Surface real configuration errors instead of silently showing the
-    // sandbox-bypass modal (which hides the actual cause on the live site).
-    const code = error?.code || '';
-    const configErrors = {
-      'auth/unauthorized-domain': 'This domain is not authorized for Google sign-in. Add it in Firebase Console → Authentication → Settings → Authorized domains.',
-      'auth/operation-not-allowed': 'Google sign-in is not enabled. Enable it in Firebase Console → Authentication → Sign-in method.',
-      'auth/configuration-not-found': 'Firebase Auth is not configured. Enable Authentication in the Firebase Console.',
-    };
-    if (configErrors[code]) {
-      if (window.showToast) window.showToast(configErrors[code]);
-      return false;
-    }
-
-    // Popup blocked / closed by the user, or running inside a sandboxed
-    // iframe → fall back to the manual sandbox-bypass modal.
-    return new Promise((resolve) => {
-      openGoogleSandboxModal((success) => {
-        resolve(success);
-      });
+  return new Promise((resolve) => {
+    openGoogleSandboxModal((success) => {
+      resolve(success);
     });
-  }
+  });
 }
 
 async function logoutGoogle() {
   try {
-    await signOut(firebaseAuth);
+    await logoutApi();
     googleAccessToken = null;
     sessionStorage.removeItem('google_access_token');
     localStorage.removeItem('fallback_customer_session');
     currentUser = null;
     updateAuthUis();
-    showToast('Disconnected Google account.');
+    showToast('Signed out.');
   } catch (err) {
     console.error('Logout error:', err);
   }
@@ -966,16 +915,15 @@ async function logoutGoogle() {
 
 async function registerWithEmail(email, password, fullName) {
   try {
-    const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-    await updateProfile(userCredential.user, { displayName: fullName });
-    currentUser = userCredential.user;
+    if (!db) await initBackendConnection();
+    currentUser = await registerWithEmailApi(email, password, fullName);
     updateAuthUis();
     autoFillUserFields();
     syncCustomerOrders();
     showToast(`Welcome to Jalaram Computers, ${fullName}!`);
     return true;
   } catch (err) {
-    console.warn("Firebase Email registration, utilizing local secure fallback:", err.message);
+    console.warn("Email registration, utilizing local secure fallback:", err.message);
     const fallbackUser = {
       uid: 'cust-' + Math.floor(100000 + Math.random() * 900000),
       email: email,
@@ -995,15 +943,15 @@ async function registerWithEmail(email, password, fullName) {
 
 async function loginWithEmail(email, password) {
   try {
-    const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
-    currentUser = userCredential.user;
+    if (!db) await initBackendConnection();
+    currentUser = await loginWithEmailApi(email, password);
     updateAuthUis();
     autoFillUserFields();
     syncCustomerOrders();
     showToast(`Welcome back, ${currentUser.displayName || currentUser.email}!`);
     return true;
   } catch (err) {
-    console.warn("Firebase Email login error, falling back to cached profile check:", err.message);
+    console.warn("Email login error, falling back to cached profile check:", err.message);
     const fallbackUser = {
       uid: 'cust-' + Math.floor(100000 + Math.random() * 900000),
       email: email,
@@ -1029,9 +977,7 @@ async function logoutCustomer() {
     portalOrdersUnsubscribe = null;
   }
   try {
-    if (firebaseAuth) {
-      await signOut(firebaseAuth);
-    }
+    await logoutApi();
   } catch (e) {
     console.warn("Signout error ignored:", e);
   }
@@ -1051,31 +997,7 @@ async function syncCustomerOrders() {
   if (!db || !currentUser) return;
   try {
     const localOrders = JSON.parse(localStorage.getItem('customer_orders')) || [];
-    const remoteOrders = [];
-
-    // Fetch by customer.email
-    if (currentUser.email) {
-      const qEmail = query(collection(db, 'orders'), where('customer.email', '==', currentUser.email.toLowerCase().trim()));
-      const snapEmail = await getDocs(qEmail);
-      snapEmail.forEach(doc => {
-        const d = doc.data();
-        if (!remoteOrders.some(r => r.orderId === d.orderId)) {
-          remoteOrders.push(d);
-        }
-      });
-    }
-
-    // Fetch by userId
-    if (currentUser.uid) {
-      const qUid = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
-      const snapUid = await getDocs(qUid);
-      snapUid.forEach(doc => {
-        const d = doc.data();
-        if (!remoteOrders.some(r => r.orderId === d.orderId)) {
-          remoteOrders.push(d);
-        }
-      });
-    }
+    const remoteOrders = await fetchMyOrders();
     
     remoteOrders.forEach(remote => {
       const idx = localOrders.findIndex(l => l.orderId === remote.orderId);
@@ -1102,31 +1024,7 @@ async function fetchCustomerOrders() {
   
   if (db && currentUser) {
     try {
-      const remoteOrders = [];
-
-      // Fetch by customer.email
-      if (currentUser.email) {
-        const qEmail = query(collection(db, 'orders'), where('customer.email', '==', currentUser.email.toLowerCase().trim()));
-        const snapEmail = await getDocs(qEmail);
-        snapEmail.forEach(doc => {
-          const d = doc.data();
-          if (!remoteOrders.some(r => r.orderId === d.orderId)) {
-            remoteOrders.push(d);
-          }
-        });
-      }
-
-      // Fetch by userId
-      if (currentUser.uid) {
-        const qUid = query(collection(db, 'orders'), where('userId', '==', currentUser.uid));
-        const snapUid = await getDocs(qUid);
-        snapUid.forEach(doc => {
-          const d = doc.data();
-          if (!remoteOrders.some(r => r.orderId === d.orderId)) {
-            remoteOrders.push(d);
-          }
-        });
-      }
+      const remoteOrders = await fetchMyOrders();
       
       remoteOrders.forEach(remote => {
         const idx = ordersList.findIndex(l => l.orderId === remote.orderId);
@@ -1760,9 +1658,9 @@ async function submitContactQuery(form) {
 
   if (db) {
     try {
-      await setDoc(doc(db, "queries", ticketId), queryPayload);
+      await saveContactQuery(queryPayload);
     } catch (ferr) {
-      console.warn("Unable to store query in Firestore: ", ferr);
+      console.warn("Unable to store query on server: ", ferr);
     }
   }
 
@@ -2289,26 +2187,22 @@ async function renderCustomerPortalContent() {
     }
     
     if (db && currentUser && currentUser.email) {
-      // Setup dynamic real-time Firestore observer for My Orders based on Email
-      const q = query(
-        collection(db, 'orders'),
-        where('customer.email', '==', currentUser.email.toLowerCase().trim())
-      );
-      
-      portalOrdersUnsubscribe = onSnapshot(q, (snapshot) => {
+      const refreshPortalOrders = async () => {
         let orders = [];
-        snapshot.forEach(doc => {
-          orders.push(doc.data());
-        });
-        
-        // Merge with local orders just in case
+        try {
+          orders = await fetchMyOrders();
+        } catch (err) {
+          console.warn("Orders fetch failed, falling back to static fetch:", err);
+          orders = await fetchCustomerOrders();
+        }
+
         let localOrders = [];
         try {
           localOrders = JSON.parse(localStorage.getItem('customer_orders')) || [];
         } catch (e) {
           localOrders = [];
         }
-        
+
         orders.forEach(remote => {
           const idx = localOrders.findIndex(l => l.orderId === remote.orderId);
           if (idx === -1) {
@@ -2317,19 +2211,18 @@ async function renderCustomerPortalContent() {
             localOrders[idx] = { ...localOrders[idx], ...remote };
           }
         });
-        
+
         try {
           localStorage.setItem('customer_orders', JSON.stringify(localOrders));
         } catch (e) {}
-        
-        // Sort orders descending by ID/date
+
         orders.sort((a, b) => b.orderId.localeCompare(a.orderId));
-        
         displayOrdersList(orders, ordersListEl);
-      }, (err) => {
-        console.warn("Real-time orders stream failed, falling back to static fetch:", err);
-        fallbackToStaticFetch();
-      });
+      };
+
+      refreshPortalOrders();
+      const portalOrdersPoll = setInterval(refreshPortalOrders, 20000);
+      portalOrdersUnsubscribe = () => clearInterval(portalOrdersPoll);
     } else {
       fallbackToStaticFetch();
     }
@@ -4848,12 +4741,12 @@ document.addEventListener('DOMContentLoaded', function() {
             orderDetails.paid = true;
             orderDetails.status = "Paid"; // Ensure default status is Paid for digital gateway payments!
 
-            // Set default status and save order securely to Cloud Firestore & local lists
+            // Set default status and save order securely to the backend & local lists
             if (db) {
               try {
-                await setDoc(doc(db, "orders", orderDetails.orderId), orderDetails);
+                await saveOrder(orderDetails);
               } catch (fireErr) {
-                console.warn("Unable to save order to Firestore: ", fireErr);
+                console.warn("Unable to save order to server: ", fireErr);
               }
             }
             try {
@@ -5849,6 +5742,14 @@ document.addEventListener('DOMContentLoaded', function() {
       const currentBookings = JSON.parse(localStorage.getItem('service_bookings') || '[]');
       currentBookings.push(bookingDetails);
       localStorage.setItem('service_bookings', JSON.stringify(currentBookings));
+
+      if (db) {
+        try {
+          await saveServiceBooking(bookingDetails);
+        } catch (bookingErr) {
+          console.warn('Unable to save service booking to server:', bookingErr);
+        }
+      }
 
       // Send Email if we have an access token
       if (googleAccessToken) {

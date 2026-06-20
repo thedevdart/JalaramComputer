@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "jalaram-dev",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["ts-node", "server.ts"],
-      "port": 3000,
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["manage.py", "runserver", "8000"],
+      "port": 8000,
       "autoPort": true
     }
   ]

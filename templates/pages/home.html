@@ -1,0 +1,528 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="jc-home">
+
+  <!-- Scroll-stack position dots (desktop only) -->
+  <nav class="jc-dots" aria-label="Sections">
+    <button class="jc-dots__dot is-active" data-panel="0" aria-label="Home"></button>
+    <button class="jc-dots__dot" data-panel="1" aria-label="Categories"></button>
+    <button class="jc-dots__dot" data-panel="2" aria-label="Products"></button>
+    <button class="jc-dots__dot" data-panel="3" aria-label="Services"></button>
+    <button class="jc-dots__dot" data-panel="4" aria-label="Offers"></button>
+    <button class="jc-dots__dot" data-panel="5" aria-label="Reviews"></button>
+    <button class="jc-dots__dot" data-panel="6" aria-label="Brands & newsletter"></button>
+  </nav>
+
+  <div class="jc-stack">
+
+    <!-- ============ PANEL 1 · Hero slideshow ============ -->
+    <section class="jc-panel jc-panel--hero jc-panel--deep" style="--pz:1" aria-label="Welcome">
+      <div class="jc-hero-shell">
+
+        <div class="jc-ribbon">
+          <div class="jc-ribbon__inner">
+            <div class="jc-ribbon__group">
+              <span class="jc-ribbon__item"><iconify-icon icon="lucide:phone"></iconify-icon> 9892848643</span>
+              <span class="jc-ribbon__item is-wide"><iconify-icon icon="lucide:mail"></iconify-icon> jalaramcomputers21@gmail.com</span>
+            </div>
+            <div class="jc-ribbon__group">
+              <span class="is-wide">Free Technical Support</span>
+              <span class="jc-ribbon__sep is-wide">&#9830;</span>
+              <span>Fast Delivery</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="services-hero" class="jc-hero">
+          <div id="hero-bg-layers" aria-hidden="true">
+            <div class="hero-bg-layer active" data-align="left" style="background-image:url('/assets/images/hero/instant_support.webp')"></div>
+            <div class="hero-bg-layer" data-align="right" style="background-image:url('/assets/images/hero/networking_support.webp')"></div>
+            <div class="hero-bg-layer" data-align="left" style="background-image:url('/assets/images/hero/printers_repair.webp')"></div>
+            <div class="hero-bg-layer" data-align="right" style="background-image:url('/assets/images/hero/computer_repair.webp')"></div>
+            <div class="hero-bg-layer" data-align="left" style="background-image:url('/assets/images/hero/laptop_repair.webp')"></div>
+            <div class="hero-bg-layer" data-align="right" style="background-image:url('/assets/images/hero/cctv_installation.webp')"></div>
+          </div>
+          <div id="hero-bg-overlay" class="hero-overlay-left"></div>
+
+          <div class="jc-hero__inner">
+            <div id="hero-content-wrap" class="hero-content-left">
+              <div id="hero-heading-panel" class="jc-hero__copy hero-align-left">
+                <span id="hero-eyebrow" class="jc-hero__eyebrow hero-line">Mumbai&apos;s Trusted IT Partner</span>
+                <h1 id="hero-title" class="hero-line hero-line--delay-1">Instant Support</h1>
+                <p id="hero-subtitle" class="hero-line hero-line--delay-2">Remote &amp; on-site IT help — same-day response for urgent issues</p>
+                <a id="hero-cta" href="/services" class="btn-gold hero-line hero-line--delay-3">
+                  Get Support <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+                </a>
+              </div>
+            </div>
+
+            <div id="hero-controls" class="jc-hero__controls hero-controls">
+              <div id="hero-dots" class="hero-dots" role="tablist" aria-label="Hero slides">
+                <button type="button" class="hero-dot hero-dot--active" data-index="0" aria-label="Slide 1"></button>
+                <button type="button" class="hero-dot" data-index="1" aria-label="Slide 2"></button>
+                <button type="button" class="hero-dot" data-index="2" aria-label="Slide 3"></button>
+                <button type="button" class="hero-dot" data-index="3" aria-label="Slide 4"></button>
+                <button type="button" class="hero-dot" data-index="4" aria-label="Slide 5"></button>
+                <button type="button" class="hero-dot" data-index="5" aria-label="Slide 6"></button>
+              </div>
+              <div class="hero-nav-btns">
+                <button type="button" id="hero-prev" class="hero-nav-btn" aria-label="Previous slide"><iconify-icon icon="lucide:chevron-left"></iconify-icon></button>
+                <button type="button" id="hero-next" class="hero-nav-btn" aria-label="Next slide"><iconify-icon icon="lucide:chevron-right"></iconify-icon></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="hero-stats-bar" class="jc-stats">
+          <div class="jc-stats__grid">
+            <div class="jc-stats__item">
+              <span id="stat-uptime" class="jc-stats__value jc-stats__value--gold">0%</span>
+              <span class="jc-stats__label">System Uptime</span>
+            </div>
+            <div class="jc-stats__item">
+              <span id="stat-nodes" class="jc-stats__value jc-stats__value--white">0</span>
+              <span class="jc-stats__label">Active Nodes Deployed</span>
+            </div>
+            <div class="jc-stats__item">
+              <span id="stat-projects" class="jc-stats__value jc-stats__value--silver">0</span>
+              <span class="jc-stats__label">Infrastructure Projects</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="jc-scroll-hint" aria-hidden="true">
+        <span>Scroll</span>
+        <i></i>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 2 · Categories ============ -->
+    <section class="jc-panel jc-panel--cream" style="--pz:2" aria-label="Browse by category">
+      <div class="jc-panel__inner">
+        <div class="jc-head">
+          <div>
+            <span class="jc-kicker">Browse by Category</span>
+            <h2 class="jc-title">Find What <em>You Need</em></h2>
+          </div>
+          <a href="/shop" class="jc-link">View All Categories <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+        </div>
+        <div class="jc-cats">
+          <a href="/shop" class="category-card">
+            <iconify-icon icon="lucide:laptop" class="cat-icon"></iconify-icon>
+            <h3>Laptops</h3><p>120+ Models</p>
+          </a>
+          <a href="/shop" class="category-card">
+            <iconify-icon icon="lucide:monitor" class="cat-icon"></iconify-icon>
+            <h3>Desktop PCs</h3><p>80+ Builds</p>
+          </a>
+          <a href="/shop" class="category-card">
+            <iconify-icon icon="lucide:printer" class="cat-icon"></iconify-icon>
+            <h3>Printers</h3><p>45+ Models</p>
+          </a>
+          <a href="/shop" class="category-card">
+            <iconify-icon icon="lucide:mouse" class="cat-icon"></iconify-icon>
+            <h3>Accessories</h3><p>300+ Items</p>
+          </a>
+          <a href="/shop" class="category-card">
+            <iconify-icon icon="lucide:wifi" class="cat-icon"></iconify-icon>
+            <h3>Networking</h3><p>60+ Products</p>
+          </a>
+          <a href="/shop" class="category-card">
+            <iconify-icon icon="lucide:cctv" class="cat-icon"></iconify-icon>
+            <h3>CCTV Systems</h3><p>35+ Setups</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 3 · Featured products ============ -->
+    <section class="jc-panel jc-panel--paper" style="--pz:3" aria-label="Featured products">
+      <div class="jc-panel__inner">
+        <div class="jc-head">
+          <div>
+            <span class="jc-kicker">Curated Selection</span>
+            <h2 class="jc-title">Featured <em>Products</em></h2>
+          </div>
+          <a href="/shop" class="jc-link">View All Products <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+        </div>
+
+        <%# Static fallback cards — cart-system.js replaces these with live data when available %>
+        <div id="featured-products-grid" class="jc-products">
+          <div class="product-card" data-id="hp-pavilion-15">
+            <div class="product-card__media">
+              <iconify-icon icon="lucide:laptop"></iconify-icon>
+              <span class="product-card__badge product-card__badge--gold">New</span>
+              <div class="product-card__quick">
+                <button aria-label="Quick view"><iconify-icon icon="lucide:eye"></iconify-icon></button>
+                <button aria-label="Wishlist"><iconify-icon icon="lucide:heart"></iconify-icon></button>
+                <button aria-label="Compare"><iconify-icon icon="lucide:shuffle"></iconify-icon></button>
+              </div>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__brand">HP</p>
+              <h3 class="product-card__name">HP Pavilion 15 — Intel i5 12th Gen, 16GB RAM, 512GB SSD</h3>
+              <div class="product-card__stars">
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-off"></iconify-icon>
+                <span>(48)</span>
+              </div>
+              <div class="product-card__price"><b>₹53,000</b><s>₹60,000</s></div>
+              <button class="product-card__cta"><iconify-icon icon="lucide:shopping-bag"></iconify-icon> Add to Cart</button>
+            </div>
+          </div>
+
+          <div class="product-card" data-id="dell-optiplex-7010">
+            <div class="product-card__media">
+              <iconify-icon icon="lucide:monitor"></iconify-icon>
+              <span class="product-card__badge product-card__badge--navy">Bestseller</span>
+              <div class="product-card__quick">
+                <button aria-label="Quick view"><iconify-icon icon="lucide:eye"></iconify-icon></button>
+                <button aria-label="Wishlist"><iconify-icon icon="lucide:heart"></iconify-icon></button>
+                <button aria-label="Compare"><iconify-icon icon="lucide:shuffle"></iconify-icon></button>
+              </div>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__brand">Dell</p>
+              <h3 class="product-card__name">Dell OptiPlex 7010 Tower — i7, 32GB, 1TB SSD, Win 11 Pro</h3>
+              <div class="product-card__stars">
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <span>(72)</span>
+              </div>
+              <div class="product-card__price"><b>₹79,000</b><s>₹89,000</s></div>
+              <button class="product-card__cta"><iconify-icon icon="lucide:shopping-bag"></iconify-icon> Add to Cart</button>
+            </div>
+          </div>
+
+          <div class="product-card" data-id="logitech-g502-x">
+            <div class="product-card__media">
+              <iconify-icon icon="lucide:gamepad-2"></iconify-icon>
+              <span class="product-card__badge product-card__badge--charcoal">-25%</span>
+              <div class="product-card__quick">
+                <button aria-label="Quick view"><iconify-icon icon="lucide:eye"></iconify-icon></button>
+                <button aria-label="Wishlist"><iconify-icon icon="lucide:heart"></iconify-icon></button>
+                <button aria-label="Compare"><iconify-icon icon="lucide:shuffle"></iconify-icon></button>
+              </div>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__brand">Logitech</p>
+              <h3 class="product-card__name">Logitech G502 X Plus — Wireless Gaming Mouse, RGB, 25K Sensor</h3>
+              <div class="product-card__stars">
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <span>(136)</span>
+              </div>
+              <div class="product-card__price"><b>₹11,500</b><s>₹15,000</s></div>
+              <button class="product-card__cta"><iconify-icon icon="lucide:shopping-bag"></iconify-icon> Add to Cart</button>
+            </div>
+          </div>
+
+          <div class="product-card" data-id="hp-smart-tank-580">
+            <div class="product-card__media">
+              <iconify-icon icon="lucide:printer"></iconify-icon>
+              <span class="product-card__badge product-card__badge--gold">Hot</span>
+              <div class="product-card__quick">
+                <button aria-label="Quick view"><iconify-icon icon="lucide:eye"></iconify-icon></button>
+                <button aria-label="Wishlist"><iconify-icon icon="lucide:heart"></iconify-icon></button>
+                <button aria-label="Compare"><iconify-icon icon="lucide:shuffle"></iconify-icon></button>
+              </div>
+            </div>
+            <div class="product-card__body">
+              <p class="product-card__brand">HP</p>
+              <h3 class="product-card__name">HP Smart Tank 580 — All-in-One Wireless, Auto Duplex, High Yield</h3>
+              <div class="product-card__stars">
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-gold"></iconify-icon>
+                <iconify-icon icon="lucide:star" class="star-off"></iconify-icon>
+                <span>(29)</span>
+              </div>
+              <div class="product-card__price"><b>₹17,000</b><s>₹20,000</s></div>
+              <button class="product-card__cta"><iconify-icon icon="lucide:shopping-bag"></iconify-icon> Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 4 · Services ============ -->
+    <section id="services" class="jc-panel jc-panel--navy" style="--pz:4" aria-label="Services">
+      <div class="jc-panel__inner">
+        <div class="jc-services">
+          <div>
+            <span class="jc-kicker">Expert Services</span>
+            <h2 class="jc-title">Professional <em>Repair &amp;</em><br>IT Services</h2>
+            <p class="jc-services__lead">Our certified technicians handle everything from hardware diagnostics and software installation to enterprise networking and CCTV deployment.</p>
+          </div>
+          <div class="jc-services__grid">
+            <div class="jc-service">
+              <iconify-icon icon="lucide:monitor-cog"></iconify-icon>
+              <h3>Computer Repair</h3><p>Hardware &amp; software diagnostics, upgrades, and restoration.</p>
+            </div>
+            <div class="jc-service">
+              <iconify-icon icon="lucide:laptop"></iconify-icon>
+              <h3>Laptop Repair</h3><p>Screen replacement, battery, motherboard, and OS repairs.</p>
+            </div>
+            <div class="jc-service">
+              <iconify-icon icon="lucide:wifi"></iconify-icon>
+              <h3>Networking</h3><p>LAN, Wi-Fi setup, server configuration, and internet solutions.</p>
+            </div>
+            <div class="jc-service">
+              <iconify-icon icon="lucide:camera"></iconify-icon>
+              <h3>CCTV Installation</h3><p>HD cameras, DVR/NVR setup, remote monitoring solutions.</p>
+            </div>
+            <div class="jc-service">
+              <iconify-icon icon="lucide:monitor-smartphone"></iconify-icon>
+              <h3>Remote Support</h3><p>Instant remote desktop assistance for quick issue resolution.</p>
+            </div>
+            <a href="/services" class="jc-service jc-service--cta">
+              <iconify-icon icon="lucide:calendar-plus"></iconify-icon>
+              <span>Book a Service</span>
+              <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 5 · Offers ============ -->
+    <section class="jc-panel jc-panel--cream" style="--pz:5" aria-label="Special offers">
+      <div class="jc-panel__inner">
+        <div class="jc-head jc-head--center">
+          <div>
+            <span class="jc-kicker">Limited Time</span>
+            <h2 class="jc-title">Special <em>Offers</em></h2>
+          </div>
+        </div>
+        <div class="jc-offers">
+          <div class="offer-card offer-card--navy">
+            <span class="offer-card__badge">Save up to 30%</span>
+            <h3>Laptop Season Sale</h3>
+            <p class="offer-card__text">HP, Dell, Lenovo, and ASUS laptops at unbeatable prices. Limited stock available.</p>
+            <a href="/shop" class="offer-card__link">Shop Now <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+          </div>
+          <div class="offer-card offer-card--light">
+            <span class="offer-card__badge offer-card__badge--navy">Flat ₹500 Off</span>
+            <h3>Repair &amp; Service</h3>
+            <p class="offer-card__text offer-card__text--dark">Book any repair service this month and get an instant discount. Use code FIXNOW.</p>
+            <a href="/services" class="offer-card__link offer-card__link--navy">Book Service <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+          </div>
+          <div class="offer-card offer-card--dark">
+            <span class="offer-card__badge">Bundle Deal</span>
+            <h3>Gaming Accessories</h3>
+            <p class="offer-card__text">Buy any gaming keyboard + mouse combo and get a free mousepad worth ₹999.</p>
+            <a href="/shop" class="offer-card__link">Grab Deal <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 6 · Reviews ============ -->
+    <section class="jc-panel jc-panel--paper" style="--pz:6" aria-label="Customer reviews">
+      <div class="jc-panel__inner">
+        <div class="jc-head">
+          <div>
+            <span class="jc-kicker">What Our Clients Say</span>
+            <h2 class="jc-title">Customer <em>Reviews</em></h2>
+          </div>
+          <div class="jc-rating">
+            <div class="jc-rating__stars">
+              <iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon>
+            </div>
+            <span class="jc-rating__score">4.9/5</span>
+            <span class="jc-rating__meta">from 500+ reviews</span>
+          </div>
+        </div>
+        <div class="jc-reviews">
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars">
+              <iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon>
+            </div>
+            <p class="testimonial-card__quote">"Bought an HP laptop for my office. The team at Jalaram guided me perfectly. Excellent pricing and after-sales support. Highly recommended!"</p>
+            <div class="testimonial-card__who">
+              <div class="testimonial-card__avatar testimonial-card__avatar--navy">RP</div>
+              <div><p class="testimonial-card__name">Rajesh Patel</p><p class="testimonial-card__role">Business Owner</p></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars">
+              <iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon>
+            </div>
+            <p class="testimonial-card__quote">"My laptop was completely dead. These guys repaired it in just 2 days and it works like new! Very transparent about costs. No hidden charges."</p>
+            <div class="testimonial-card__who">
+              <div class="testimonial-card__avatar testimonial-card__avatar--gold">SM</div>
+              <div><p class="testimonial-card__name">Sneha Mehta</p><p class="testimonial-card__role">CA Student</p></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars">
+              <iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star" class="star-off"></iconify-icon>
+            </div>
+            <p class="testimonial-card__quote">"Got our entire office networking and CCTV done by Jalaram Computers. Professional installation, clean wiring, and prompt service. Very satisfied."</p>
+            <div class="testimonial-card__who">
+              <div class="testimonial-card__avatar testimonial-card__avatar--dark">AK</div>
+              <div><p class="testimonial-card__name">Amit Kumar</p><p class="testimonial-card__role">IT Manager</p></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-card__stars">
+              <iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon><iconify-icon icon="lucide:star"></iconify-icon>
+            </div>
+            <p class="testimonial-card__quote">"Best gaming accessories collection! I got my entire setup — keyboard, mouse, headset — all at great prices. The team really knows their stuff."</p>
+            <div class="testimonial-card__who">
+              <div class="testimonial-card__avatar testimonial-card__avatar--ink">VS</div>
+              <div><p class="testimonial-card__name">Vikram Shah</p><p class="testimonial-card__role">Gamer</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PANEL 7 · Brands + Newsletter ============ -->
+    <section class="jc-panel jc-panel--deep" style="--pz:7" aria-label="Brands and newsletter">
+      <div class="jc-panel__inner">
+        <div class="jc-brands">
+          <div class="jc-head--center">
+            <span class="jc-kicker">Authorised Partner</span>
+            <h2 class="jc-title">Trusted <em>Brands</em></h2>
+          </div>
+          <div class="jc-brands__marquee">
+            <div class="jc-brands__track">
+              <div class="jc-brands__set">
+                <span>HP</span><span>DELL</span><span>LENOVO</span><span>ASUS</span><span>ACER</span><span>LOGITECH</span><span>EPSON</span><span>CANON</span><span>TP-LINK</span><span>MICROSOFT</span><span>SAMSUNG</span><span>D-LINK</span>
+              </div>
+              <div class="jc-brands__set" aria-hidden="true">
+                <span>HP</span><span>DELL</span><span>LENOVO</span><span>ASUS</span><span>ACER</span><span>LOGITECH</span><span>EPSON</span><span>CANON</span><span>TP-LINK</span><span>MICROSOFT</span><span>SAMSUNG</span><span>D-LINK</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="jc-news">
+          <span class="jc-kicker">Stay Updated</span>
+          <h2>Get <em>Exclusive</em> Deals</h2>
+          <p>Subscribe to our newsletter for the latest product launches, special discounts, and tech tips delivered to your inbox.</p>
+          <form id="newsletter-form" class="jc-news__form" action="/api/newsletter/subscribe" method="post" novalidate>
+            <input type="email" id="newsletter-email" name="email" placeholder="Enter your email..." aria-label="Email address" required autocomplete="email">
+            <button type="submit" id="newsletter-submit">Subscribe</button>
+          </form>
+          <p id="newsletter-status" class="jc-news__status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+/* Home page behaviour — counters, scroll-stack nav, newsletter.
+   The hero slideshow is driven by the shared cart-system.js engine
+   (it binds to #hero-bg-layers / #hero-title / .hero-dot etc.). */
+(function () {
+  'use strict';
+
+  /* ---- 1. Animated stat counters ---- */
+  function countTo(el, end, suffix, decimals, duration) {
+    if (!el || el.dataset.done) return;
+    el.dataset.done = '1';
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var eased = p * (2 - p);
+      el.textContent = (eased * end).toFixed(decimals) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = end.toFixed(decimals) + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+  function runCounters() {
+    countTo(document.getElementById('stat-uptime'), 99.9, '%', 1, 1600);
+    countTo(document.getElementById('stat-nodes'), 12, 'K+', 0, 1800);
+    countTo(document.getElementById('stat-projects'), 500, '+', 0, 2000);
+  }
+
+  /* ---- 2. Scroll-stack dot navigation (desktop) ---- */
+  function initStackNav() {
+    var dots = Array.prototype.slice.call(document.querySelectorAll('.jc-dots__dot'));
+    var panels = document.querySelectorAll('.jc-panel');
+    if (!dots.length || !panels.length) return;
+
+    function onScroll() {
+      var vh = window.innerHeight || document.documentElement.clientHeight || 1;
+      var idx = Math.min(Math.round(window.scrollY / vh), panels.length - 1);
+      dots.forEach(function (d, i) { d.classList.toggle('is-active', i === idx); });
+    }
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () {
+        var vh = window.innerHeight || document.documentElement.clientHeight || 1;
+        window.scrollTo({ top: i * vh, behavior: 'smooth' });
+      });
+    });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  /* ---- 3. Newsletter (inline status, no page reload) ---- */
+  function initNewsletter() {
+    var form = document.getElementById('newsletter-form');
+    var status = document.getElementById('newsletter-status');
+    var btn = document.getElementById('newsletter-submit');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (document.getElementById('newsletter-email') || {}).value || '';
+      status.className = 'jc-news__status';
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        status.className = 'jc-news__status jc-news__status--error';
+        status.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      if (btn) { btn.disabled = true; btn.textContent = 'Subscribing…'; }
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      }).then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (data) {
+          status.textContent = (data && data.message) || 'Thanks for subscribing!';
+          form.reset();
+        })
+        .catch(function () {
+          status.className = 'jc-news__status jc-news__status--error';
+          status.textContent = 'Something went wrong. Please try again.';
+        })
+        .finally(function () { if (btn) { btn.disabled = false; btn.textContent = 'Subscribe'; } });
+    });
+  }
+
+  /* ---- init ---- */
+  function init() {
+    runCounters();          // hero is in view on load
+    initStackNav();
+    initNewsletter();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+{% endblock %}

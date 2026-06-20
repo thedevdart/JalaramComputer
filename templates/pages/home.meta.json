@@ -1,0 +1,11 @@
+{
+  "title": "Jalaram Computers — Your One-Stop IT Solution",
+  "bodyClass": "bg-primary-deeper font-sans jc-site",
+  "heroPreload": true,
+  "pageCss": [
+    "/assets/css/home.css?v=8"
+  ],
+  "pageStyles": null,
+  "whatsappFloat": true,
+  "scriptsPartial": "home.scripts"
+}

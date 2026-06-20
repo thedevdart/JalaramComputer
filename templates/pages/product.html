@@ -1,0 +1,414 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Page: product | from public/product.html -->
+<div class="min-h-screen bg-alabaster font-sans text-charcoal">
+
+  </sd-component>
+
+  <!-- BREADCRUMBS -->
+  <div class="bg-white border-b border-silver-light">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center gap-2 text-xs tracking-widest uppercase text-warm-gray">
+      <a href="/" class="hover:text-primary transition-colors">Home</a>
+      <iconify-icon icon="lucide:chevron-right" class="text-xs"></iconify-icon>
+      <a href="/shop" class="hover:text-primary transition-colors">Shop</a>
+      <iconify-icon icon="lucide:chevron-right" class="text-xs"></iconify-icon>
+      <a href="/shop" class="hover:text-primary transition-colors">Laptops</a>
+      <iconify-icon icon="lucide:chevron-right" class="text-xs"></iconify-icon>
+      <span class="text-primary font-medium">HP Spectre x360</span>
+    </div>
+  </div>
+
+  <!-- PRODUCT HERO SECTION -->
+  <main class="max-w-7xl mx-auto px-6 py-12 lg:py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      
+      <!-- Left: Image Gallery -->
+      <div class="lg:col-span-6 space-y-6 anim-fade-up delay-100">
+        <div class="product-img-zoom relative bg-white border border-silver-light aspect-square overflow-hidden group">
+          <img src="./888" alt="HP Spectre x360 Main" class="w-full h-full object-contain" onerror="this.onerror=null;this.src=&#39;https://placehold.co/1200x400/1a1a1a/888?text=Image&#39;;">
+          <span class="absolute top-6 left-6 bg-accent text-primary-deeper text-[10px] tracking-[0.2em] uppercase font-bold px-3 py-1.5">Premium Selection</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          <div class="border-2 border-primary bg-white aspect-square cursor-pointer">
+            <img src="./888(1)" alt="Thumbnail 1" class="w-full h-full object-cover opacity-100 transition-opacity" onerror="this.onerror=null;this.src=&#39;https://placehold.co/300x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+          <div class="border border-silver-light bg-white aspect-square cursor-pointer hover:border-accent transition-colors">
+            <img src="./photo-1531297484001-80022131f5a1" alt="Thumbnail 2" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src=&#39;https://placehold.co/300x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+          <div class="border border-silver-light bg-white aspect-square cursor-pointer hover:border-accent transition-colors">
+            <img src="./photo-1517336714731-489689fd1ca8" alt="Thumbnail 3" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src=&#39;https://placehold.co/300x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+          <div class="border border-silver-light bg-white aspect-square cursor-pointer hover:border-accent transition-colors">
+            <img src="./888(1)" alt="Thumbnail 4" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src=&#39;https://placehold.co/300x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Product Info -->
+      <div class="lg:col-span-6 flex flex-col anim-fade-up delay-200">
+        <div class="mb-2 flex items-center gap-4">
+          <span class="text-accent text-[10px] tracking-[0.3em] uppercase font-bold">HP Global</span>
+          <span class="text-warm-gray text-[10px] tracking-[0.3em] uppercase">SKU: HPS-X360-2025</span>
+        </div>
+        <h1 class="font-serif text-4xl lg:text-5xl text-charcoal font-semibold mb-6 tracking-tight leading-[1.1]">
+          HP Spectre x360 <br>
+          <span class="italic text-primary">Luxury 2-in-1 Laptop</span>
+        </h1>
+
+        <div class="flex items-center gap-6 mb-8">
+          <div class="flex items-center gap-1">
+            <iconify-icon icon="lucide:star" class="star-gold text-lg"></iconify-icon>
+            <iconify-icon icon="lucide:star" class="star-gold text-lg"></iconify-icon>
+            <iconify-icon icon="lucide:star" class="star-gold text-lg"></iconify-icon>
+            <iconify-icon icon="lucide:star" class="star-gold text-lg"></iconify-icon>
+            <iconify-icon icon="lucide:star" class="star-gold text-lg"></iconify-icon>
+          </div>
+          <span class="text-warm-gray text-xs tracking-widest uppercase">(48 Verified Reviews)</span>
+          <span class="h-4 w-[1px] bg-silver-light"></span>
+          <span class="text-green-600 text-[10px] tracking-[0.2em] uppercase font-bold flex items-center gap-1">
+            <span class="w-2 h-2 bg-green-600 rounded-full"></span> In Stock
+          </span>
+        </div>
+
+        <div class="flex items-baseline gap-4 mb-10">
+          <span class="font-serif text-4xl font-bold text-primary">&#8377;1,42,990</span>
+          <span class="text-warm-gray text-lg line-through">&#8377;1,65,000</span>
+          <span class="bg-primary-dark text-white text-[10px] tracking-[0.2em] uppercase px-3 py-1 font-bold">Save 13%</span>
+        </div>
+
+        <!-- Key Specs Summary -->
+        <div class="grid grid-cols-2 gap-y-6 gap-x-12 mb-10 border-t border-b border-silver-light py-8">
+          <div class="flex gap-4">
+            <iconify-icon icon="lucide:cpu" class="text-accent text-2xl"></iconify-icon>
+            <div>
+              <p class="text-[10px] tracking-widest uppercase text-warm-gray mb-1">Processor</p>
+              <p class="text-sm font-semibold">Intel— Core— i7-1355U</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <iconify-icon icon="lucide:monitor" class="text-accent text-2xl"></iconify-icon>
+            <div>
+              <p class="text-[10px] tracking-widest uppercase text-warm-gray mb-1">Display</p>
+              <p class="text-sm font-semibold">13.5" 3K2K OLED Touch</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <iconify-icon icon="lucide:database" class="text-accent text-2xl"></iconify-icon>
+            <div>
+              <p class="text-[10px] tracking-widest uppercase text-warm-gray mb-1">Memory</p>
+              <p class="text-sm font-semibold">16GB LPDDR5 RAM</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <iconify-icon icon="lucide:hard-drive" class="text-accent text-2xl"></iconify-icon>
+            <div>
+              <p class="text-[10px] tracking-widest uppercase text-warm-gray mb-1">Storage</p>
+              <p class="text-sm font-semibold">1TB PCIe— NVMe— SSD</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center border border-silver-light bg-white">
+              <button class="px-4 py-4 text-warm-gray hover:text-primary hover:bg-silver-light transition-all">
+                <iconify-icon icon="lucide:minus"></iconify-icon>
+              </button>
+              <input type="number" value="1" class="w-12 text-center text-sm font-bold bg-transparent outline-none border-none">
+              <button class="px-4 py-4 text-warm-gray hover:text-primary hover:bg-silver-light transition-all">
+                <iconify-icon icon="lucide:plus"></iconify-icon>
+              </button>
+            </div>
+            <a href="/cart" class="btn-gold-slide flex-1 bg-primary text-white py-4 text-xs tracking-[0.3em] uppercase font-bold text-center hover:bg-primary-dark transition-colors">
+              Add to Shopping Bag
+            </a>
+            <button class="p-4 border border-silver-light hover:border-accent group transition-all">
+              <iconify-icon icon="lucide:heart" class="text-xl text-warm-gray group-hover:text-accent transition-colors"></iconify-icon>
+            </button>
+          </div>
+          <div class="flex items-center justify-between text-[10px] tracking-[0.2em] uppercase font-semibold text-warm-gray">
+            <div class="flex items-center gap-6">
+              <button class="flex items-center gap-2 hover:text-primary transition-colors">
+                <iconify-icon icon="lucide:shuffle" class="text-sm"></iconify-icon> Compare
+              </button>
+              <button class="flex items-center gap-2 hover:text-primary transition-colors">
+                <iconify-icon icon="lucide:share-2" class="text-sm"></iconify-icon> Share
+              </button>
+            </div>
+            <p class="text-accent">Free Next-Day Delivery Available</p>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-12 bg-white border border-silver-light p-6">
+          <div class="flex items-start gap-4 mb-6">
+            <iconify-icon icon="lucide:shield-check" class="text-primary text-2xl"></iconify-icon>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-widest mb-1">1-Year On-Site Warranty</p>
+              <p class="text-xs text-warm-gray leading-relaxed">Coverage for all hardware failures with priority doorstep service within 24 hours.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <iconify-icon icon="lucide:refresh-cw" class="text-primary text-2xl"></iconify-icon>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-widest mb-1">7-Day Seamless Return</p>
+              <p class="text-xs text-warm-gray leading-relaxed">Change your mind? Enjoy a no-questions-asked return policy for sealed products.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT DETAILS TABS -->
+    <div class="mt-32">
+      <div class="flex items-center border-b border-silver-light mb-12">
+        <button class="px-8 py-4 text-xs tracking-[0.3em] uppercase font-bold border-b-2 border-primary text-primary">Detailed Specifications</button>
+        <button class="px-8 py-4 text-xs tracking-[0.3em] uppercase font-bold text-warm-gray hover:text-primary transition-colors">Product Overview</button>
+        <button class="px-8 py-4 text-xs tracking-[0.3em] uppercase font-bold text-warm-gray hover:text-primary transition-colors">Verified Reviews</button>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-16">
+        <div class="lg:col-span-8">
+          <h3 class="font-serif text-3xl text-charcoal mb-8 tracking-tight">Full <span class="italic text-primary">Technical Specifications</span></h3>
+          <div class="border-t border-silver-light">
+            <div class="spec-row flex py-5 px-6 border-b border-silver-light">
+              <span class="w-1/3 text-[10px] tracking-widest uppercase font-bold text-warm-gray">Model Name</span>
+              <span class="flex-1 text-sm font-medium">HP Spectre x360 14-ef2038TU</span>
+            </div>
+            <div class="spec-row flex py-5 px-6 border-b border-silver-light">
+              <span class="w-1/3 text-[10px] tracking-widest uppercase font-bold text-warm-gray">Operating System</span>
+              <span class="flex-1 text-sm font-medium">Windows 11 Home + Office Home &amp; Student 2021</span>
+            </div>
+            <div class="spec-row flex py-5 px-6 border-b border-silver-light">
+              <span class="w-1/3 text-[10px] tracking-widest uppercase font-bold text-warm-gray">Graphics</span>
+              <span class="flex-1 text-sm font-medium">Intel— Iris— X? Graphics</span>
+            </div>
+            <div class="spec-row flex py-5 px-6 border-b border-silver-light">
+              <span class="w-1/3 text-[10px] tracking-widest uppercase font-bold text-warm-gray">Connectivity</span>
+              <span class="flex-1 text-sm font-medium">Wi-Fi 6E (2x2) and Bluetooth— 5.3</span>
+            </div>
+            <div class="spec-row flex py-5 px-6 border-b border-silver-light">
+              <span class="w-1/3 text-[10px] tracking-widest uppercase font-bold text-warm-gray">Weight</span>
+              <span class="flex-1 text-sm font-medium">1.36 kg</span>
+            </div>
+            <div class="spec-row flex py-5 px-6 border-b border-silver-light">
+              <span class="w-1/3 text-[10px] tracking-widest uppercase font-bold text-warm-gray">Battery</span>
+              <span class="flex-1 text-sm font-medium">4-cell, 66 Wh Li-ion polymer (Up to 16 Hours)</span>
+            </div>
+          </div>
+
+          <div class="mt-20">
+            <h3 class="font-serif text-3xl text-charcoal mb-8 tracking-tight">Product <span class="italic text-primary">Overview</span></h3>
+            <p class="text-warm-gray text-base leading-relaxed mb-6 italic font-serif">
+              Experience technology that moves as fast as you do. The HP Spectre x360 is not just a laptop; it's a masterpiece of engineering designed for those who refuse to settle.
+            </p>
+            <p class="text-warm-gray text-sm leading-[1.8] mb-6">
+              Crafted from a single block of aerospace-grade aluminum, the Spectre x360 features gem-cut edges and a stunning Nocturne Blue finish that exudes sophistication. The 3K2K OLED display brings your vision to life with vibrant colors and deep blacks, while the 360-degree hinge allows you to seamlessly transition from productivity to creativity.
+            </p>
+            <p class="text-warm-gray text-sm leading-[1.8]">
+              With the latest 13th Gen Intel Core processor and advanced thermal management, you can push the boundaries of what's possible without compromise. Power through complex projects, creative suites, and intensive multitasking with ease.
+            </p>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4">
+          <div class="sticky top-32 bg-white border border-silver-light p-8">
+            <h4 class="text-xs tracking-[0.3em] uppercase font-bold mb-6">Product Support</h4>
+            <div class="space-y-6">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-alabaster flex items-center justify-center text-primary">
+                  <iconify-icon icon="lucide:headset"></iconify-icon>
+                </div>
+                <div class="text-xs">
+                  <p class="font-bold uppercase tracking-widest">Technical Help</p>
+                  <p class="text-warm-gray mt-1">Call 9892848643 for support</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-alabaster flex items-center justify-center text-primary">
+                  <iconify-icon icon="lucide:file-text"></iconify-icon>
+                </div>
+                <div class="text-xs">
+                  <p class="font-bold uppercase tracking-widest">Documentation</p>
+                  <p class="text-warm-gray mt-1">Download User Manual (PDF)</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-alabaster flex items-center justify-center text-primary">
+                  <iconify-icon icon="lucide:wrench"></iconify-icon>
+                </div>
+                <div class="text-xs">
+                  <p class="font-bold uppercase tracking-widest">Repair Services</p>
+                  <p class="text-warm-gray mt-1">Certified local repair center</p>
+                </div>
+              </div>
+            </div>
+            <button class="w-full mt-10 py-4 border border-primary text-primary text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-primary hover:text-white transition-all">
+              Download Drivers
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMER REVIEWS SECTION -->
+    <div class="mt-32 anim-fade-up">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
+        <div>
+          <span class="text-accent text-xs tracking-[0.3em] uppercase font-medium">Client Experiences</span>
+          <h2 class="font-serif text-4xl lg:text-5xl text-charcoal font-semibold mt-3 tracking-tight">
+            Verified <span class="italic text-primary">Product Reviews</span>
+          </h2>
+        </div>
+        <div class="mt-8 lg:mt-0 flex items-center gap-12 bg-white border border-silver-light p-6">
+          <div class="text-center">
+            <p class="text-3xl font-serif font-bold text-primary">4.9</p>
+            <div class="flex items-center justify-center gap-1 mt-1 mb-1">
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+            </div>
+            <p class="text-[10px] tracking-widest uppercase text-warm-gray">Out of 5 Stars</p>
+          </div>
+          <div class="h-12 w-[1px] bg-silver-light"></div>
+          <div class="space-y-1">
+            <p class="text-[10px] tracking-widest uppercase font-bold">Highly Recommended</p>
+            <p class="text-[10px] tracking-widest text-warm-gray italic uppercase">98% of customers love this item</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Individual Review 1 -->
+        <div class="bg-white border-t border-primary p-8 lg:p-10 transition-all duration-500 hover:shadow-xl">
+          <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-primary-dark flex items-center justify-center text-white font-serif text-xl">A</div>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest mb-1">Arjun Sharma</p>
+                <p class="text-[10px] text-warm-gray tracking-widest uppercase">Verified Purchase — Feb 12, 2025</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+            </div>
+          </div>
+          <h5 class="text-sm font-bold uppercase tracking-[0.1em] mb-4">The pinnacle of design and performance</h5>
+          <p class="text-warm-gray text-sm leading-[1.8] italic font-serif">
+            "I've used many premium laptops, but the Spectre x360 is in a league of its own. The build quality is exceptional, and the OLED screen is absolutely breathtaking. Jalaram Computers provided excellent delivery and setup service."
+          </p>
+        </div>
+
+        <!-- Individual Review 2 -->
+        <div class="bg-white border-t border-primary p-8 lg:p-10 transition-all duration-500 hover:shadow-xl">
+          <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-accent flex items-center justify-center text-primary-deeper font-serif text-xl">P</div>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest mb-1">Priyanka Deshmukh</p>
+                <p class="text-[10px] text-warm-gray tracking-widest uppercase">Verified Purchase — Jan 28, 2025</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+              <iconify-icon icon="lucide:star" class="star-gold text-sm"></iconify-icon>
+            </div>
+          </div>
+          <h5 class="text-sm font-bold uppercase tracking-[0.1em] mb-4">Perfect for Creative Professionals</h5>
+          <p class="text-warm-gray text-sm leading-[1.8] italic font-serif">
+            "As a graphic designer, display accuracy is everything. This 3K OLED screen is stunning. The stylus support is very responsive. Pricey but worth every rupee if you value craftsmanship."
+          </p>
+        </div>
+      </div>
+      <div class="mt-12 text-center">
+        <button class="text-primary text-[10px] tracking-[0.3em] uppercase font-bold flex items-center gap-3 mx-auto hover:text-accent transition-colors">
+          Load More Reviews <iconify-icon icon="lucide:chevron-down"></iconify-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- RECOMMENDED PRODUCTS -->
+    <div class="mt-40">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
+        <div>
+          <span class="text-accent text-xs tracking-[0.3em] uppercase font-medium">Complementary Gear</span>
+          <h2 class="font-serif text-4xl lg:text-5xl text-charcoal font-semibold mt-3 tracking-tight">
+            You Might <span class="italic text-primary">Also Desire</span>
+          </h2>
+        </div>
+        <a href="/shop" class="mt-8 lg:mt-0 text-primary text-[10px] tracking-[0.3em] uppercase font-bold hover:text-accent transition-colors flex items-center gap-3">
+          Explore Collection <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Product Card 1 -->
+        <div class="group bg-white border border-silver-light hover:shadow-2xl transition-all duration-700 cursor-pointer">
+          <div class="relative aspect-[4/3] bg-silver-light overflow-hidden">
+            <img src="./photo-1527864550417-7fd91fc51a46" alt="Logitech Mouse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" onerror="this.onerror=null;this.src=&#39;https://placehold.co/400x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+          <div class="p-6">
+            <p class="text-accent text-[10px] tracking-widest uppercase font-bold mb-2">Logitech</p>
+            <h4 class="text-xs font-bold tracking-widest uppercase mb-4 h-8">MX Master 3S — Wireless Performance Mouse</h4>
+            <p class="font-serif text-lg font-bold text-primary mb-6">&#8377;9,995</p>
+            <button class="w-full py-3 bg-alabaster text-primary text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-primary hover:text-white transition-all">
+              Quick Add
+            </button>
+          </div>
+        </div>
+        <!-- Product Card 2 -->
+        <div class="group bg-white border border-silver-light hover:shadow-2xl transition-all duration-700 cursor-pointer">
+          <div class="relative aspect-[4/3] bg-silver-light overflow-hidden">
+            <img src="./photo-1546435770-a3e426bf472b" alt="Bose Headphones" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" onerror="this.onerror=null;this.src=&#39;https://placehold.co/400x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+          <div class="p-6">
+            <p class="text-accent text-[10px] tracking-widest uppercase font-bold mb-2">Bose</p>
+            <h4 class="text-xs font-bold tracking-widest uppercase mb-4 h-8">QuietComfort 45 — Noise Cancelling</h4>
+            <p class="font-serif text-lg font-bold text-primary mb-6">&#8377;29,900</p>
+            <button class="w-full py-3 bg-alabaster text-primary text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-primary hover:text-white transition-all">
+              Quick Add
+            </button>
+          </div>
+        </div>
+        <!-- Product Card 3 -->
+        <div class="group bg-white border border-silver-light hover:shadow-2xl transition-all duration-700 cursor-pointer">
+          <div class="relative aspect-[4/3] bg-silver-light overflow-hidden">
+            <img src="./photo-1611532736597-de2d4265fba3" alt="USB-C Dock" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" onerror="this.onerror=null;this.src=&#39;https://placehold.co/400x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+          <div class="p-6">
+            <p class="text-accent text-[10px] tracking-widest uppercase font-bold mb-2">Anker</p>
+            <h4 class="text-xs font-bold tracking-widest uppercase mb-4 h-8">555 USB-C Hub — 8-in-1 Dock</h4>
+            <p class="font-serif text-lg font-bold text-primary mb-6">&#8377;7,490</p>
+            <button class="w-full py-3 bg-alabaster text-primary text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-primary hover:text-white transition-all">
+              Quick Add
+            </button>
+          </div>
+        </div>
+        <!-- Product Card 4 -->
+        <div class="group bg-white border border-silver-light hover:shadow-2xl transition-all duration-700 cursor-pointer">
+          <div class="relative aspect-[4/3] bg-silver-light overflow-hidden">
+            <img src="./photo-1588872657578-7efd1f1555ed" alt="Laptop Bag" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" onerror="this.onerror=null;this.src=&#39;https://placehold.co/400x400/1a1a1a/888?text=Image&#39;;">
+          </div>
+          <div class="p-6">
+            <p class="text-accent text-[10px] tracking-widest uppercase font-bold mb-2">Dell</p>
+            <h4 class="text-xs font-bold tracking-widest uppercase mb-4 h-8">EcoLoop Pro — 16" Executive Briefcase</h4>
+            <p class="font-serif text-lg font-bold text-primary mb-6">&#8377;4,250</p>
+            <button class="w-full py-3 bg-alabaster text-primary text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-primary hover:text-white transition-all">
+              Quick Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

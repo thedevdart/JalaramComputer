@@ -105,6 +105,18 @@
   color: var(--jc-primary);
 }
 
+/* Hero slideshow — never inherit dark body/heading colors on photos */
+#services-hero #hero-title {
+  color: #ffffff !important;
+}
+#services-hero #hero-subtitle {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+#services-hero #hero-eyebrow,
+#services-hero .jc-hero__eyebrow {
+  color: var(--jc-accent) !important;
+}
+
 .jc-site h1,
 .jc-site .jc-page-title {
   font-size: clamp(2rem, 4vw, var(--jc-text-5xl));

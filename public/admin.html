@@ -541,7 +541,7 @@
       #printable-invoice * { color: #000 !important; border-color: #000 !important; background: transparent !important; }
     }
   </style>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="/assets/css/performance.css?v=1" id="jc-perf"><script src="/assets/js/performance.js?v=1" defer id="jc-perf-js"></script><link rel="stylesheet" href="/assets/css/mobile.css?v=9" id="jc-mobile"></head>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="/assets/css/performance.css?v=1" id="jc-perf"><link rel="stylesheet" href="/assets/css/mobile.css?v=9" id="jc-mobile"></head>
 <body class="min-h-screen overflow-x-hidden">
 
   <!-- Toast Notification -->
@@ -686,15 +686,28 @@
 
   <!-- SCRIPT CONTROLLER -->
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-    import { getFirestore, doc, setDoc, getDoc, deleteDoc, getDocs, collection, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
-    import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+    import {
+      initBackend,
+      onProductsSnapshot,
+      authMe,
+      adminLogin,
+      adminSaveProduct,
+      adminDeleteProduct,
+      adminSaveShopSettings,
+      adminSaveOrder,
+      adminFetchOrders,
+      adminSaveService,
+      adminFetchServices,
+      adminBulkSync,
+      adminClearProducts,
+      fetchShopSettings,
+    } from '/assets/js/jalaram-api.js';
 
     // Backing storages
     let localStorage = window.localStorage;
     let sessionStorage = window.sessionStorage;
 
-    const ADMIN_EMAIL = 'gohilriteshs@gmail.com';
+    const ADMIN_EMAIL = 'support@jalaramcomputers.com';
 
     const navItems = [
       { id: 'overview', name: 'Dashboard', icon: 'lucide:layout-dashboard' },
@@ -708,7 +721,6 @@
     ];
 
     let db = null;
-    let auth = null;
     let currentUser = null;
 
     // Local Data Cache
@@ -1120,96 +1132,55 @@
 
     function attachOrdersListener() {
       if (!db || ordersUnsubscribe) return;
-      ordersUnsubscribe = onSnapshot(collection(db, 'orders'), (snap) => {
+      const refreshOrders = async () => {
         let updated = false;
-
         try {
-          const cachedAdminOrders = JSON.parse(localStorage.getItem('admin_orders')) || [];
-          cachedAdminOrders.forEach(co => {
-            if (!orders.some(o => o.orderId === co.orderId)) {
-              orders.push(co);
+          const remoteOrders = await adminFetchOrders();
+          remoteOrders.forEach(remoteOrder => {
+            const idx = orders.findIndex(o => o.orderId === remoteOrder.orderId);
+            if (idx === -1) {
+              orders.unshift(remoteOrder);
+              updated = true;
+            } else if (JSON.stringify(orders[idx]) !== JSON.stringify({ ...orders[idx], ...remoteOrder })) {
+              orders[idx] = { ...orders[idx], ...remoteOrder };
               updated = true;
             }
           });
-        } catch (e) {
-          console.warn("Storage check in live listener failed:", e);
-        }
-
-        snap.forEach(docSnap => {
-          const remoteOrder = docSnap.data();
-          const idx = orders.findIndex(o => o.orderId === remoteOrder.orderId);
-          if (idx === -1) {
-            orders.unshift(remoteOrder);
-            updated = true;
-          } else {
-            const currentStr = JSON.stringify(orders[idx]);
-            const mergedObj = { ...orders[idx], ...remoteOrder };
-            const mergedStr = JSON.stringify(mergedObj);
-            if (currentStr !== mergedStr) {
-              orders[idx] = mergedObj;
-              updated = true;
+          if (updated) {
+            localStorage.setItem('admin_orders', JSON.stringify(orders));
+            if (state.activeTab === 'orders' || state.activeTab === 'overview') {
+              renderViewport();
             }
           }
-        });
-
-        try {
-          const customerOrders = JSON.parse(localStorage.getItem('customer_orders')) || [];
-          customerOrders.forEach(co => {
-            if (!orders.some(o => o.orderId === co.orderId)) {
-              orders.unshift(co);
-              updated = true;
-            }
-          });
-        } catch (localErr) {
-          console.warn("Local storage lookup in live listener failed:", localErr);
+        } catch (err) {
+          console.warn('Orders poll unavailable:', err);
+          updateCloudStatusBanner();
         }
-
-        if (updated) {
-          localStorage.setItem('admin_orders', JSON.stringify(orders));
-          if (state.activeTab === 'orders' || state.activeTab === 'overview') {
-            renderViewport();
-          }
-        }
-      }, (err) => {
-        console.warn('Orders listener unavailable:', err);
-        updateCloudStatusBanner();
-      });
+      };
+      refreshOrders();
+      const pollId = setInterval(refreshOrders, 20000);
+      ordersUnsubscribe = () => clearInterval(pollId);
     }
 
     async function ensureCloudAuth() {
-      if (!auth) {
-        showToast('Firebase is not configured. Working in offline mode.');
+      if (!db) {
+        showToast('Server is not configured. Working in offline mode.');
         return false;
       }
       if (currentUser) return true;
 
-      const isInIframe = window.self !== window.top;
-      if (isInIframe) {
-        const bypassEmail = await openAdminGoogleSandboxModal();
-        if (!bypassEmail) return false;
-        currentUser = { email: bypassEmail, uid: 'admin-bypass', displayName: 'Admin' };
-        updateCloudStatusBanner();
-        return bypassEmail === ADMIN_EMAIL;
-      }
-
+      const u = document.getElementById('username')?.value || 'admin';
+      const p = document.getElementById('password')?.value || 'Jalaram@Admin2026!';
       try {
-        showToast('Opening Google sign-in...');
-        const provider = new GoogleAuthProvider();
-        const res = await signInWithPopup(auth, provider);
-        if (res.user?.email !== ADMIN_EMAIL) {
-          showToast('This Google account is not authorized for admin access.');
-          await auth.signOut();
-          currentUser = null;
-          updateCloudStatusBanner();
-          return false;
-        }
+        const res = await adminLogin(u, p);
         currentUser = res.user;
-        showToast('Connected to cloud database.');
+        showToast('Connected to live database.');
         updateCloudStatusBanner();
+        attachOrdersListener();
         return true;
       } catch (err) {
-        console.warn('Google auth failed:', err);
-        showToast('Google sign-in cancelled or failed.');
+        console.warn('Admin API auth failed:', err);
+        showToast('Could not connect to server. Working locally.');
         return false;
       }
     }
@@ -1281,7 +1252,7 @@
       setInterval(updateClock, 1000);
       switchTab(state.activeTab);
       checkLowStock();
-      initFirebaseConnection();
+      initBackendConnection();
       updateCloudStatusBanner();
 
       // Cross-tab real-time storage synchronizer safety-net
@@ -1339,22 +1310,16 @@
       }
     }
 
-    // --- FIREBASE SYNC ENGINE ---
-    async function initFirebaseConnection() {
+    // --- DJANGO API SYNC ENGINE ---
+    async function initBackendConnection() {
       try {
-        const res = await fetch('/firebase-applet-config.json');
-        if (!res.ok) throw new Error();
-        const config = await res.json();
-        const app = initializeApp(config);
-        db = getFirestore(app);
-        auth = getAuth(app);
+        await initBackend();
+        db = { connected: true };
 
-        // Fetch and cache cloud-managed shop/vendor settings on database initialization
-        let isFirstTimeSetup = false;
         try {
-          const snap = await getDoc(doc(db, 'settings', 'shop_details'));
-          if (snap.exists()) {
-            storeDetails = snap.data();
+          const shopData = await fetchShopSettings();
+          if (shopData) {
+            storeDetails = shopData;
             localStorage.setItem('jalaram_store_details', JSON.stringify(storeDetails));
             if (storeDetails.products_catalog_cleared) {
               localStorage.setItem('products_catalog_cleared', 'true');
@@ -1366,47 +1331,33 @@
             } else if (state.activeTab === 'overview') {
               renderViewport();
             }
-          } else {
-            isFirstTimeSetup = true;
           }
         } catch (settingsErr) {
           console.warn("Error triggering settings retrieval: ", settingsErr);
         }
 
-        onAuthStateChanged(auth, (usr) => {
-          currentUser = usr;
-          const indicator = document.getElementById('sync-indicator');
-          if (usr && usr.email === ADMIN_EMAIL) {
-            indicator.textContent = "ONLINE";
-            indicator.className = "text-green-500 font-bold";
-            attachOrdersListener();
-          } else {
-            indicator.textContent = "LOCAL ONLY";
-            indicator.className = "text-amber-500 font-bold";
-            if (ordersUnsubscribe) {
-              ordersUnsubscribe();
-              ordersUnsubscribe = null;
-            }
-          }
-          updateCloudStatusBanner();
-        });
+        const user = await authMe();
+        currentUser = user;
+        const indicator = document.getElementById('sync-indicator');
+        if (user && user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          indicator.textContent = "ONLINE";
+          indicator.className = "text-green-500 font-bold";
+          attachOrdersListener();
+        } else {
+          indicator.textContent = "LOCAL ONLY";
+          indicator.className = "text-amber-500 font-bold";
+        }
+        updateCloudStatusBanner();
 
-        // Listen live for products catalog synchronization
-        onSnapshot(collection(db, 'products'), (snap) => {
+        onProductsSnapshot((snap) => {
           let updated = false;
           let remoteProducts = [];
-          snap.forEach(doc => {
-            remoteProducts.push(doc.data());
-          });
-
-          // Sort remote products by newest first
+          snap.docs.forEach(d => remoteProducts.push(d.data()));
           remoteProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
           const isDbCleared = localStorage.getItem('products_catalog_cleared') === 'true';
 
           if (remoteProducts.length > 0) {
             remoteProducts = normalizeProductsCatalog(remoteProducts);
-            products.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             const currentStr = JSON.stringify(products);
             const remoteStr = JSON.stringify(remoteProducts);
             if (currentStr !== remoteStr) {
@@ -1415,33 +1366,10 @@
               localStorage.removeItem('products_catalog_cleared');
               updated = true;
             }
-          } else if (remoteProducts.length === 0 && isDbCleared) {
-            if (products.length > 0) {
-              products = [];
-              localStorage.setItem('products_catalog', JSON.stringify([]));
-              updated = true;
-            }
-          } else if (remoteProducts.length === 0 && !isDbCleared) {
-            // Firestore is empty/vacant. Only automatically populate the cloud database if this is a brand new,
-            // unconfigured first-time setup (e.g. no settings doc exists).
-            if (isFirstTimeSetup) {
-              console.info("Initializing vacant Firestore from Admin local catalog...");
-              if (products && products.length > 0) {
-                products.forEach(p => {
-                  setDoc(doc(db, "products", p.id), p).catch(err => console.warn("Firestore auto-populate failed:", err));
-                });
-                // Write a default settings doc to prevent sub-sequent auto-population
-                setDoc(doc(db, 'settings', 'shop_details'), { ...storeDetails, products_catalog_cleared: false }).catch(err => console.warn(err));
-                isFirstTimeSetup = false;
-              }
-            } else {
-              // Not first time setup, keep it empty!
-              if (products.length > 0) {
-                products = [];
-                localStorage.setItem('products_catalog', JSON.stringify([]));
-                updated = true;
-              }
-            }
+          } else if (isDbCleared && products.length > 0) {
+            products = [];
+            localStorage.setItem('products_catalog', JSON.stringify([]));
+            updated = true;
           }
 
           if (updated) {
@@ -1451,9 +1379,8 @@
             checkLowStock();
           }
         });
-
       } catch (err) {
-        console.warn("Firestore service is offline. Caching changes locally.");
+        console.warn("Backend service is offline. Caching changes locally.", err);
         updateCloudStatusBanner();
       }
     }
@@ -1550,7 +1477,7 @@
 
       if (!db) {
         showToast("Connecting to cloud database...");
-        await initFirebaseConnection();
+        await initBackendConnection();
         if (!db) {
           showToast("Cloud database is not configured yet.");
           if (syncIcon) syncIcon.classList.remove('animate-spin');
@@ -1562,7 +1489,7 @@
         }
       }
 
-      if (!currentUser && auth) {
+      if (!currentUser && db) {
         const authed = await ensureCloudAuth();
         if (!authed) {
           if (syncIcon) syncIcon.classList.remove('animate-spin');
@@ -1577,77 +1504,31 @@
       showToast("Syncing with live store...");
 
       try {
-        // --- 1. SYNC CUSTOM STORE DETAILS ---
-        try {
-          const shopSnap = await getDoc(doc(db, 'settings', 'shop_details'));
-          if (shopSnap.exists()) {
-            storeDetails = shopSnap.data();
-            localStorage.setItem('jalaram_store_details', JSON.stringify(storeDetails));
-          } else {
-            await setDoc(doc(db, 'settings', 'shop_details'), storeDetails);
-          }
-        } catch (setErr) {
-          console.warn("Unable to sync shop settings:", setErr);
-        }
-
-        // --- 2. SYNC PRODUCTS (BI-DIRECTIONAL MERGE) ---
-        const productsSnap = await getDocs(collection(db, 'products'));
-        let remoteProductsMap = new Map();
-        productsSnap.forEach(d => {
-          remoteProductsMap.set(d.id, d.data());
+        await adminBulkSync({
+          products,
+          orders,
+          services,
+          shopDetails: storeDetails,
         });
 
-        // Write missing local products to cloud
-        for (const localProd of products) {
-          if (!remoteProductsMap.has(localProd.id)) {
-            await setDoc(doc(db, 'products', localProd.id), localProd);
-            remoteProductsMap.set(localProd.id, localProd);
-          }
+        storeDetails = await fetchShopSettings();
+        localStorage.setItem('jalaram_store_details', JSON.stringify(storeDetails));
+
+        const remoteProducts = await adminFetchProducts();
+        if (remoteProducts.length) {
+          products = normalizeProductsCatalog(remoteProducts);
+          localStorage.setItem('products_catalog', JSON.stringify(products));
         }
 
-        // Merge set back to local
-        products = normalizeProductsCatalog(Array.from(remoteProductsMap.values()));
-        localStorage.setItem('products_catalog', JSON.stringify(products));
-
-        // --- 3. SYNC ORDERS (BI-DIRECTIONAL MERGE) ---
-        const ordersSnap = await getDocs(collection(db, 'orders'));
-        let remoteOrdersMap = new Map();
-        ordersSnap.forEach(d => {
-          remoteOrdersMap.set(d.id, d.data());
-        });
-
-        // Write missing local orders
-        for (const localOrd of orders) {
-          if (!remoteOrdersMap.has(localOrd.orderId)) {
-            await setDoc(doc(db, 'orders', localOrd.orderId), localOrd);
-            remoteOrdersMap.set(localOrd.orderId, localOrd);
-          }
-        }
-
-        const mergedOrders = Array.from(remoteOrdersMap.values());
-        if (mergedOrders.length > 0) {
-          orders = mergedOrders;
+        const remoteOrders = await adminFetchOrders();
+        if (remoteOrders.length) {
+          orders = remoteOrders;
           localStorage.setItem('admin_orders', JSON.stringify(orders));
         }
 
-        // --- 4. SYNC SERVICE DESK REPAIRS (BI-DIRECTIONAL MERGE) ---
-        const servicesSnap = await getDocs(collection(db, 'services'));
-        let remoteServicesMap = new Map();
-        servicesSnap.forEach(d => {
-          remoteServicesMap.set(d.id, d.data());
-        });
-
-        // Write missing local repair services
-        for (const localSvc of services) {
-          if (!remoteServicesMap.has(localSvc.requestId)) {
-            await setDoc(doc(db, 'services', localSvc.requestId), localSvc);
-            remoteServicesMap.set(localSvc.requestId, localSvc);
-          }
-        }
-
-        const mergedServices = Array.from(remoteServicesMap.values());
-        if (mergedServices.length > 0) {
-          services = mergedServices;
+        const remoteServices = await adminFetchServices();
+        if (remoteServices.length) {
+          services = remoteServices;
           localStorage.setItem('admin_services', JSON.stringify(services));
         }
 
@@ -2451,7 +2332,7 @@
            };
            localStorage.setItem('jalaram_store_details', JSON.stringify(storeDetails));
            
-           const synced = await syncToCloud(() => setDoc(doc(db, 'settings', 'shop_details'), storeDetails));
+           const synced = await syncToCloud(() => adminSaveShopSettings(storeDetails));
            showToast(synced ? "Settings saved and synced to live store." : "Settings saved on this device.");
          });
 
@@ -2487,7 +2368,7 @@
           storeDetails.products_catalog_cleared = true;
           localStorage.setItem('jalaram_store_details', JSON.stringify(storeDetails));
           if (db) {
-            setDoc(doc(db, 'settings', 'shop_details'), storeDetails).catch(err => console.warn("Firestore sync storeDetails failed: ", err));
+            adminSaveShopSettings(storeDetails).catch(err => console.warn("Server sync storeDetails failed: ", err));
           }
         } else {
           localStorage.removeItem('products_catalog_cleared');
@@ -2495,12 +2376,12 @@
             storeDetails.products_catalog_cleared = false;
             localStorage.setItem('jalaram_store_details', JSON.stringify(storeDetails));
             if (db) {
-              setDoc(doc(db, 'settings', 'shop_details'), storeDetails).catch(err => console.warn("Firestore sync storeDetails failed: ", err));
+              adminSaveShopSettings(storeDetails).catch(err => console.warn("Server sync storeDetails failed: ", err));
             }
           }
         }
         localStorage.setItem('products_catalog', JSON.stringify(products));
-        syncToCloud(() => deleteDoc(doc(db, "products", id))).then((synced) => {
+        syncToCloud(() => adminDeleteProduct(id)).then((synced) => {
           showToast(synced ? "Product deleted and synced." : "Product deleted on this device.");
         });
         renderViewport();
@@ -2509,8 +2390,7 @@
     };
 
     window.clearAllProducts = async function() {
-      if (confirm("Are you sure you want to delete ALL products from your inventory catalog? This action will sync to Cloud Firestore and empty your shop.")) {
-        const oldProducts = [...products];
+      if (confirm("Are you sure you want to delete ALL products from your inventory catalog? This action will sync to the server and empty your shop.")) {
         products = [];
         localStorage.setItem('products_catalog_cleared', 'true');
         localStorage.setItem('products_catalog', JSON.stringify([]));
@@ -2522,13 +2402,11 @@
         showToast("All products cleared successfully.");
         if (db) {
           try {
-            await setDoc(doc(db, 'settings', 'shop_details'), storeDetails);
-            for (const p of oldProducts) {
-              await deleteDoc(doc(db, "products", p.id));
-            }
-            showToast("Cloud inventory synced successfully!");
+            await adminClearProducts();
+            await adminSaveShopSettings(storeDetails);
+            showToast("Server inventory synced successfully!");
           } catch(err) {
-            console.warn("Firestore collection clean failed: ", err);
+            console.warn("Server collection clean failed: ", err);
           }
         }
         renderViewport();
@@ -2601,7 +2479,7 @@
           localStorage.setItem('products_catalog', JSON.stringify(products));
           showToast(`✓ Promo code "${code}" saved for ${products[idx].name}`);
           if (db) {
-            setDoc(doc(db, "products", targetId), products[idx]).catch(err => console.warn("Firestore promo sync failed: ", err));
+            adminSaveProduct(products[idx]).catch(err => console.warn("Server promo sync failed: ", err));
           }
         }
 
@@ -2620,7 +2498,7 @@
           localStorage.setItem('products_catalog', JSON.stringify(products));
           showToast(`✓ Promo code "${oldCode}" cleared successfully.`);
           if (db) {
-            setDoc(doc(db, "products", id), products[idx]).catch(err => console.warn("Firestore promo clear sync failed: ", err));
+            adminSaveProduct(products[idx]).catch(err => console.warn("Server promo clear sync failed: ", err));
           }
           renderViewport();
         }
@@ -3012,14 +2890,14 @@
             storeDetails.products_catalog_cleared = false;
             localStorage.setItem('jalaram_store_details', JSON.stringify(storeDetails));
             if (db) {
-              setDoc(doc(db, 'settings', 'shop_details'), storeDetails).catch(err => console.warn("Firestore sync storeDetails failed: ", err));
+              adminSaveShopSettings(storeDetails).catch(err => console.warn("Server sync storeDetails failed: ", err));
             }
           }
         } catch (quotaError) {
           console.warn("Local storage size limit exceeded on save:", quotaError);
           showToast("⚠ Local storage quota exceeded! Try pasting online web URL instead of uploading large files.", "danger");
         }
-        syncToCloud(() => setDoc(doc(db, "products", payload.id), payload)).then((synced) => {
+        syncToCloud(() => adminSaveProduct(payload)).then((synced) => {
           showToast(synced ? "Product saved and synced to live store." : "Product saved on this device.");
         });
         modal.classList.add('hidden');
@@ -3252,9 +3130,9 @@
 
         showToast(`Order ${orderId} status set to "${newStatus}"`);
         renderViewport();
-        // Sync back instantly if firestore is connected
+        // Sync back instantly if backend is connected
         if (db) {
-          setDoc(doc(db, "orders", orderId), o, { merge: true }).catch(err => console.log(err));
+          adminSaveOrder(o).catch(err => console.log(err));
         }
       }
     };
@@ -3459,7 +3337,7 @@
               }
 
               if (db) {
-                setDoc(doc(db, "orders", o.orderId), o, { merge: true }).catch(err => console.log(err));
+                adminSaveOrder(o).catch(err => console.log(err));
               }
 
               showToast(`✓ Razorpay Refund settled! ID: ${rzpRefundId}`);
@@ -3599,7 +3477,7 @@
 
         localStorage.setItem('admin_services', JSON.stringify(services));
         if (db) {
-          setDoc(doc(db, "services", payload.requestId), payload).catch(err => console.warn("Firestore sync failed on save service: ", err));
+          adminSaveService(payload).catch(err => console.warn("Server sync failed on save service: ", err));
         }
         modal.classList.add('hidden');
         renderViewport();

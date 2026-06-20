@@ -252,13 +252,13 @@ body.jc-landing {
 }
 #hero-bg-overlay.hero-overlay-left {
   background: linear-gradient(105deg,
-    rgba(9, 26, 46, 0.94) 0%, rgba(9, 26, 46, 0.7) 34%,
-    rgba(9, 26, 46, 0.25) 60%, transparent 76%);
+    rgba(9, 26, 46, 0.97) 0%, rgba(9, 26, 46, 0.82) 38%,
+    rgba(9, 26, 46, 0.45) 62%, transparent 78%);
 }
 #hero-bg-overlay.hero-overlay-right {
   background: linear-gradient(255deg,
-    rgba(9, 26, 46, 0.94) 0%, rgba(9, 26, 46, 0.7) 34%,
-    rgba(9, 26, 46, 0.25) 60%, transparent 76%);
+    rgba(9, 26, 46, 0.97) 0%, rgba(9, 26, 46, 0.82) 38%,
+    rgba(9, 26, 46, 0.45) 62%, transparent 78%);
 }
 
 .jc-hero__inner {
@@ -283,7 +283,7 @@ body.jc-landing {
 
 .jc-hero__copy {
   max-width: 34rem;
-  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65), 0 0 40px rgba(9, 26, 46, 0.5);
 }
 .jc-hero__copy.hero-align-left  { text-align: left; }
 .jc-hero__copy.hero-align-right { text-align: right; }
@@ -344,14 +344,20 @@ body.jc-landing {
 }
 .btn-gold:hover { background: transparent; color: var(--gold); }
 
-/* Hero controls (dots + arrows) */
-.jc-hero__controls {
+/* Hero controls — single row inside hero inner (no duplicate absolute layer) */
+.jc-hero__controls,
+.hero-controls#hero-controls {
   position: relative;
   z-index: 6;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  pointer-events: auto;
 }
 #hero-dots { display: flex; align-items: center; gap: 0.5rem; }
 .hero-dot {

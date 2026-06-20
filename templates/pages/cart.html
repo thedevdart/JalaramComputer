@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Page: cart | from public/cart.html -->
+<div class="min-h-screen bg-alabaster font-sans text-charcoal flex flex-col">
+
+  </sd-component>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow py-8">
+    <div class="max-w-5xl mx-auto px-4 lg:px-6">
+      
+      <!-- BREADCRUMBS -->
+      <nav class="mb-8 anim-fade-up">
+        <ol class="flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase font-medium text-warm-gray">
+          <li><a href="/cart" id="breadcrumb-home" class="hover:text-accent transition-colors">Home</a></li>
+          <li class="text-silver">/</li>
+          <li><a href="/shop" id="breadcrumb-shop" class="hover:text-accent transition-colors">Shop</a></li>
+          <li class="text-silver">/</li>
+          <li class="text-primary font-bold">Shopping Cart</li>
+        </ol>
+      </nav>
+
+      <!-- PAGE TITLE -->
+      <div class="mb-12 anim-fade-up delay-100">
+        <h1 class="font-serif text-5xl lg:text-6xl font-semibold text-primary-dark tracking-tight">
+          Your <span class="italic text-accent">Selection</span>
+        </h1>
+        <p class="text-warm-gray mt-4 text-sm tracking-widest uppercase">You have 2 items in your bag</p>
+      </div>
+
+      <div id="cart-page-grid" class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        
+        <!-- CART ITEMS LIST -->
+        <div id="cart-items-wrapper" class="lg:col-span-8 space-y-6 anim-fade-up delay-200">
+          
+          <!-- Item 1 -->
+          <div class="bg-white border border-silver-light p-6 flex flex-col md:flex-row gap-6 items-center group">
+            <div class="w-20 h-20 bg-alabaster flex items-center justify-center flex-shrink-0">
+              <iconify-icon icon="lucide:laptop" class="text-primary/20 text-5xl"></iconify-icon>
+            </div>
+            <div class="flex-grow">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-[10px] tracking-[0.2em] uppercase font-bold text-accent mb-1">HP</p>
+                  <h3 class="text-lg font-medium text-primary hover:text-accent transition-colors">
+                    <a href="/product" id="cart-item-1-link">
+                      HP Pavilion 15 — Intel i5 12th Gen, 16GB RAM
+                    </a>
+                  </h3>
+                  <p class="text-xs text-warm-gray mt-1">Silver | 512GB SSD</p>
+                </div>
+                <button class="text-warm-gray hover:text-red-600 transition-colors p-1" title="Remove Item" id="remove-item-1">
+                  <iconify-icon icon="lucide:x" class="text-xl"></iconify-icon>
+                </button>
+              </div>
+              
+              <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center border border-silver-light">
+                  <button class="qty-btn w-10 h-10 flex items-center justify-center transition-colors" id="qty-minus-1">
+                    <iconify-icon icon="lucide:minus" class="text-sm"></iconify-icon>
+                  </button>
+                  <span class="w-12 text-center text-sm font-semibold text-primary">1</span>
+                  <button class="qty-btn w-10 h-10 flex items-center justify-center transition-colors" id="qty-plus-1">
+                    <iconify-icon icon="lucide:plus" class="text-sm"></iconify-icon>
+                  </button>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-warm-gray uppercase tracking-widest">Subtotal</p>
+                  <p class="text-xl font-serif font-bold text-primary-dark">&#8377;52,990</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="bg-white border border-silver-light p-6 flex flex-col md:flex-row gap-6 items-center group">
+            <div class="w-20 h-20 bg-alabaster flex items-center justify-center flex-shrink-0">
+              <iconify-icon icon="lucide:gamepad-2" class="text-primary/20 text-5xl"></iconify-icon>
+            </div>
+            <div class="flex-grow">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-[10px] tracking-[0.2em] uppercase font-bold text-accent mb-1">Logitech</p>
+                  <h3 class="text-lg font-medium text-primary hover:text-accent transition-colors">
+                    <a href="/product" id="cart-item-2-link">
+                      Logitech G502 X Plus — Wireless Gaming Mouse
+                    </a>
+                  </h3>
+                  <p class="text-xs text-warm-gray mt-1">RGB | 25K Sensor</p>
+                </div>
+                <button class="text-warm-gray hover:text-red-600 transition-colors p-1" title="Remove Item" id="remove-item-2">
+                  <iconify-icon icon="lucide:x" class="text-xl"></iconify-icon>
+                </button>
+              </div>
+              
+              <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center border border-silver-light">
+                  <button class="qty-btn w-10 h-10 flex items-center justify-center transition-colors" id="qty-minus-2">
+                    <iconify-icon icon="lucide:minus" class="text-sm"></iconify-icon>
+                  </button>
+                  <span class="w-12 text-center text-sm font-semibold text-primary">1</span>
+                  <button class="qty-btn w-10 h-10 flex items-center justify-center transition-colors" id="qty-plus-2">
+                    <iconify-icon icon="lucide:plus" class="text-sm"></iconify-icon>
+                  </button>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-warm-gray uppercase tracking-widest">Subtotal</p>
+                  <p class="text-xl font-serif font-bold text-primary-dark">&#8377;11,495</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTINUE SHOPPING -->
+          <div class="pt-4">
+            <a href="/shop" id="continue-shopping-btn" class="inline-flex items-center gap-3 text-sm tracking-[0.2em] uppercase font-semibold text-primary hover:text-accent transition-colors duration-500">
+              <iconify-icon icon="lucide:arrow-left"></iconify-icon>
+              Continue Shopping
+            </a>
+          </div>
+        </div>
+
+        <!-- ORDER SUMMARY SIDEBAR -->
+        <aside id="cart-order-summary" class="lg:col-span-4 anim-fade-up delay-300">
+          <div id="cart-summary-panel" class="bg-primary-dark p-6 lg:p-8 border border-silver/10 lg:sticky lg:top-28">
+            <h2 class="text-white font-serif text-xl lg:text-2xl mb-6 lg:mb-8 border-b border-silver/10 pb-4">Order Summary</h2>
+            
+            <div id="cart-summary-rows" class="space-y-4 mb-6 lg:mb-8">
+              <div class="flex justify-between text-silver/70 text-sm">
+                <span class="tracking-wider uppercase text-xs">Subtotal</span>
+                <span id="cart-subtotal-val" class="font-medium">&#8377;64,485</span>
+              </div>
+              <div class="flex justify-between text-silver/70 text-sm">
+                <span class="tracking-wider uppercase text-xs">GST (18%)</span>
+                <span id="cart-gst-val" class="font-medium">&#8377;11,607</span>
+              </div>
+              <div class="flex justify-between text-silver/70 text-sm">
+                <span class="tracking-wider uppercase text-xs">Shipping</span>
+                <span class="text-accent font-bold">FREE</span>
+              </div>
+            </div>
+
+            <!-- COUPON CODE -->
+            <div class="mb-6 lg:mb-8 pt-6 border-t border-silver/10">
+              <label for="cart-promo-input" class="text-[10px] tracking-[0.2em] uppercase font-bold text-silver mb-3 block">Promo Code</label>
+              <div class="flex gap-0 border border-silver/20">
+                <input id="cart-promo-input" type="text" placeholder="Enter code..." class="bg-transparent text-white px-4 py-3 text-sm flex-grow outline-none italic placeholder:text-warm-gray min-w-0">
+                <button id="cart-promo-apply" type="button" class="px-4 bg-silver/10 text-accent text-[10px] tracking-widest uppercase font-bold hover:bg-accent hover:text-primary-dark transition-colors duration-500 shrink-0">
+                  Apply
+                </button>
+              </div>
+            </div>
+            
+            <div class="flex justify-between items-end mb-8 lg:mb-10 pt-6 border-t border-silver/20">
+              <div>
+                <p class="text-accent text-[10px] tracking-[0.3em] uppercase font-bold mb-1">Total Amount</p>
+                <p id="cart-total-val" class="text-white font-serif text-2xl lg:text-3xl font-bold">&#8377;76,092</p>
+              </div>
+              <iconify-icon icon="lucide:shield-check" class="text-accent text-3xl opacity-50"></iconify-icon>
+            </div>
+
+            <a href="/checkout" id="proceed-checkout-btn" class="cart-desktop-checkout w-full block text-center py-4 lg:py-5 bg-accent text-primary-deeper text-xs tracking-[0.2em] lg:tracking-[0.3em] uppercase font-bold btn-gold-slide min-h-[48px] leading-[48px] lg:leading-normal lg:min-h-0">
+              Proceed to Checkout
+            </a>
+
+            <div class="mt-8 flex items-center justify-center gap-6 opacity-40">
+              <iconify-icon icon="mdi:visa" class="text-white text-3xl"></iconify-icon>
+              <iconify-icon icon="mdi:mastercard" class="text-white text-3xl"></iconify-icon>
+              <iconify-icon icon="mdi:google-pay" class="text-white text-3xl"></iconify-icon>
+              <iconify-icon icon="mdi:apple-pay" class="text-white text-3xl"></iconify-icon>
+            </div>
+          </div>
+          
+          <div class="mt-6 p-6 border border-silver-light bg-white">
+            <div class="flex items-center gap-4">
+              <iconify-icon icon="lucide:truck" class="text-accent text-2xl"></iconify-icon>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-widest">Standard Delivery</p>
+                <p class="text-[10px] text-warm-gray uppercase tracking-tighter">Expected by Wednesday, 25th Oct</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+{% endblock %}

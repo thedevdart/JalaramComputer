@@ -217,7 +217,8 @@ select,
     to { transform: scale(1.07); }
   }
 
-  .hero-controls {
+  .hero-controls,
+  #hero-controls.jc-hero__controls {
     position: relative !important;
     flex-shrink: 0;
     width: 100%;
@@ -251,16 +252,16 @@ select,
 }
 
 .hero-controls {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 20;
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  z-index: 6;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem 1rem;
-  pointer-events: none;
+  padding: 0;
+  pointer-events: auto;
 }
 
 .hero-dots {

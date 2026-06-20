@@ -1,6 +1,6 @@
 /**
  * Jalaram Computers — standalone mobile navigation drawer.
- * Loaded as a plain script (no Firebase/module deps) so the hamburger always works.
+ * Loaded as a plain script (no module deps) so the hamburger always works.
  */
 (function () {
   'use strict';

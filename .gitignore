@@ -1,7 +1,12 @@
-# Dependencies
-node_modules/
+# Python / Django
+__pycache__/
+*.py[cod]
+db.sqlite3
+staticfiles/
+.env
 
-data/newsletter-subscribers.json
+# Legacy (removed)
+node_modules/
 .env.local
 .env.*.local
 

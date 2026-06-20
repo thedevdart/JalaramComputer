@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  {% if hero_preload %}
+  <link rel="preload" as="image" href="/assets/images/hero/instant_support.webp" fetchpriority="high" media="(min-width: 768px)">
+  <link rel="preload" as="image" href="/assets/images/hero/instant_support_mobile.webp" fetchpriority="high" media="(max-width: 767px)">
+  <link rel="preload" href="/data/hero-services.json" as="fetch" crossorigin>
+  {% endif %}
+  <title>{{ title }}</title>
+  <script src="/assets/js/tailwind.js"></script>
+  <script src="/assets/js/iconify-icon.min.js" defer></script>
+  <link href="/assets/css/fonts-base.css" rel="stylesheet">
+  <link href="/assets/css/fonts-fast.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css?v=3">
+  <link rel="stylesheet" href="/assets/css/navbar.css?v=6">
+  <link rel="stylesheet" href="/assets/css/minimal.css">
+  <link rel="stylesheet" href="/assets/css/mobile.css?v=12">
+  <link rel="stylesheet" href="/assets/css/glass.css?v=10">
+  <link rel="stylesheet" href="/assets/css/splash.css?v=1">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  {% if page_css %}{% for href in page_css %}
+  <link rel="stylesheet" href="{{ href }}">
+  {% endfor %}{% endif %}
+  <script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#1A3A5C',
+          'primary-dark': '#0F2640',
+          'primary-deeper': '#091A2E',
+          accent: '#D4AF37',
+          silver: '#C0C0C0',
+          'silver-light': '#E8E8E8',
+          alabaster: '#F9F8F6',
+          charcoal: '#1A1A1A',
+          'warm-gray': '#6B7280',
+        },
+        fontFamily: {
+          serif: ['Playfair Display', 'serif'],
+          sans: ['Inter', 'sans-serif'],
+        }
+      }
+    }
+  }
+  </script>
+  {% if page_styles %}
+  <style>{{ page_styles|safe }}</style>
+  {% endif %}
+</head>
+<body class="{{ body_class }}{% if active_nav == 'home' %} jc-landing{% endif %}">
+
+  {% if show_splash %}
+  {% include 'partials/splash.html' %}
+  {% endif %}
+
+  {% include 'partials/header.html' %}
+
+  {% block content %}{% endblock %}
+
+  {% include 'partials/footer.html' %}
+
+  {% if whatsapp_float %}
+  <a id="whatsapp-float-btn" href="https://wa.me/919892848643" target="_blank" rel="noopener noreferrer"
+     class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-green-600 flex items-center justify-center text-white hover:bg-green-700 transition-colors shadow-lg" aria-label="Chat on WhatsApp">
+    <iconify-icon icon="mdi:whatsapp" class="text-2xl"></iconify-icon>
+  </a>
+  {% endif %}
+
+  {% if show_splash %}
+  <script src="/assets/js/splash.js?v=1" defer></script>
+  {% endif %}
+  <script src="/assets/js/mobile-nav.js?v=3" defer></script>
+  <script src="/assets/js/nav-search.js?v=4" defer></script>
+  <script src="/assets/js/reveal.js?v=5" defer></script>
+  {% block page_scripts %}{% endblock %}
+  <script type="module" src="/assets/js/cart-system.js?v=3"></script>
+</body>
+</html>
