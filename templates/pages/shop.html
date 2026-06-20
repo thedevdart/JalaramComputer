@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="jc-page-hero">
+  <div class="jc-page-hero__inner">
+    <nav class="jc-breadcrumb"><a href="/">Home</a><span>/</span><span>Product Collection</span></nav>
+    <h1>Our Tech <em>Curated</em> For You</h1>
+    <p>Hand-picked computers, laptops, accessories and IT gear — sourced and serviced by Jalaram Computers.</p>
+  </div>
+</section>
+
+<div class="jc-shop jc-container">
+  <aside class="jc-shop__sidebar">
+    <button type="button" class="jc-shop__filter-toggle" id="filter-toggle">
+      <iconify-icon icon="lucide:sliders-horizontal"></iconify-icon> Filters &amp; Sort
+    </button>
+    <div class="jc-shop__filters" id="shop-filters">
+      <section class="jc-filter">
+        <h3>Categories</h3>
+        <ul id="filter-categories" class="jc-filter__list"></ul>
+      </section>
+      <section class="jc-filter">
+        <h3>Price Range</h3>
+        <input type="range" id="price-slider" min="0" max="200000" step="500" value="200000" class="jc-range">
+        <div class="jc-filter__pricelabels"><span>₹0</span><span id="price-label">₹2,00,000</span></div>
+      </section>
+      <section class="jc-filter">
+        <h3>Brands</h3>
+        <div id="filter-brands" class="jc-filter__brands"></div>
+      </section>
+      <section class="jc-filter">
+        <h3>Rating</h3>
+        <div id="filter-rating" class="jc-filter__rating">
+          <button type="button" data-rating="4">★★★★<span>&amp; Up</span></button>
+          <button type="button" data-rating="3">★★★<span>&amp; Up</span></button>
+          <button type="button" data-rating="2">★★<span>&amp; Up</span></button>
+        </div>
+      </section>
+      <button type="button" id="clear-filters-btn" class="jc-btn jc-btn--ghost jc-btn--block">Clear All Filters</button>
+    </div>
+  </aside>
+
+  <div class="jc-shop__main">
+    <div class="jc-shop__toolbar">
+      <p class="jc-shop__count">Showing <b id="showing-count">0</b> of <b id="total-count">0</b> products</p>
+      <label class="jc-shop__sort">Sort by:
+        <select id="sort-select">
+          <option value="featured">Featured</option>
+          <option value="newest">Newest First</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Best Rating</option>
+        </select>
+      </label>
+    </div>
+    <div id="products-grid" class="jc-products jc-products--shop">
+      <div class="jc-empty jc-empty--span"><p>Loading products…</p></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script type="module" src="/assets/js/shop.js?v=1"></script>
+{% endblock %}
