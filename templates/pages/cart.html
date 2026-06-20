@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="jc-cart jc-container">
+  <nav class="jc-breadcrumb" style="color:var(--muted);margin-top:2rem">
+    <a href="/">Home</a><span>/</span><a href="/shop">Shop</a><span>/</span><span style="color:var(--navy)">Shopping Cart</span>
+  </nav>
+
+  <div class="jc-cart__head">
+    <h1 class="jc-cart__title">Your <em>Selection</em></h1>
+    <p id="cart-count-label" class="jc-cart__sub">You have 0 items in your bag</p>
+  </div>
+
+  <div id="cart-grid" class="jc-cart__grid">
+    <div class="jc-cart__items">
+      <div id="cart-items"></div>
+      <div class="jc-cart__continue">
+        <a href="/shop"><iconify-icon icon="lucide:arrow-left"></iconify-icon> Continue Shopping</a>
+      </div>
+    </div>
+
+    <aside class="jc-cart__aside">
+      <div class="jc-summary">
+        <h2 class="jc-summary__title">Order Summary</h2>
+        <div class="jc-summary__rows">
+          <div class="jc-summary__row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+          <div class="jc-summary__row"><span>GST (18%)</span><span id="cart-gst">₹0</span></div>
+          <div class="jc-summary__row"><span>Shipping</span><span class="jc-summary__free">FREE</span></div>
+        </div>
+        <div class="jc-summary__promo">
+          <label for="cart-promo-input">Promo Code</label>
+          <div class="jc-summary__promo-row">
+            <input type="text" id="cart-promo-input" placeholder="Enter code...">
+            <button type="button" id="cart-promo-apply">Apply</button>
+          </div>
+          <p id="cart-promo-status" class="jc-summary__promo-status"></p>
+        </div>
+        <div class="jc-summary__total">
+          <div><span class="jc-summary__total-label">Total Amount</span><span id="cart-total" class="jc-summary__total-val">₹0</span></div>
+          <iconify-icon icon="lucide:shield-check"></iconify-icon>
+        </div>
+        <a href="/checkout" id="proceed-checkout-btn" class="jc-btn jc-btn--accent jc-btn--block">Proceed to Checkout</a>
+        <div class="jc-summary__pay"><iconify-icon icon="mdi:visa"></iconify-icon><iconify-icon icon="mdi:mastercard"></iconify-icon><iconify-icon icon="mdi:google-pay"></iconify-icon><iconify-icon icon="mdi:contactless-payment"></iconify-icon></div>
+      </div>
+      <div class="jc-cart__delivery">
+        <iconify-icon icon="lucide:truck"></iconify-icon>
+        <div><p class="t">Standard Delivery</p><p class="d">Free across Mumbai — 5–7 business days</p></div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="cart-empty" class="jc-empty" style="display:none;min-height:40vh">
+    <iconify-icon icon="lucide:shopping-bag"></iconify-icon>
+    <p>Your cart is empty.</p>
+    <a href="/shop" class="jc-btn jc-btn--navy">Browse Products</a>
+  </div>
+</main>
+{% endblock %}
+
+{% block page_scripts %}
+<script type="module" src="/assets/js/cartpage.js?v=1"></script>
+{% endblock %}

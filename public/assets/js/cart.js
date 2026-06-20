@@ -50,6 +50,17 @@ export function clearCart() { save([]); }
 export const cartCount = () => getCart().reduce((n, i) => n + i.quantity, 0);
 export const cartSubtotal = () => getCart().reduce((s, i) => s + i.price * i.quantity, 0);
 
+export const GST_RATE = 0.18;
+
+/** Compute order totals. `shipping` and `discount` are absolute rupee amounts. */
+export function computeTotals({ shipping = 0, discount = 0 } = {}) {
+  const subtotal = cartSubtotal();
+  const taxable = Math.max(0, subtotal - discount);
+  const gst = Math.round(taxable * GST_RATE);
+  const total = taxable + shipping + gst;
+  return { subtotal, discount, shipping, gst, total };
+}
+
 function updateBadge() {
   const n = cartCount();
   document.querySelectorAll('[data-cart-count]').forEach((el) => {
