@@ -39,5 +39,6 @@ urlpatterns = [
     # ── Customer-submitted forms ──
     path('api/queries/', api_views.queries_create, name='queries-create'),
     path('api/service-bookings/', api_views.service_bookings_create, name='service-bookings'),
+    path('api/service-bookings/validate-promo/', api_views.service_promo_validate, name='service-promo-validate'),
     path('api/newsletter/subscribe/', api_views.newsletter_subscribe, name='newsletter-subscribe'),
 ]

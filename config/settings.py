@@ -180,6 +180,12 @@ GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET', '').st
 # Optional override — must match Google Console “Authorized redirect URIs” exactly.
 GOOGLE_OAUTH_REDIRECT_URI = os.environ.get('GOOGLE_OAUTH_REDIRECT_URI', '').strip()
 
+# Service booking promo codes. Add new codes here — never in client-side JS.
+# Format: {'CODE': discount_in_rupees}
+SERVICE_PROMO_CODES: dict = {
+    'FIXNOW': 500,
+}
+
 EMAIL_HOST = os.environ.get('SMTP_HOST', '')
 EMAIL_PORT = int(os.environ.get('SMTP_PORT', '587'))
 EMAIL_USE_TLS = os.environ.get('SMTP_SECURE', 'false').lower() not in ('1', 'true', 'yes')

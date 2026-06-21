@@ -45,7 +45,7 @@ def order_from_frontend(data, user=None):
         'user': user,
         'user_id_str': data.get('userId') or '',
         'date': data.get('date', ''),
-        'status': data.get('status', 'Paid'),
+        'status': data.get('status', 'Processing'),  # _recalculate_order always sets this
         'subtotal': _dec(data.get('subtotal')),
         'discount': _dec(data.get('discount')),
         'gst': _dec(data.get('gst')),

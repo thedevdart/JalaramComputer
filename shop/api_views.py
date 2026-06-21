@@ -8,6 +8,7 @@ import json
 import logging
 import re
 import secrets
+from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -34,6 +35,10 @@ from .serializers import order_from_frontend, service_booking_from_frontend
 UserModel = get_user_model()
 EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 logger = logging.getLogger(__name__)
+
+# Whitelist of valid shipping amounts matching checkout.html radio options (INR)
+_VALID_SHIPPING = {0, 299, 750}
+GST_RATE = Decimal('0.18')
 
 
 def _unique_username(base: str) -> str:
@@ -83,12 +88,7 @@ def _json_body(request):
 
 
 def _is_staff_user(user):
-    if not user or not user.is_authenticated:
-        return False
-    admin_email = getattr(settings, 'ADMIN_EMAIL', '').lower()
-    if admin_email and user.email.lower() == admin_email:
-        return True
-    return user.is_staff
+    return bool(user and user.is_authenticated and user.is_staff)
 
 
 def _user_payload(user):
@@ -101,6 +101,57 @@ def _user_payload(user):
         'emailVerified': True,
         'isStaff': _is_staff_user(user),
     }
+
+
+# ── Order helpers ────────────────────────────────────────────────────────────
+
+def _recalculate_order(data: dict) -> dict:
+    """Re-price every cart item from DB, recalculate GST and total server-side.
+
+    Mutates and returns data. Raises ValueError with a user-facing message on
+    unknown products or invalid cart contents.
+    """
+    items = data.get('items') or []
+    if not items:
+        raise ValueError('Cart is empty.')
+
+    subtotal = Decimal('0')
+    verified_items = []
+    for item in items:
+        slug = (item.get('id') or item.get('slug') or '').strip()
+        qty = max(1, int(item.get('quantity') or 1))
+        try:
+            product = Product.objects.get(slug=slug)
+        except Product.DoesNotExist:
+            raise ValueError(f'Product "{slug}" is no longer available.')
+
+        price = product.price
+        if product.promo_code and product.promo_discount:
+            pct = Decimal(str(product.promo_discount)) / 100
+            price = (price * (1 - pct)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+        subtotal += price * qty
+        verified_items.append({**item, 'price': float(price)})
+
+    gst = (subtotal * GST_RATE).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+
+    # Accept shipping only from the known whitelist; anything else → free.
+    try:
+        shipping = int(data.get('shippingDetails', {}).get('shippingCost', 0))
+    except (TypeError, ValueError):
+        shipping = 0
+    if shipping not in _VALID_SHIPPING:
+        shipping = 0
+
+    total = subtotal + gst + Decimal(shipping)
+
+    data['items'] = verified_items
+    data['subtotal'] = float(subtotal)
+    data['discount'] = 0
+    data['gst'] = float(gst)
+    data['total'] = float(total)
+    data['status'] = 'Processing'  # always server-set; never trust client
+    return data
 
 
 # ── Auth ────────────────────────────────────────────────────────────────────
@@ -345,17 +396,27 @@ def orders_collection(request):
                 orders.append(o.to_frontend())
         return JsonResponse(orders, safe=False)
 
-    # POST — create an order. The order id is generated server-side so a client
-    # cannot overwrite an existing order by supplying its id.
+    # POST — create an order. Price and totals are always recalculated server-side.
     data = _json_body(request)
     if not data.get('items'):
         return JsonResponse({'ok': False, 'error': 'Cart is empty.'}, status=400)
+
+    try:
+        data = _recalculate_order(data)
+    except ValueError as exc:
+        return JsonResponse({'ok': False, 'error': str(exc)}, status=400)
+
     user = request.user if request.user.is_authenticated else None
     if user and not data.get('userId'):
         data['userId'] = str(user.pk)
     data['orderId'] = _generate_order_id()
     fields = order_from_frontend(data, user=user)
     order = Order.objects.create(**fields)
+
+    # Let guest users view this order on the confirmation page within this session.
+    recent = request.session.get('recent_order_ids', [])
+    request.session['recent_order_ids'] = [order.order_id] + recent[:9]
+
     return JsonResponse({'ok': True, 'order': order.to_frontend()})
 
 
@@ -365,7 +426,25 @@ def orders_detail(request, order_id):
         order = Order.objects.get(order_id=order_id)
     except Order.DoesNotExist:
         return JsonResponse({'ok': False, 'error': 'Not found.'}, status=404)
-    return JsonResponse(order.to_frontend())
+
+    if _is_staff_user(request.user):
+        return JsonResponse(order.to_frontend())
+
+    if request.user.is_authenticated:
+        owns = (
+            (order.user_id is not None and order.user_id == request.user.pk)
+            or order.user_id_str == str(request.user.pk)
+            or (order.customer.get('email') or '').lower() == request.user.email.lower()
+        )
+        if owns:
+            return JsonResponse(order.to_frontend())
+        return JsonResponse({'ok': False, 'error': 'Not found.'}, status=404)
+
+    # Guest: allow only if placed in this browser session.
+    if order_id in request.session.get('recent_order_ids', []):
+        return JsonResponse(order.to_frontend())
+
+    return JsonResponse({'ok': False, 'error': 'Not found.'}, status=404)
 
 
 # ── Customer-submitted forms ────────────────────────────────────────────────
@@ -388,9 +467,26 @@ def queries_create(request):
 
 
 @require_POST
+def service_promo_validate(request):
+    data = _json_body(request)
+    code = (data.get('code') or '').strip().upper()
+    promo_codes = getattr(settings, 'SERVICE_PROMO_CODES', {})
+    discount = promo_codes.get(code)
+    if discount:
+        return JsonResponse({'ok': True, 'discount': discount})
+    return JsonResponse({'ok': False, 'error': 'Invalid promo code.'}, status=400)
+
+
+@require_POST
 def service_bookings_create(request):
     data = _json_body(request)
     data['bookingId'] = data.get('bookingId') or f'BK-{ServiceBooking.objects.count() + 100000}'
+
+    # Validate promo server-side; never trust the client discount amount.
+    promo_code = (data.get('promoCode') or '').strip().upper()
+    promo_codes = getattr(settings, 'SERVICE_PROMO_CODES', {})
+    data['discountApplied'] = float(promo_codes.get(promo_code, 0))
+
     fields = service_booking_from_frontend(data)
     obj = ServiceBooking.objects.create(**fields)
     return JsonResponse({'ok': True, 'booking': obj.to_frontend()})
