@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="jc-checkout jc-container">
+  <!-- Progress -->
+  <ol class="jc-steps">
+    <li class="is-done"><span class="jc-steps__dot"><iconify-icon icon="lucide:check"></iconify-icon></span>Cart</li>
+    <li class="is-active"><span class="jc-steps__dot">2</span>Shipping</li>
+    <li><span class="jc-steps__dot">3</span>Payment</li>
+    <li><span class="jc-steps__dot">4</span>Done</li>
+  </ol>
+
+  <div class="jc-checkout__grid">
+    <div class="jc-checkout__left">
+      <section class="jc-checkout__section">
+        <div class="jc-checkout__heading"><h2>Shipping <em>Address</em></h2><span></span></div>
+        <form id="checkout-form" class="jc-form-grid" novalidate>
+          <div class="jc-field"><label for="co-name">Full Name</label><input id="co-name" name="name" type="text" placeholder="e.g. Rajesh Kumar" required></div>
+          <div class="jc-field"><label for="co-email">Email Address</label><input id="co-email" name="email" type="email" placeholder="e.g. rajesh@example.com" required></div>
+          <div class="jc-field"><label for="co-phone">Phone Number</label><input id="co-phone" name="phone" type="tel" placeholder="e.g. +91 9892848643" required></div>
+          <div class="jc-field"><label for="co-pincode">Pincode</label><input id="co-pincode" name="pincode" type="text" placeholder="6-digit code" required></div>
+          <div class="jc-field jc-field--full"><label for="co-address">Full Address</label><input id="co-address" name="address" type="text" placeholder="Apt, Street, Area…" required></div>
+          <div class="jc-field"><label for="co-city">City</label><input id="co-city" name="city" type="text" placeholder="e.g. Mumbai" required></div>
+          <div class="jc-field"><label for="co-state">State</label><input id="co-state" name="state" type="text" placeholder="e.g. Maharashtra" required></div>
+          <div class="jc-field jc-field--full"><label for="co-gst">GST Number (Optional)</label><input id="co-gst" name="gst" type="text" placeholder="e.g. 27AACJC2026P1Z3" style="text-transform:uppercase"></div>
+        </form>
+      </section>
+
+      <section class="jc-checkout__section">
+        <div class="jc-checkout__heading"><h2>Delivery <em>Method</em></h2><span></span></div>
+        <div class="jc-delivery">
+          <label class="jc-delivery__opt"><input type="radio" name="delivery" value="0" data-label="Standard (5–7 days)" checked><div><span class="price">Free</span><h4>Standard</h4><p>5–7 Business Days</p></div></label>
+          <label class="jc-delivery__opt"><input type="radio" name="delivery" value="299" data-label="Express (2–3 days)"><div><span class="price">₹299</span><h4>Express</h4><p>2–3 Business Days</p></div></label>
+          <label class="jc-delivery__opt"><input type="radio" name="delivery" value="750" data-label="Overnight"><div><span class="price">₹750</span><h4>Overnight</h4><p>Next Morning Delivery</p></div></label>
+        </div>
+      </section>
+    </div>
+
+    <div class="jc-checkout__right">
+      <div class="jc-summary jc-summary--light">
+        <h3 class="jc-summary__title">Order <em>Summary</em></h3>
+        <div id="checkout-items" class="jc-checkout__items"></div>
+        <div class="jc-summary__rows">
+          <div class="jc-summary__row"><span>Subtotal</span><span id="co-subtotal">₹0</span></div>
+          <div class="jc-summary__row"><span>Shipping</span><span id="co-shipping">Free</span></div>
+          <div class="jc-summary__row"><span>Tax (GST 18%)</span><span id="co-gst">₹0</span></div>
+        </div>
+        <div class="jc-summary__total jc-summary__total--light">
+          <span class="jc-summary__total-label">Order Total</span>
+          <span id="co-total" class="jc-summary__total-val">₹0</span>
+        </div>
+      </div>
+
+      <div class="jc-payment">
+        <h3 class="jc-summary__title">Payment <em>Method</em></h3>
+        <label class="jc-payment__opt">
+          <input type="radio" name="payment" value="gateway" checked>
+          <div><span class="t">Secure Indian Payment Gateway</span><span class="d">Google Pay, PhonePe, Cards (Visa/Mastercard/RuPay), Net Banking &amp; live QR.</span></div>
+          <span class="jc-payment__logos"><iconify-icon icon="logos:visa"></iconify-icon><iconify-icon icon="logos:mastercard"></iconify-icon></span>
+        </label>
+        <label class="jc-payment__opt">
+          <input type="radio" name="payment" value="cod">
+          <div><span class="t">Cash / Card on Delivery</span><span class="d">Pay when your order arrives at your doorstep.</span></div>
+          <span class="jc-payment__logos"><iconify-icon icon="lucide:banknote"></iconify-icon></span>
+        </label>
+        <button type="button" id="place-order-btn" class="jc-btn jc-btn--accent jc-btn--block" style="margin-top:1.25rem">
+          Complete Payment <iconify-icon icon="lucide:shield-check"></iconify-icon>
+        </button>
+        <p id="checkout-error" class="jc-checkout__error"></p>
+        <div class="jc-payment__trust"><iconify-icon icon="lucide:lock"></iconify-icon> 256-Bit SSL Secure Checkout</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="checkout-empty" class="jc-empty" style="display:none;min-height:40vh">
+    <iconify-icon icon="lucide:shopping-bag"></iconify-icon>
+    <p>Your cart is empty — nothing to check out.</p>
+    <a href="/shop" class="jc-btn jc-btn--navy">Browse Products</a>
+  </div>
+</main>
+{% endblock %}
+
+{% block page_scripts %}
+<script type="module" src="/assets/js/checkout.js?v=1"></script>
+{% endblock %}

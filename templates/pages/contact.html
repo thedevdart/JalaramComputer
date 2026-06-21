@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="jc-page-hero">
+  <div class="jc-page-hero__inner">
+    <nav class="jc-breadcrumb"><a href="/">Home</a><span>/</span><span>Contact</span></nav>
+    <h1>Contact Us</h1>
+    <p>Have a repair query or bulk order? Reach our technician team — we respond the same day.</p>
+  </div>
+</section>
+
+<main class="jc-contact jc-container">
+  <div id="contact-form-wrap" class="jc-contact__card">
+    <div class="jc-contact__info">
+      <div>
+        <span class="jc-contact__label">Call / WhatsApp</span>
+        <a href="https://wa.me/919892848643">+91 9892848643</a>
+        <p>Mon–Sat: 10 AM to 9 PM</p>
+      </div>
+      <div>
+        <span class="jc-contact__label">Email</span>
+        <a href="mailto:jalaramcomputers21@gmail.com">jalaramcomputers21@gmail.com</a>
+        <p>24/7 Support Channel</p>
+      </div>
+    </div>
+
+    <form id="contact-form" class="jc-form-grid" novalidate>
+      <div class="jc-field"><label for="cnt-name">Your Name</label><input id="cnt-name" name="name" type="text" placeholder="Your name" required></div>
+      <div class="jc-field"><label for="cnt-email">Email Address</label><input id="cnt-email" name="email" type="email" placeholder="your@email.com" required></div>
+      <div class="jc-field"><label for="cnt-phone">Phone Number</label><input id="cnt-phone" name="phone" type="tel" placeholder="+91 9892848643" required></div>
+      <div class="jc-field">
+        <label for="cnt-category">Query Category</label>
+        <select id="cnt-category" name="category">
+          <option value="Laptop/PC Repair">Laptop &amp; PC Repairs</option>
+          <option value="Custom Gaming PC">Custom PC Build</option>
+          <option value="CCTV Installation">CCTV &amp; Surveillance</option>
+          <option value="Enterprise Networking">Enterprise Networking</option>
+          <option value="Bulk Order Inquiry">Corporate Orders</option>
+        </select>
+      </div>
+      <div class="jc-field jc-field--full">
+        <label for="cnt-message">Message</label>
+        <textarea id="cnt-message" name="message" rows="4" placeholder="Describe your issue or requirement…" required></textarea>
+      </div>
+      <p id="contact-error" class="jc-form-error jc-field--full"></p>
+      <button type="submit" class="jc-btn jc-btn--navy jc-btn--block jc-field--full" id="contact-submit">Submit Query</button>
+    </form>
+  </div>
+
+  <div id="contact-success" class="jc-contact__success" hidden>
+    <div class="jc-contact__success-icon"><iconify-icon icon="lucide:circle-check"></iconify-icon></div>
+    <h2>Inquiry Received</h2>
+    <p class="jc-contact__success-eyebrow">Thank you for contacting Jalaram Computers</p>
+    <div class="jc-contact__ticket">
+      <div><span>Ticket ID:</span><strong id="cnt-success-ticket"></strong></div>
+      <div><span>Response ETA:</span><strong class="is-gold">Within 3 Hours</strong></div>
+    </div>
+    <a href="/shop" class="jc-btn jc-btn--accent">Continue Shopping</a>
+  </div>
+</main>
+{% endblock %}
+
+{% block page_scripts %}
+<script type="module" src="/assets/js/contact.js?v=1"></script>
+{% endblock %}

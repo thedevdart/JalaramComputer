@@ -1,0 +1,65 @@
+<header id="site-header" class="jc-header">
+  <div class="jc-header__inner">
+    <a href="/" class="jc-brand" aria-label="Jalaram Computers home">
+      <img src="/assets/images/logo.png?v=2" alt="" class="jc-brand__logo" width="160" height="56">
+      <span class="jc-brand__mark">
+        <strong>Jalaram</strong>
+        <span>Computers &amp; IT</span>
+      </span>
+    </a>
+
+    <nav class="jc-nav" aria-label="Main navigation">
+      {% for link in nav_links %}
+        <a href="{{ link.href }}"{% if active_nav == link.key %} class="is-active" aria-current="page"{% endif %}>{{ link.label }}</a>
+      {% endfor %}
+    </nav>
+
+    <div class="jc-header__actions">
+      <form class="jc-search" role="search" action="/shop" method="get">
+        <iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon>
+        <input type="search" name="q" class="jc-search__input" placeholder="Search products…"
+               autocomplete="off" aria-label="Search products">
+      </form>
+
+      <a href="/account" id="nav-account-link" class="jc-account-link" aria-label="My Account" title="My Account">
+        <iconify-icon icon="lucide:user"></iconify-icon>
+        <span id="header-profile-dot" class="jc-account-link__dot" hidden aria-hidden="true"></span>
+      </a>
+
+      <a href="/cart" id="nav-cart-link" class="jc-nav-cart" aria-label="Shopping cart">
+        <iconify-icon icon="lucide:shopping-bag"></iconify-icon>
+        <span class="jc-nav-cart__count" data-cart-count>0</span>
+      </a>
+
+      <button type="button" id="mobile-menu-btn" class="jc-burger" aria-label="Open menu"
+              aria-controls="mobile-drawer" aria-expanded="false">
+        <iconify-icon icon="lucide:menu"></iconify-icon>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile navigation drawer -->
+<div id="mobile-drawer" class="jc-drawer" aria-hidden="true">
+  <div class="jc-drawer__backdrop" data-drawer-close></div>
+  <aside class="jc-drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="jc-drawer__head">
+      <span class="jc-drawer__brand">Jalaram <em>Computers</em></span>
+      <button type="button" class="jc-drawer__close" data-drawer-close aria-label="Close menu">
+        <iconify-icon icon="lucide:x"></iconify-icon>
+      </button>
+    </div>
+    <form class="jc-drawer__search" role="search" action="/shop" method="get">
+      <iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon>
+      <input type="search" name="q" placeholder="Search products…" aria-label="Search products">
+    </form>
+    <nav class="jc-drawer__nav" aria-label="Mobile navigation">
+      {% for link in nav_links %}
+        <a href="{{ link.href }}"{% if active_nav == link.key %} class="is-active"{% endif %}>{{ link.label }}</a>
+      {% endfor %}
+      <a href="/account">My Account</a>
+      <a href="/cart">Cart</a>
+    </nav>
+    <a href="/book-service" class="jc-drawer__cta">Book a Service <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+  </aside>
+</div>

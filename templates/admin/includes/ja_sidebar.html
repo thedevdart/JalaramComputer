@@ -1,0 +1,32 @@
+{% load i18n %}
+<aside class="ja-sidebar" aria-label="{% translate 'Admin navigation' %}">
+  <nav class="ja-nav">
+    <a href="{% url 'admin:index' %}" class="ja-nav__item{% if request.path == '/admin/' %} is-active{% endif %}">
+      <span class="ja-nav__icon" aria-hidden="true">◈</span>
+      {% translate 'Dashboard' %}
+    </a>
+    <a href="{% url 'admin:jalaram_billing' %}" class="ja-nav__item{% if '/admin/billing/' in request.path %} is-active{% endif %}">
+      <span class="ja-nav__icon" aria-hidden="true">₹</span>
+      {% translate 'GST billing' %}
+    </a>
+    <a href="/" class="ja-nav__item ja-nav__item--muted" target="_blank" rel="noopener">
+      <span class="ja-nav__icon" aria-hidden="true">↗</span>
+      {% translate 'Storefront' %}
+    </a>
+
+    {% if available_apps %}
+    {% for app in available_apps %}
+    <div class="ja-nav__group">
+      <div class="ja-nav__label">{{ app.name }}</div>
+      {% for model in app.models %}
+      {% if model.admin_url %}
+      <a href="{{ model.admin_url }}" class="ja-nav__item{% if model.admin_url in request.path %} is-active{% endif %}">
+        {{ model.name }}
+      </a>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endfor %}
+    {% endif %}
+  </nav>
+</aside>

@@ -1,8 +1,12 @@
-# Dependencies
-node_modules/
-
-# Environment
+# Python / Django
+__pycache__/
+*.py[cod]
+db.sqlite3
+staticfiles/
 .env
+
+# Legacy (removed)
+node_modules/
 .env.local
 .env.*.local
 
@@ -15,3 +19,4 @@ Thumbs.db
 
 # Build output
 dist/
+_ref/

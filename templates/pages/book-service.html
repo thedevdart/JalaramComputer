@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="jc-page-hero jc-page-hero--compact">
+  <div class="jc-page-hero__inner">
+    <nav class="jc-breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <a href="/services">Services</a><span>/</span>
+      <span>Book a Service</span>
+    </nav>
+    <h1>Book a <em>Service</em></h1>
+    <p>Schedule a certified technician visit — same-day response for urgent issues.</p>
+  </div>
+</section>
+
+<main class="jc-book jc-container">
+  <div class="jc-book__grid">
+
+    <div class="jc-book__main">
+      <div id="booking-success" class="jc-book__success" hidden>
+        <div class="jc-book__success-icon"><iconify-icon icon="lucide:circle-check"></iconify-icon></div>
+        <span class="jc-book__success-eyebrow">Booking Confirmed</span>
+        <h2>Appointment Scheduled!</h2>
+        <p>Your request is registered. A technician will contact you to confirm final details.</p>
+        <dl class="jc-book__summary">
+          <div><dt>Booking ID</dt><dd id="success-booking-id"></dd></div>
+          <div><dt>Service</dt><dd id="success-booking-service"></dd></div>
+          <div><dt>Date</dt><dd id="success-booking-date"></dd></div>
+          <div><dt>Time Slot</dt><dd id="success-booking-time"></dd></div>
+          <div id="success-booking-discount" hidden><dt>Promo Applied</dt><dd>FIXNOW (−₹500)</dd></div>
+        </dl>
+        <a href="/services" class="jc-btn jc-btn--navy">
+          <iconify-icon icon="lucide:arrow-left"></iconify-icon> Back to Services
+        </a>
+      </div>
+
+      <form id="booking-form" class="jc-book__form">
+        <h2 class="jc-book__form-title">Your <em>Details</em></h2>
+
+        <div class="jc-form-grid">
+          <div class="jc-field"><label for="booking-name">Full Name *</label><input id="booking-name" type="text" placeholder="e.g. Rajesh Kumar" required></div>
+          <div class="jc-field"><label for="booking-phone">Phone Number *</label><input id="booking-phone" type="tel" placeholder="+91 9892848643" required></div>
+          <div class="jc-field jc-field--full"><label for="booking-email">Email Address *</label><input id="booking-email" type="email" placeholder="you@example.com" required></div>
+          <div class="jc-field">
+            <label for="booking-service">Service Type *</label>
+            <select id="booking-service" required>
+              <option value="Computer Repair">Computer Repair (₹999)</option>
+              <option value="Laptop Repair">Laptop Repair (₹1,499)</option>
+              <option value="Networking Setup">Networking Setup (Quote)</option>
+              <option value="CCTV Installation">CCTV Installation (Quote)</option>
+              <option value="Printer Service">Printer Service (₹799)</option>
+              <option value="General Troubleshooting">General Diagnostics (₹499)</option>
+            </select>
+          </div>
+          <div class="jc-field"><label for="booking-date">Preferred Date *</label><input id="booking-date" type="date" required></div>
+          <div class="jc-field">
+            <label for="booking-time">Time Slot *</label>
+            <select id="booking-time" required>
+              <option value="Morning (09:00 AM - 12:00 PM)">Morning (09:00 AM – 12:00 PM)</option>
+              <option value="Afternoon (12:00 PM - 04:00 PM)">Afternoon (12:00 PM – 04:00 PM)</option>
+              <option value="Evening (04:00 PM - 07:00 PM)">Evening (04:00 PM – 07:00 PM)</option>
+            </select>
+          </div>
+          <div class="jc-field">
+            <label for="booking-promo">Promo Code</label>
+            <div class="jc-promo-row">
+              <input id="booking-promo" type="text" placeholder="FIXNOW" class="jc-promo-row__input">
+              <button type="button" id="apply-booking-promo" class="jc-btn jc-btn--navy jc-btn--sm">Apply</button>
+            </div>
+            <p id="booking-promo-applied" class="jc-promo-applied" hidden>✓ FIXNOW applied — ₹500 off!</p>
+          </div>
+          <div class="jc-field jc-field--full">
+            <label for="booking-desc">Describe Your Issue *</label>
+            <textarea id="booking-desc" rows="3" placeholder="Describe your issue in brief…" required></textarea>
+          </div>
+        </div>
+
+        <p id="booking-error" class="jc-form-error"></p>
+        <button type="submit" id="booking-submit" class="jc-btn jc-btn--navy jc-btn--block">
+          <iconify-icon icon="lucide:calendar-check"></iconify-icon> Confirm Appointment
+        </button>
+      </form>
+    </div>
+
+    <aside class="jc-book__aside">
+      <div class="jc-book__panel">
+        <h3>Why Book With Us?</h3>
+        <ul>
+          <li><iconify-icon icon="lucide:shield-check"></iconify-icon> Certified technicians with 28+ years of experience</li>
+          <li><iconify-icon icon="lucide:clock"></iconify-icon> Same-day response for urgent on-site issues</li>
+          <li><iconify-icon icon="lucide:indian-rupee"></iconify-icon> Transparent pricing — no hidden charges</li>
+          <li><iconify-icon icon="lucide:map-pin"></iconify-icon> On-site visits across Mumbai &amp; Navi Mumbai</li>
+        </ul>
+      </div>
+
+      <div class="jc-book__panel">
+        <h3>Service Pricing</h3>
+        <ul class="jc-book__pricing">
+          <li><span>Computer Repair</span><strong>₹999</strong></li>
+          <li><span>Laptop Repair</span><strong>₹1,499</strong></li>
+          <li><span>Printer Service</span><strong>₹799</strong></li>
+          <li><span>General Diagnostics</span><strong>₹499</strong></li>
+          <li><span>Networking Setup</span><em>On Quote</em></li>
+          <li><span>CCTV Installation</span><em>On Quote</em></li>
+        </ul>
+      </div>
+
+      <div class="jc-book__panel jc-book__panel--dark">
+        <h3>Need Instant Help?</h3>
+        <p>Call or WhatsApp us directly — we respond within minutes.</p>
+        <a href="tel:+919892848643" class="jc-book__phone"><iconify-icon icon="lucide:phone"></iconify-icon> +91 9892848643</a>
+        <a href="https://wa.me/919892848643" target="_blank" rel="noopener noreferrer" class="jc-btn jc-btn--whatsapp jc-btn--block">
+          <iconify-icon icon="mdi:whatsapp"></iconify-icon> Chat on WhatsApp
+        </a>
+      </div>
+    </aside>
+
+  </div>
+</main>
+{% endblock %}
+
+{% block page_scripts %}
+<script type="module" src="/assets/js/book-service.js?v=1"></script>
+{% endblock %}

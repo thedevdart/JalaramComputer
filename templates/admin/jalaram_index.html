@@ -1,0 +1,62 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block bodyclass %}ja-dashboard{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="ja-dash">
+  {% with s=jalaram_stats %}
+  <p class="ja-dash__lead">{% translate 'Overview of your store at a glance.' %}</p>
+
+  <div class="ja-dash__stats">
+    <article class="ja-stat">
+      <strong>{{ s.products }}</strong>
+      <span>{% translate 'Products' %}</span>
+    </article>
+    <article class="ja-stat">
+      <strong>{{ s.orders }}</strong>
+      <span>{% translate 'Orders' %}</span>
+    </article>
+    <article class="ja-stat{% if s.orders_unpaid %} ja-stat--warn{% endif %}">
+      <strong>{{ s.orders_unpaid }}</strong>
+      <span>{% translate 'Unpaid orders' %}</span>
+    </article>
+    <article class="ja-stat">
+      <strong>₹{{ s.revenue|floatformat:0 }}</strong>
+      <span>{% translate 'Total revenue' %}</span>
+    </article>
+    <article class="ja-stat{% if s.queries_open %} ja-stat--warn{% endif %}">
+      <strong>{{ s.queries_open }}</strong>
+      <span>{% translate 'Open queries' %}</span>
+    </article>
+    <article class="ja-stat">
+      <strong>{{ s.bookings }}</strong>
+      <span>{% translate 'Service bookings' %}</span>
+    </article>
+    <article class="ja-stat">
+      <strong>{{ s.repairs_active }}</strong>
+      <span>{% translate 'Active repairs' %}</span>
+    </article>
+    <article class="ja-stat{% if s.low_stock %} ja-stat--err{% endif %}">
+      <strong>{{ s.low_stock }}</strong>
+      <span>{% translate 'Low stock (≤5)' %}</span>
+    </article>
+    <article class="ja-stat">
+      <strong>{{ s.subscribers }}</strong>
+      <span>{% translate 'Newsletter' %}</span>
+    </article>
+  </div>
+
+  <div class="ja-dash__actions">
+    <a href="{% url 'admin:shop_product_add' %}" class="ja-btn ja-btn--gold">+ {% translate 'Add product' %}</a>
+    <a href="{% url 'admin:shop_order_changelist' %}" class="ja-btn">{% translate 'View orders' %}</a>
+    <a href="{% url 'admin:shop_contactquery_changelist' %}" class="ja-btn">{% translate 'Contact queries' %}</a>
+    <a href="{% url 'admin:shop_servicebooking_changelist' %}" class="ja-btn">{% translate 'Service bookings' %}</a>
+    <a href="{% url 'admin:jalaram_billing' %}" class="ja-btn ja-btn--gold-outline">{% translate 'GST billing' %}</a>
+    <a href="{% url 'admin:shop_sitesettings_change' 1 %}" class="ja-btn">{% translate 'Store settings' %}</a>
+  </div>
+  {% endwith %}
+</div>
+{% endblock %}

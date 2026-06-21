@@ -1,0 +1,70 @@
+{% extends "admin/base_site.html" %}
+
+{% block breadcrumbs %}
+<nav class="ja-crumb" aria-label="Breadcrumbs">
+  <a href="{% url 'admin:index' %}">Home</a>
+  <span aria-hidden="true">›</span>
+  <span>GST Billing</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="ja-bill">
+  <p class="ja-bill__lead">Create ad-hoc tax invoices for repairs, services, or walk-in sales. Vendor details from <a href="{% url 'admin:shop_sitesettings_change' 1 %}">Store settings</a>.</p>
+
+  <form method="post" id="billing-form">
+    {% csrf_token %}
+    <div class="ja-bill__grid">
+      <div class="ja-bill__panel">
+        <h2>Customer</h2>
+        <p><label>Name<br><input type="text" name="cust_name" class="vTextField"></label></p>
+        <p><label>Phone<br><input type="text" name="cust_phone" class="vTextField" placeholder="+91 9892848643"></label></p>
+        <p><label>Email<br><input type="email" name="cust_email" class="vTextField"></label></p>
+      </div>
+      <div class="ja-bill__panel">
+        <h2>Billing details</h2>
+        <p><label>GSTIN (optional)<br><input type="text" name="cust_gstin" class="vTextField" placeholder="27AACJC2026P1Z3"></label></p>
+        <p><label>Address<br><input type="text" name="cust_address" class="vTextField"></label></p>
+      </div>
+    </div>
+
+    <div class="ja-bill__panel">
+      <h2>Line items</h2>
+      <table class="ja-bill__rows" id="bill-items">
+        <thead>
+          <tr><th>Description</th><th style="width:4rem">Qty</th><th style="width:6rem">Rate (₹)</th><th style="width:4rem">GST %</th><th></th></tr>
+        </thead>
+        <tbody id="bill-items-body"></tbody>
+      </table>
+      <button type="button" class="button" id="add-row">+ Add line item</button>
+    </div>
+
+    <div class="ja-bill__actions">
+      <button type="submit" name="action" value="preview" class="button default">Preview invoice</button>
+      <button type="submit" name="action" value="print" class="button">Preview &amp; print</button>
+      <a href="{% url 'admin:index' %}" class="button cancel-link">Back to dashboard</a>
+    </div>
+  </form>
+</div>
+
+<script>
+(function () {
+  const body = document.getElementById('bill-items-body');
+  let rowIndex = 0;
+  function addRow(desc, qty, price, tax) {
+    const i = rowIndex++;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input name="item_${i}_desc" value="${desc || ''}" required></td>
+      <td><input name="item_${i}_qty" type="number" min="1" value="${qty || 1}"></td>
+      <td><input name="item_${i}_price" type="number" min="0" step="0.01" value="${price || ''}"></td>
+      <td><input name="item_${i}_tax" type="number" min="0" value="${tax || 18}"></td>
+      <td><button type="button" class="button" aria-label="Remove row">×</button></td>`;
+    tr.querySelector('button').addEventListener('click', () => tr.remove());
+    body.appendChild(tr);
+  }
+  document.getElementById('add-row').addEventListener('click', () => addRow());
+  addRow('HP Laptop Repair Labor Charge', 1, 1500, 18);
+})();
+</script>
+{% endblock %}
