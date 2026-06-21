@@ -21,6 +21,8 @@ urlpatterns = [
     path('api/auth/register/', api_views.auth_register, name='auth-register'),
     path('api/auth/login/', api_views.auth_login, name='auth-login'),
     path('api/auth/logout/', api_views.auth_logout, name='auth-logout'),
+    path('api/auth/config/', api_views.auth_config, name='auth-config'),
+    path('api/auth/google/', api_views.auth_google, name='auth-google'),
 
     # ── Catalog & settings (read-only) ──
     path('api/products/', api_views.products_list, name='products-list'),

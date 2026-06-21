@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
+from .google_auth import verify_google_id_token
 from .models import (
     ContactQuery,
     HeroSlideConfig,
@@ -28,6 +29,45 @@ from .serializers import order_from_frontend, service_booking_from_frontend
 
 UserModel = get_user_model()
 EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
+
+
+def _unique_username(base: str) -> str:
+    username = re.sub(r'[^a-zA-Z0-9_]', '', base)[:30] or 'user'
+    candidate = username
+    n = 1
+    while UserModel.objects.filter(username=candidate).exists():
+        candidate = f'{username}{n}'
+        n += 1
+    return candidate
+
+
+def _apply_google_name(user, idinfo: dict):
+    given = (idinfo.get('given_name') or '').strip()
+    family = (idinfo.get('family_name') or '').strip()
+    full = (idinfo.get('name') or '').strip()
+    if not user.get_full_name() and (given or full):
+        if given:
+            user.first_name = given
+            user.last_name = family
+        elif full:
+            parts = full.split(' ', 1)
+            user.first_name = parts[0]
+            user.last_name = parts[1] if len(parts) > 1 else ''
+        user.save(update_fields=['first_name', 'last_name'])
+
+
+def _get_or_create_google_user(email: str, idinfo: dict):
+    user = UserModel.objects.filter(email__iexact=email).first()
+    if user:
+        _apply_google_name(user, idinfo)
+        return user
+
+    username = _unique_username(email.split('@')[0])
+    user = UserModel.objects.create_user(username=username, email=email)
+    user.set_unusable_password()
+    _apply_google_name(user, idinfo)
+    user.save()
+    return user
 
 
 def _json_body(request):
@@ -79,12 +119,7 @@ def auth_register(request):
     if UserModel.objects.filter(email__iexact=email).exists():
         return JsonResponse({'ok': False, 'error': 'An account with this email already exists.'}, status=400)
 
-    username = email.split('@')[0]
-    base = username
-    n = 1
-    while UserModel.objects.filter(username=username).exists():
-        username = f'{base}{n}'
-        n += 1
+    username = _unique_username(email.split('@')[0])
 
     user = UserModel.objects.create_user(username=username, email=email, password=password)
     if full_name:
@@ -109,6 +144,11 @@ def auth_login(request):
 
     authed = authenticate(request, username=user.username, password=password)
     if not authed:
+        if not user.has_usable_password():
+            return JsonResponse({
+                'ok': False,
+                'error': 'This account uses Google sign-in. Use Continue with Google below.',
+            }, status=401)
         return JsonResponse({'ok': False, 'error': 'Invalid email or password.'}, status=401)
 
     login(request, authed)
@@ -119,6 +159,39 @@ def auth_login(request):
 def auth_logout(request):
     logout(request)
     return JsonResponse({'ok': True})
+
+
+@require_GET
+def auth_config(request):
+    client_id = getattr(settings, 'GOOGLE_OAUTH_CLIENT_ID', '') or None
+    return JsonResponse({'googleClientId': client_id})
+
+
+@require_POST
+def auth_google(request):
+    client_id = getattr(settings, 'GOOGLE_OAUTH_CLIENT_ID', '')
+    if not client_id:
+        return JsonResponse({'ok': False, 'error': 'Google sign-in is not configured yet.'}, status=503)
+
+    data = _json_body(request)
+    credential = (data.get('credential') or data.get('idToken') or '').strip()
+    if not credential:
+        return JsonResponse({'ok': False, 'error': 'Missing Google credential.'}, status=400)
+
+    try:
+        idinfo = verify_google_id_token(credential, client_id)
+    except ValueError:
+        return JsonResponse({'ok': False, 'error': 'Google sign-in could not be verified.'}, status=401)
+
+    email = (idinfo.get('email') or '').strip().lower()
+    if not email or not EMAIL_RE.match(email):
+        return JsonResponse({'ok': False, 'error': 'Google account has no usable email.'}, status=400)
+    if not idinfo.get('email_verified'):
+        return JsonResponse({'ok': False, 'error': 'Please verify your Google email first.'}, status=400)
+
+    user = _get_or_create_google_user(email, idinfo)
+    login(request, user)
+    return JsonResponse({'ok': True, 'user': _user_payload(user)})
 
 
 # ── Catalog & settings (read-only) ──────────────────────────────────────────

@@ -1025,6 +1025,17 @@ body.jc-splash-active { overflow: hidden; }
 .jc-auth__form { display: flex; flex-direction: column; gap: 1.1rem; padding: 2rem; }
 .jc-auth__hint { font-size: 0.68rem; color: var(--muted); font-weight: 400; }
 .jc-auth__error { color: #dc2626; font-size: 0.8rem; min-height: 1rem; text-align: center; }
+.jc-auth__divider {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0 2rem; margin-top: -0.25rem;
+  color: var(--muted); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.jc-auth__divider::before, .jc-auth__divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--silver);
+}
+.jc-auth__google {
+  display: flex; justify-content: center; padding: 0.75rem 2rem 0; min-height: 3rem;
+}
+.jc-auth__google.is-busy { opacity: 0.6; pointer-events: none; }
 .jc-auth__terms { font-size: 0.68rem; color: var(--muted); text-align: center; padding: 0 2rem 1.75rem; margin: 0; }
 
 /* Logged-in profile header */

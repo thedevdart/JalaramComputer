@@ -1,9 +1,80 @@
 /* Account portal — sign in / register / order history (Django session auth). */
-import { authMe, authLogin, authRegister, authLogout, getMyOrders, formatINR } from './api.js';
+import { authMe, authLogin, authRegister, authLogout, authGoogle, getMyOrders, formatINR } from './api.js';
 import { esc } from './products.js';
 
 const root = document.getElementById('account-root');
 const profileDot = document.getElementById('header-profile-dot');
+const googleClientId = root?.dataset.googleClientId || '';
+
+let googleScriptPromise = null;
+
+function loadGoogleScript() {
+  if (window.google?.accounts?.id) return Promise.resolve();
+  if (googleScriptPromise) return googleScriptPromise;
+  googleScriptPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-jc-google]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => reject(new Error('Google sign-in failed to load.')), { once: true });
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.dataset.jcGoogle = '1';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Google sign-in failed to load.'));
+    document.head.appendChild(script);
+  });
+  return googleScriptPromise;
+}
+
+function showGoogleError(message) {
+  const loginErr = document.getElementById('login-error');
+  const registerErr = document.getElementById('register-error');
+  const activeErr = loginErr && !document.getElementById('login-form')?.hidden ? loginErr : registerErr;
+  if (activeErr) activeErr.textContent = message;
+}
+
+async function initGoogleSignIn(onSuccess) {
+  if (!googleClientId) return;
+
+  const host = document.getElementById('google-signin-host');
+  if (!host) return;
+
+  try {
+    await loadGoogleScript();
+    google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: async (response) => {
+        showGoogleError('');
+        host.classList.add('is-busy');
+        try {
+          const user = await authGoogle(response.credential);
+          onSuccess(user);
+        } catch (ex) {
+          showGoogleError((ex && ex.message) || 'Google sign-in failed.');
+          host.classList.remove('is-busy');
+        }
+      },
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    });
+    const width = Math.min(host.offsetWidth || 320, 400);
+    google.accounts.id.renderButton(host, {
+      type: 'standard',
+      theme: 'outline',
+      size: 'large',
+      text: 'continue_with',
+      shape: 'rectangular',
+      logo_alignment: 'left',
+      width,
+    });
+  } catch (ex) {
+    host.innerHTML = `<p class="jc-auth__error">${esc((ex && ex.message) || 'Google sign-in unavailable.')}</p>`;
+  }
+}
 
 function initials(user) {
   const name = user.displayName || user.email || 'U';
@@ -56,6 +127,7 @@ function authView() {
       <p class="jc-auth__error" id="register-error"></p>
       <button type="submit" class="jc-btn jc-btn--accent jc-btn--block" id="register-submit">Create Account</button>
     </form>
+    ${googleClientId ? `<div class="jc-auth__divider"><span>or</span></div><div id="google-signin-host" class="jc-auth__google"></div>` : ''}
     <p class="jc-auth__terms">By continuing you agree to our terms &amp; privacy policy.</p>
   </div>`;
 
@@ -110,6 +182,8 @@ function authView() {
       btn.textContent = 'Create Account';
     }
   });
+
+  initGoogleSignIn(dashboard);
 }
 
 function orderCard(o) {

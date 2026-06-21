@@ -1,6 +1,7 @@
 """Public page views. Thin renderers — all data is loaded client-side via the
 JSON API in ``api_views`` (kept). Page metadata lives here, not in JSON files."""
 
+from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 
@@ -15,7 +16,7 @@ NAV_LINKS = [
 
 @ensure_csrf_cookie
 def page(request, *, template, title, active=None, body_class='',
-         splash=False, whatsapp=True, hero_preload=False, tabbar=True):
+         splash=False, whatsapp=True, hero_preload=False, tabbar=True, **extra):
     ctx = {
         'title': title,
         'active_nav': active,
@@ -26,6 +27,7 @@ def page(request, *, template, title, active=None, body_class='',
         'hero_preload': hero_preload,
         'show_tabbar': tabbar,
     }
+    ctx.update(extra)
     response = render(request, template, ctx)
     response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
     return response
@@ -85,4 +87,5 @@ def contact(request):
 
 def account(request):
     return page(request, template='pages/account.html',
-                title='My Account — Jalaram Computers', active='account', whatsapp=False)
+                title='My Account — Jalaram Computers', active='account', whatsapp=False,
+                google_client_id=settings.GOOGLE_OAUTH_CLIENT_ID)

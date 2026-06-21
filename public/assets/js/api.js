@@ -48,6 +48,9 @@ export const authMe = () => apiFetch('/api/auth/me/').then((d) => (d && d.user) 
 export const authLogin = (email, password) => apiFetch('/api/auth/login/', { method: 'POST', body: { email, password } }).then((d) => d.user);
 export const authRegister = (email, password, fullName) => apiFetch('/api/auth/register/', { method: 'POST', body: { email, password, fullName } }).then((d) => d.user);
 export const authLogout = () => apiFetch('/api/auth/logout/', { method: 'POST', body: {} });
+export const authGoogle = (credential) =>
+  apiFetch('/api/auth/google/', { method: 'POST', body: { credential } }).then((d) => d.user);
+export const getAuthConfig = () => apiFetch('/api/auth/config/');
 
 /* ── Formatting helpers ── */
 export const formatINR = (n) =>

@@ -175,6 +175,9 @@ SHOP_PHONE = os.environ.get('SHOP_PHONE', '9892848643')
 SHOP_EMAIL = os.environ.get('SHOP_EMAIL', 'jalaramcomputers21@gmail.com')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'support@jalaramcomputers.com')
 
+# Google Sign-In (storefront account page). Client ID only — no secret needed for ID-token flow.
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', '').strip()
+
 EMAIL_HOST = os.environ.get('SMTP_HOST', '')
 EMAIL_PORT = int(os.environ.get('SMTP_PORT', '587'))
 EMAIL_USE_TLS = os.environ.get('SMTP_SECURE', 'false').lower() not in ('1', 'true', 'yes')

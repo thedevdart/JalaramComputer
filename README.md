@@ -98,6 +98,27 @@ you are doing (it can break `pip`).
 
 Open the generated `*.up.railway.app` URL. Admin → `/admin`.
 
+## Google Sign-In (customer accounts)
+
+Customers can sign up or sign in with Google on `/account`. Admin login at `/admin/` stays username/password only.
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) → create or select a project.
+2. **APIs & Services → OAuth consent screen** — choose **External**, fill app name (e.g. Jalaram Computers), support email, and add your domain under authorized domains if prompted. Add scopes: `email`, `profile`, `openid` (defaults for Sign in with Google).
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID** — type **Web application**.
+4. **Authorized JavaScript origins** (add every URL users visit):
+   - `http://localhost:8000` (local dev)
+   - `https://www.jalaramcomputers.com`
+   - `https://jalaramcomputers.com`
+   - Your Railway URL, e.g. `https://your-app.up.railway.app`
+5. Copy the **Client ID** (ends in `.apps.googleusercontent.com`). You do **not** need the client secret for this flow.
+6. Set environment variable:
+   - Local: add `GOOGLE_OAUTH_CLIENT_ID=...` to `.env`
+   - Railway: add `GOOGLE_OAUTH_CLIENT_ID` under Variables and redeploy
+
+If the variable is missing, email/password auth still works; the Google button is hidden.
+
+**Publishing:** While the OAuth app is in **Testing**, only Google accounts you add as test users can sign in. When ready for everyone, submit the consent screen for verification (or move to Production if your use case allows without full verification).
+
 ## Production deploy (generic)
 
 ```bash
