@@ -10,6 +10,7 @@ const promoApplied = document.getElementById('booking-promo-applied');
 const dateInput = document.getElementById('booking-date');
 
 let promoActive = false;
+let validatedDiscount = 0;
 
 function setMinDate() {
   const d = new Date();
@@ -27,16 +28,30 @@ function validate(data) {
   return null;
 }
 
-document.getElementById('apply-booking-promo').addEventListener('click', () => {
+document.getElementById('apply-booking-promo').addEventListener('click', async () => {
   const code = promoInput.value.trim().toUpperCase();
-  if (code === 'FIXNOW') {
-    promoActive = true;
-    promoApplied.hidden = false;
-    promoInput.value = 'FIXNOW';
-  } else {
-    promoActive = false;
-    promoApplied.hidden = true;
-    errorEl.textContent = code ? 'Invalid promo code.' : 'Enter a promo code to apply.';
+  if (!code) { errorEl.textContent = 'Enter a promo code to apply.'; return; }
+  errorEl.textContent = '';
+  try {
+    const res = await fetch('/api/service-bookings/validate-promo/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '' },
+      body: JSON.stringify({ code }),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      promoActive = true;
+      validatedDiscount = json.discount;
+      promoApplied.hidden = false;
+      promoInput.value = code;
+    } else {
+      promoActive = false;
+      validatedDiscount = 0;
+      promoApplied.hidden = true;
+      errorEl.textContent = json.error || 'Invalid promo code.';
+    }
+  } catch {
+    errorEl.textContent = 'Could not validate promo code. Please try again.';
   }
 });
 
@@ -66,8 +81,8 @@ form.addEventListener('submit', async (e) => {
       date: data.date,
       slot: data.slot,
       desc: data.desc,
-      promoCode: promoActive ? 'FIXNOW' : '',
-      discountApplied: promoActive ? 500 : 0,
+      promoCode: promoActive ? promoInput.value.trim().toUpperCase() : '',
+      discountApplied: promoActive ? validatedDiscount : 0,
     };
     const res = await saveServiceBooking(payload);
     const booking = (res && res.booking) || {};
@@ -75,7 +90,8 @@ form.addEventListener('submit', async (e) => {
     document.getElementById('success-booking-service').textContent = booking.service || data.service;
     document.getElementById('success-booking-date').textContent = booking.date || data.date;
     document.getElementById('success-booking-time').textContent = booking.slot || data.slot;
-    document.getElementById('success-booking-discount').hidden = !promoActive;
+    const discountEl = document.getElementById('success-booking-discount');
+    if (discountEl) { discountEl.hidden = !(booking.discountApplied > 0); }
     form.hidden = true;
     success.hidden = false;
   } catch (ex) {

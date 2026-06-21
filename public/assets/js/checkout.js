@@ -74,6 +74,7 @@ async function placeOrder() {
     shippingDetails: {
       address: data.address, city: data.city, state: data.state,
       pincode: data.pincode, gst: data.gst || '', method: deliveryLabel(),
+      shippingCost: ship,
     },
     items: cart,
     paymentMethod: payment() === 'gateway' ? 'Secure Payment Gateway' : 'Cash on Delivery',
