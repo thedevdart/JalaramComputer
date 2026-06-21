@@ -18,7 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from .google_auth import verify_google_id_token
-from .google_oauth import exchange_auth_code
+from .google_oauth import exchange_auth_code, redirect_uri
 from .models import (
     ContactQuery,
     HeroSlideConfig,
@@ -188,7 +188,8 @@ def auth_logout(request):
 @require_GET
 def auth_config(request):
     client_id = getattr(settings, 'GOOGLE_OAUTH_CLIENT_ID', '') or None
-    return JsonResponse({'googleClientId': client_id})
+    redirect = redirect_uri(request) if client_id else None
+    return JsonResponse({'googleClientId': client_id, 'redirectUri': redirect})
 
 
 @require_POST
