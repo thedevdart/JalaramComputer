@@ -11,6 +11,8 @@ import secrets
 
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -82,6 +84,51 @@ def _json_body(request):
         return {}
 
 
+def _send_order_confirmation(order):
+    """Send a plain-text order confirmation to the customer. Best-effort — never raises."""
+    email = (order.customer.get('email') or '').strip()
+    if not email or not getattr(settings, 'EMAIL_HOST_USER', ''):
+        return
+
+    site_url = getattr(settings, 'SITE_URL', 'http://localhost:8000')
+    shop_name = getattr(settings, 'SHOP_NAME', 'Jalaram Computers')
+    shop_email = getattr(settings, 'SHOP_EMAIL', '')
+    shop_phone = getattr(settings, 'SHOP_PHONE', '')
+    name = order.customer.get('name') or 'Customer'
+
+    items_text = '\n'.join(
+        f"  • {it.get('name', 'Item')} × {it.get('quantity', 1)}"
+        f"  —  ₹{float(it.get('price', 0)) * int(it.get('quantity', 1)):,.0f}"
+        for it in (order.items or [])
+    )
+
+    body = (
+        f"Hi {name},\n\n"
+        f"Thank you for your order with {shop_name}!\n\n"
+        f"Order Number : {order.order_id}\n"
+        f"Date         : {order.date}\n"
+        f"Payment      : {order.payment_method}\n\n"
+        f"Items:\n{items_text}\n\n"
+        f"Subtotal  : ₹{float(order.subtotal):,.2f}\n"
+        f"GST (18%) : ₹{float(order.gst):,.2f}\n"
+        f"Total     : ₹{float(order.total):,.2f}\n\n"
+        f"Track your order: {site_url}/order-confirmed?id={order.order_id}\n\n"
+        f"Questions? Reach us at {shop_email} or {shop_phone}.\n\n"
+        f"Thank you for choosing {shop_name}!"
+    )
+
+    try:
+        send_mail(
+            subject=f"Order {order.order_id} Confirmed — {shop_name}",
+            message=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+    except Exception as exc:
+        logger.error('Order confirmation email failed for %s (order %s): %s', email, order.order_id, exc)
+
+
 def _is_staff_user(user):
     if not user or not user.is_authenticated:
         return False
@@ -145,10 +192,13 @@ def auth_register(request):
 
     if not EMAIL_RE.match(email):
         return JsonResponse({'ok': False, 'error': 'Invalid email.'}, status=400)
-    if len(password) < 6:
-        return JsonResponse({'ok': False, 'error': 'Password must be at least 6 characters.'}, status=400)
     if UserModel.objects.filter(email__iexact=email).exists():
         return JsonResponse({'ok': False, 'error': 'An account with this email already exists.'}, status=400)
+
+    try:
+        validate_password(password)
+    except DjangoValidationError as exc:
+        return JsonResponse({'ok': False, 'error': exc.messages[0]}, status=400)
 
     username = _unique_username(email.split('@')[0])
 
@@ -356,6 +406,7 @@ def orders_collection(request):
     data['orderId'] = _generate_order_id()
     fields = order_from_frontend(data, user=user)
     order = Order.objects.create(**fields)
+    _send_order_confirmation(order)
     return JsonResponse({'ok': True, 'order': order.to_frontend()})
 
 
@@ -373,16 +424,27 @@ def orders_detail(request, order_id):
 @require_POST
 def queries_create(request):
     data = _json_body(request)
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    message = (data.get('message') or '').strip()
+
+    if not name:
+        return JsonResponse({'ok': False, 'error': 'Name is required.'}, status=400)
+    if not EMAIL_RE.match(email):
+        return JsonResponse({'ok': False, 'error': 'A valid email address is required.'}, status=400)
+    if not message:
+        return JsonResponse({'ok': False, 'error': 'Message is required.'}, status=400)
+
     ticket_id = data.get('ticketId') or f'JLR-QTK-{ContactQuery.objects.count() + 100000}'
     obj = ContactQuery.objects.create(
         ticket_id=ticket_id,
-        name=data.get('name', ''),
-        email=data.get('email', ''),
-        phone=data.get('phone', ''),
-        category=data.get('category', ''),
-        message=data.get('message', ''),
+        name=name,
+        email=email,
+        phone=(data.get('phone') or '').strip(),
+        category=(data.get('category') or '').strip(),
+        message=message,
         date=data.get('date', ''),
-        status=data.get('status', 'Open'),
+        status='Open',
     )
     return JsonResponse({'ok': True, 'query': obj.to_frontend()})
 
@@ -390,6 +452,27 @@ def queries_create(request):
 @require_POST
 def service_bookings_create(request):
     data = _json_body(request)
+    name = (data.get('name') or '').strip()
+    phone = (data.get('phone') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    service = (data.get('service') or '').strip()
+    date = (data.get('date') or '').strip()
+    slot = (data.get('slot') or '').strip()
+    desc = (data.get('desc') or '').strip()
+
+    if not name:
+        return JsonResponse({'ok': False, 'error': 'Name is required.'}, status=400)
+    if not EMAIL_RE.match(email):
+        return JsonResponse({'ok': False, 'error': 'A valid email address is required.'}, status=400)
+    if not service:
+        return JsonResponse({'ok': False, 'error': 'Service type is required.'}, status=400)
+    if not date:
+        return JsonResponse({'ok': False, 'error': 'Appointment date is required.'}, status=400)
+    if not slot:
+        return JsonResponse({'ok': False, 'error': 'Time slot is required.'}, status=400)
+    if not desc:
+        return JsonResponse({'ok': False, 'error': 'Please describe your issue.'}, status=400)
+
     data['bookingId'] = data.get('bookingId') or f'BK-{ServiceBooking.objects.count() + 100000}'
     fields = service_booking_from_frontend(data)
     obj = ServiceBooking.objects.create(**fields)
@@ -428,7 +511,8 @@ def newsletter_subscribe(request):
             recipient_list=[email],
             fail_silently=False,
         )
-    except Exception:
+    except Exception as exc:
+        logger.error('Newsletter welcome email failed for %s: %s', email, exc)
         return JsonResponse({
             'ok': True,
             'message': 'Thanks for subscribing! You are on the list.',
