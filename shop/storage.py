@@ -1,9 +1,9 @@
-"""Storage backend selection for uploaded product videos.
+"""Storage backend selection for uploaded product media (images and videos).
 
-`select_video_storage` is referenced (by import path) as the `storage=` callable
-on Product.video, so it never gets baked into migrations. It returns Cloudinary
-storage when credentials are present, and falls back to the local filesystem
-otherwise — so the app still boots and runs in dev without Cloudinary set up.
+Each `select_*_storage` function is referenced by import path as the `storage=`
+callable on the relevant FileField, so it is never baked into migrations as a
+concrete object. Returns the appropriate Cloudinary storage when credentials are
+present, falls back to the local filesystem otherwise.
 """
 import os
 
@@ -15,6 +15,16 @@ def cloudinary_enabled():
         os.environ.get('CLOUDINARY_URL')
         or os.environ.get('CLOUDINARY_CLOUD_NAME')
     )
+
+
+def select_image_storage():
+    if cloudinary_enabled():
+        try:
+            from cloudinary_storage.storage import MediaCloudinaryStorage
+            return MediaCloudinaryStorage()
+        except Exception:
+            pass
+    return FileSystemStorage()
 
 
 def select_video_storage():

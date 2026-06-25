@@ -358,11 +358,17 @@ class ProductAdmin(admin.ModelAdmin):
         ('Images & media', {
             'fields': (
                 'image_icon', 'image_preview',
-                'image_url', 'image_url2', 'image_url3', 'image_url4',
+                'image1_file', 'image_url',
+                'image2_file', 'image_url2',
+                'image3_file', 'image_url3',
+                'image4_file', 'image_url4',
                 'images',
                 'video', 'video_preview', 'video_url',
             ),
-            'description': 'Upload a product video, or paste an external video link below it.',
+            'description': (
+                'Upload images directly (stored on Cloudinary when configured). '
+                'The URL field below each upload is a fallback — only used if no file is uploaded.'
+            ),
         }),
         ('Meta', {'fields': ('created_at',), 'classes': ('collapse',)}),
     )
@@ -390,8 +396,9 @@ class ProductAdmin(admin.ModelAdmin):
 
     @admin.display(description='Preview')
     def image_preview(self, obj):
-        if obj.image_url:
-            return format_html('<img src="{}" style="max-height:80px;border-radius:4px;">', obj.image_url)
+        src = obj.image1_src
+        if src:
+            return format_html('<img src="{}" style="max-height:80px;border-radius:4px;">', src)
         if obj.image_icon:
             return obj.image_icon
         return '—'

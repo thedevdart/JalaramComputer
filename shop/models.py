@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
-from .storage import select_video_storage
+from .storage import select_image_storage, select_video_storage
 
 # Status option lists. Defined here (not in admin.py) so the model fields can use
 # them as `choices=` — which is what turns a plain text box into a dropdown both
@@ -64,10 +64,50 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     promo_code = models.CharField(max_length=50, blank=True, default='')
     promo_discount = models.PositiveIntegerField(default=0)
-    image_url = models.URLField(max_length=500, blank=True, default='')
-    image_url2 = models.URLField(max_length=500, blank=True, default='')
-    image_url3 = models.URLField(max_length=500, blank=True, default='')
-    image_url4 = models.URLField(max_length=500, blank=True, default='')
+    image1_file = models.FileField(
+        upload_to='product_images/',
+        storage=select_image_storage,
+        validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'])],
+        blank=True, default='',
+        help_text='Upload primary image (JPG/PNG/WebP). Stored on Cloudinary when configured.',
+    )
+    image2_file = models.FileField(
+        upload_to='product_images/',
+        storage=select_image_storage,
+        validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'])],
+        blank=True, default='',
+        help_text='Upload gallery image 2 (optional).',
+    )
+    image3_file = models.FileField(
+        upload_to='product_images/',
+        storage=select_image_storage,
+        validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'])],
+        blank=True, default='',
+        help_text='Upload gallery image 3 (optional).',
+    )
+    image4_file = models.FileField(
+        upload_to='product_images/',
+        storage=select_image_storage,
+        validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'])],
+        blank=True, default='',
+        help_text='Upload gallery image 4 (optional).',
+    )
+    image_url = models.URLField(
+        max_length=500, blank=True, default='',
+        help_text='Fallback: external URL used only when no image file is uploaded above.',
+    )
+    image_url2 = models.URLField(
+        max_length=500, blank=True, default='',
+        help_text='Fallback: external URL used only when no file is uploaded for image 2.',
+    )
+    image_url3 = models.URLField(
+        max_length=500, blank=True, default='',
+        help_text='Fallback: external URL used only when no file is uploaded for image 3.',
+    )
+    image_url4 = models.URLField(
+        max_length=500, blank=True, default='',
+        help_text='Fallback: external URL used only when no file is uploaded for image 4.',
+    )
     images = models.JSONField(default=list, blank=True)
     video = models.FileField(
         upload_to='product_videos/',
@@ -89,6 +129,30 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def _file_or_url(self, file_field, url_field):
+        if file_field:
+            try:
+                return file_field.url
+            except Exception:
+                pass
+        return url_field
+
+    @property
+    def image1_src(self):
+        return self._file_or_url(self.image1_file, self.image_url)
+
+    @property
+    def image2_src(self):
+        return self._file_or_url(self.image2_file, self.image_url2)
+
+    @property
+    def image3_src(self):
+        return self._file_or_url(self.image3_file, self.image_url3)
+
+    @property
+    def image4_src(self):
+        return self._file_or_url(self.image4_file, self.image_url4)
 
     @property
     def video_src(self):
@@ -116,10 +180,10 @@ class Product(models.Model):
             'stock': self.stock,
             'promoCode': self.promo_code,
             'promoDiscount': self.promo_discount,
-            'imageUrl': self.image_url,
-            'imageUrl2': self.image_url2,
-            'imageUrl3': self.image_url3,
-            'imageUrl4': self.image_url4,
+            'imageUrl': self.image1_src,
+            'imageUrl2': self.image2_src,
+            'imageUrl3': self.image3_src,
+            'imageUrl4': self.image4_src,
             'images': self.images or [],
             'videoUrl': self.video_src,
             'imageIcon': self.image_icon,
