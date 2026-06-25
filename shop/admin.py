@@ -6,6 +6,7 @@ Custom views: dashboard stats, order invoice, GST billing compiler.
 """
 from decimal import Decimal
 
+from django import forms
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
@@ -16,6 +17,7 @@ from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
 
 from .models import (
+    Brand,
     Category,
     ContactQuery,
     HeroSlideConfig,
@@ -164,7 +166,7 @@ def billing_view(request):
     return render(request, 'admin/billing.html', ctx)
 
 
-# ── Category ───────────────────────────────────────────────────────────────
+# ── Category & Brand ─────────────────────────────────────────────────────────
 
 @admin.register(Category, site=jalaram_admin)
 class CategoryAdmin(admin.ModelAdmin):
@@ -173,10 +175,67 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
+@admin.register(Brand, site=jalaram_admin)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'is_active', 'product_count')
+    list_editable = ('is_active',)
+    search_fields = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    ordering = ('name',)
+
+    fieldsets = (
+        ('Brand', {'fields': ('name', 'slug', 'is_active')}),
+        ('Logo (optional)', {'fields': ('logo_url',)}),
+    )
+
+    @admin.display(description='Products')
+    def product_count(self, obj):
+        return Product.objects.filter(brand=obj.name).count()
+
+
 # ── Products ───────────────────────────────────────────────────────────────
+
+class ProductAdminForm(forms.ModelForm):
+    """Renders Brand and Category as dropdowns sourced from the Brand/Category
+    tables. Both stay plain text on the model (the storefront filters on the
+    name string), so the current value is always kept as a selectable option —
+    even if that brand/category was later renamed or removed."""
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        brands = list(
+            Brand.objects.filter(is_active=True).order_by('name').values_list('name', flat=True)
+        )
+        cats = list(Category.objects.order_by('name').values_list('name', flat=True))
+
+        current_brand = (self.instance.brand or '').strip()
+        current_cat = (self.instance.category or '').strip()
+        if current_brand and current_brand not in brands:
+            brands.insert(0, current_brand)
+        if current_cat and current_cat not in cats:
+            cats.insert(0, current_cat)
+
+        self.fields['brand'].widget = forms.Select(
+            choices=[('', '— Select brand —')] + [(b, b) for b in brands]
+        )
+        self.fields['category'].widget = forms.Select(
+            choices=[('', '— Select category —')] + [(c, c) for c in cats]
+        )
+        self.fields['brand'].help_text = 'Add new brands under Brands; add categories under Categories.'
+        self.fields['slug'].help_text = (
+            'Auto-filled from the Name — this is the product’s web-address ID. '
+            'Leave it as generated unless you have a reason to change it.'
+        )
+
 
 @admin.register(Product, site=jalaram_admin)
 class ProductAdmin(admin.ModelAdmin):
+    form = ProductAdminForm
     list_display = (
         'name', 'brand', 'category', 'price_display', 'stock', 'stock_level',
         'promo_display', 'badge', 'created_at',
@@ -288,9 +347,10 @@ class ProductPromoAdmin(admin.ModelAdmin):
 @admin.register(Order, site=jalaram_admin)
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-        'order_id', 'customer_name', 'customer_email', 'status_badge',
+        'order_id', 'customer_name', 'customer_email', 'status_badge', 'status',
         'total_display', 'paid_badge', 'item_count', 'created_at',
     )
+    list_editable = ('status',)
     list_filter = ('status', 'paid', 'created_at')
     search_fields = ('order_id', 'customer', 'user_id_str')
     readonly_fields = (
@@ -472,19 +532,33 @@ class ServiceRequestAdmin(admin.ModelAdmin):
 @admin.register(ServiceBooking, site=jalaram_admin)
 class ServiceBookingAdmin(admin.ModelAdmin):
     list_display = (
-        'booking_id', 'name', 'phone', 'service', 'date', 'slot',
+        'booking_id', 'name', 'phone', 'service', 'date', 'slot', 'status',
         'promo_code', 'discount_applied', 'created_at',
     )
-    list_filter = ('service', 'date')
+    list_editable = ('status',)
+    list_filter = ('status', 'service', 'date')
     search_fields = ('booking_id', 'name', 'email', 'phone')
     readonly_fields = ('created_at',)
+    actions = ['mark_confirmed', 'mark_completed', 'mark_cancelled']
 
     fieldsets = (
-        ('Booking', {'fields': ('booking_id', 'service', 'date', 'slot')}),
+        ('Booking', {'fields': ('booking_id', 'service', 'date', 'slot', 'status')}),
         ('Customer', {'fields': ('name', 'phone', 'email')}),
         ('Details', {'fields': ('desc', 'promo_code', 'discount_applied')}),
         ('Meta', {'fields': ('created_at',), 'classes': ('collapse',)}),
     )
+
+    @admin.action(description='Mark as Confirmed')
+    def mark_confirmed(self, request, queryset):
+        queryset.update(status='Confirmed')
+
+    @admin.action(description='Mark as Completed')
+    def mark_completed(self, request, queryset):
+        queryset.update(status='Completed')
+
+    @admin.action(description='Mark as Cancelled')
+    def mark_cancelled(self, request, queryset):
+        queryset.update(status='Cancelled')
 
 
 # ── Customers (auth users) ─────────────────────────────────────────────────
@@ -595,7 +669,7 @@ class NewsletterSubscriberAdmin(admin.ModelAdmin):
 
 # Keep default admin site clean — all store models live on jalaram_admin.
 for _model in (
-    Category, Product, ProductPromo, Order, ServiceRequest, ServiceBooking,
+    Brand, Category, Product, ProductPromo, Order, ServiceRequest, ServiceBooking,
     ContactQuery, SiteSettings, HeroSlideConfig, NewsletterSubscriber, User,
 ):
     if admin.site.is_registered(_model):

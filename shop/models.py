@@ -1,6 +1,22 @@
 from django.conf import settings
 from django.db import models
 
+# Status option lists. Defined here (not in admin.py) so the model fields can use
+# them as `choices=` — which is what turns a plain text box into a dropdown both
+# on the edit form and in the inline (row-level) editor on the change list.
+ORDER_STATUS_CHOICES = [(s, s) for s in (
+    'Processing', 'Paid', 'Shipped', 'Delivered', 'Cancelled', 'Refunded', 'Failed',
+)]
+REPAIR_STATUS_CHOICES = [(s, s) for s in (
+    'Diagnosing', 'Awaiting Parts', 'Repairing', 'Ready', 'Delivered', 'Cancelled',
+)]
+QUERY_STATUS_CHOICES = [(s, s) for s in (
+    'Open', 'In Progress', 'Resolved', 'Closed',
+)]
+BOOKING_STATUS_CHOICES = [(s, s) for s in (
+    'Pending', 'Confirmed', 'In Progress', 'Completed', 'Cancelled',
+)]
+
 
 class Category(models.Model):
     slug = models.SlugField(max_length=100, primary_key=True)
@@ -8,6 +24,24 @@ class Category(models.Model):
 
     class Meta:
         verbose_name_plural = 'categories'
+
+    def __str__(self):
+        return self.name
+
+
+class Brand(models.Model):
+    """Brand catalogue. Manage brands here; they populate the Brand dropdown on
+    the product form. Product.brand stores the brand *name* as text, so the
+    storefront filters keep working unchanged."""
+
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, blank=True)
+    logo_url = models.URLField(max_length=500, blank=True, default='')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -79,7 +113,7 @@ class Order(models.Model):
     )
     user_id_str = models.CharField(max_length=100, blank=True, default='')
     date = models.CharField(max_length=100)
-    status = models.CharField(max_length=50, default='Paid')
+    status = models.CharField(max_length=50, default='Paid', choices=ORDER_STATUS_CHOICES)
     subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     discount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     gst = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -129,7 +163,7 @@ class ContactQuery(models.Model):
     category = models.CharField(max_length=100)
     message = models.TextField()
     date = models.CharField(max_length=100)
-    status = models.CharField(max_length=50, default='Open')
+    status = models.CharField(max_length=50, default='Open', choices=QUERY_STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -157,7 +191,7 @@ class ServiceRequest(models.Model):
     service_type = models.CharField(max_length=100)
     device_model = models.CharField(max_length=200, blank=True, default='')
     description = models.TextField(blank=True, default='')
-    status = models.CharField(max_length=50, default='Diagnosing')
+    status = models.CharField(max_length=50, default='Diagnosing', choices=REPAIR_STATUS_CHOICES)
     cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     date_created = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -189,6 +223,7 @@ class ServiceBooking(models.Model):
     date = models.CharField(max_length=100)
     slot = models.CharField(max_length=100)
     desc = models.TextField(blank=True, default='')
+    status = models.CharField(max_length=50, default='Pending', choices=BOOKING_STATUS_CHOICES)
     promo_code = models.CharField(max_length=50, blank=True, default='')
     discount_applied = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -206,6 +241,7 @@ class ServiceBooking(models.Model):
             'date': self.date,
             'slot': self.slot,
             'desc': self.desc,
+            'status': self.status,
             'promoCode': self.promo_code or None,
             'discountApplied': float(self.discount_applied),
         }

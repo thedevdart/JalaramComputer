@@ -622,3 +622,42 @@ input[type="checkbox"] {
   .ja-dash__stats { grid-template-columns: repeat(2, 1fr); }
   .ja-main { padding: 1rem; }
 }
+
+/* ── Custom submit row: Save / Delete / Cancel buttons with icons ── */
+.ja-submit-row { align-items: center; }
+.ja-submit-row button,
+.ja-submit-row a.deletelink,
+.ja-submit-row a.cancellink {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.55rem 1.1rem;
+  font-family: var(--sans);
+  font-size: 0.75rem; font-weight: 600;
+  border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text) !important;
+  text-decoration: none !important;
+  transition: background 0.15s;
+}
+.ja-submit-row button:hover,
+.ja-submit-row a.cancellink:hover { background: var(--surface-hover) !important; }
+.ja-submit-row button.default {
+  background: var(--gold) !important;
+  border-color: var(--gold) !important;
+  color: var(--navy-deep) !important;
+  font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.ja-submit-row button.default:hover { background: var(--gold-hover) !important; }
+.ja-submit-row a.deletelink {
+  background: rgba(248, 113, 113, 0.12) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(248, 113, 113, 0.3) !important;
+}
+.ja-submit-row a.deletelink:hover { background: rgba(248, 113, 113, 0.2) !important; }
+.ja-submit-row a.cancellink { color: var(--text-2) !important; }
+.ja-btn-ico {
+  width: 15px; height: 15px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  margin-right: 0.45rem;
+}
